@@ -1,59 +1,37 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Rezerwacja } from './rezerwacja.entity';
-import { CreateRezerwacjaDto, UpdateRezerwacjaDto } from '../DTOs/rezerwacja.dto';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Sala } from './sala.entity';
+import { Siedzenie } from './siedzenie.entity';
+import { Seans } from './seans.entity';
 
-@Injectable()
-export class RezerwacjaService {
-  constructor(
-    @InjectRepository(Rezerwacja)
-    private readonly rezerwacjaRepository: Repository<Rezerwacja>,
-  ) {}
+@Entity('rezerwacja')
+export class Rezerwacja {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  async create(createRezerwacjaDto: CreateRezerwacjaDto): Promise<Rezerwacja> {
-    const rezerwacja = this.rezerwacjaRepository.create(createRezerwacjaDto);
-    return await this.rezerwacjaRepository.save(rezerwacja);
-  }
+  @ManyToOne(() => Sala)
+  @JoinColumn({ name: 'sala_id' })
+  sala: Sala;
 
-  async findAll(): Promise<Rezerwacja[]> {
-    return await this.rezerwacjaRepository.find({
-      relations: ['uzytkownik', 'stolik', 'restauracja'],
-    });
-  }
+  @ManyToOne(() => Siedzenie)
+  @JoinColumn({ name: 'siedzenie_id' })
+  siedzenie: Siedzenie;
 
-  async findOne(id: number): Promise<Rezerwacja> {
-    const rezerwacja = await this.rezerwacjaRepository.findOne({
-      where: { rezerwacja_id: id },
-      relations: ['uzytkownik', 'stolik', 'restauracja'],
-    });
-    if (!rezerwacja) {
-      throw new NotFoundException(`Rezerwacja z ID ${id} nie znaleziona`);
-    }
-    return rezerwacja;
-  }
+  @ManyToOne(() => Seans, (s) => s.rezerwacje)
+  @JoinColumn({ name: 'seans_id' })
+  seans: Seans;
 
-  async upsert(id: number, updateRezerwacjaDto: UpdateRezerwacjaDto): Promise<Rezerwacja> {
-    const rezerwacja = await this.rezerwacjaRepository.findOne({
-      where: { rezerwacja_id: id },
-    });
+  @Column({ type: 'varchar' })
+  klient: string;
 
-    if (rezerwacja) {
-      Object.assign(rezerwacja, updateRezerwacjaDto);
-      return await this.rezerwacjaRepository.save(rezerwacja);
-    } else {
-      const newRezerwacja = this.rezerwacjaRepository.create({
-        rezerwacja_id: id,
-        ...updateRezerwacjaDto,
-      });
-      return await this.rezerwacjaRepository.save(newRezerwacja);
-    }
-  }
+  @Column({ type: 'varchar' })
+  status: string;
 
-  async remove(id: number): Promise<void> {
-    const result = await this.rezerwacjaRepository.delete({ rezerwacja_id: id });
-    if (result.affected === 0) {
-      throw new NotFoundException(`Rezerwacja z ID ${id} nie znaleziona`);
-    }
-  }
+  @Column({ name: 'data_utworzenia', type: 'timestamp' })
+  dataUtworzenia: Date;
 }
