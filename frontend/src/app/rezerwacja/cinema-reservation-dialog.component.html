@@ -1,0 +1,73 @@
+<p-dialog 
+  [(visible)]="visible" 
+  [modal]="true" 
+  [style]="{ width: '95vw', height: '95vh', maxWidth: '1600px' }"
+  [header]="'Rezerwacja miejsc – ' + movieTitle + ' (' + sessionTime + ')'"
+  (onHide)="close()">
+
+  <div class="cinema-container">
+    
+    <div class="cinema-screen">
+      <span>EKRAN</span>
+    </div>
+
+    <div class="main-content">
+      
+      <div class="cinema-hall">
+        
+        <div class="seats-wrapper" 
+             [style.width.px]="wrapperWidth" 
+             [style.height.px]="wrapperHeight">
+          
+          <div class="seat"
+               *ngFor="let seat of seats"
+               [style.top.px]="seat.top"
+               [style.left.px]="seat.left"
+               [class.selected]="seat.selected"
+               [class.reserved]="seat.reserved || seat.permanentlyReserved"
+               (click)="toggleSeat(seat)"
+               [pTooltip]="seat.label"
+               tooltipPosition="top">
+            <span class="seat-number">{{ seat.number }}</span>
+          </div>
+
+          <div class="row-labels">
+            <div *ngFor="let row of rowLetters" class="row-label">{{ row }}</div>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="summary-sidebar">
+        <h3>Twoja rezerwacja</h3>
+        <p><strong>Wybrano miejsc:</strong> {{ selectedSeats.length }}</p>
+        <p><strong>Film:</strong> {{ movieTitle }}</p>
+        <p><strong>Godzina:</strong> {{ sessionTime }}</p>
+
+        <div class="legend">
+          <div class="legend-item"><span class="seat-example free"></span> Wolne</div>
+          <div class="legend-item"><span class="seat-example selected"></span> Wybrane</div>
+          <div class="legend-item"><span class="seat-example reserved"></span> Zajęte</div>
+        </div>
+
+        <div class="selected-seats-list" *ngIf="selectedSeats.length > 0">
+          <div class="selected-seat-item" *ngFor="let s of selectedSeats">
+            <span>{{ s.label }}</span>
+            <button pButton icon="pi pi-times" class="p-button-text p-button-danger p-button-sm" (click)="removeSeat(s)"></button>
+          </div>
+        </div>
+
+        <div class="summary-actions">
+          <button pButton label="Anuluj" class="p-button-outlined" (click)="close()"></button>
+          <button pButton 
+                  label="Zatwierdź" 
+                  class="p-button-success" 
+                  [disabled]="selectedSeats.length === 0"
+                  (click)="confirmReservation()">
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</p-dialog>

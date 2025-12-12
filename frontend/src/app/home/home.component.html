@@ -1,58 +1,26 @@
-<div class="home-container">
-  <h1>Lista Restauracji</h1>
-  
-  <div class="restaurants-list">
-    <div *ngFor="let restauracja of restauracje" class="restaurant-card">
-      <div class="restaurant-header">
-        <h3>{{ restauracja.nazwa }}</h3>
-      </div>
-      
-      <div class="restaurant-details">
-        <p class="address">
-          <i class="pi pi-map-marker"></i>
-          {{ restauracja.adres }}
-        </p>
-        
-        <p class="phone" *ngIf="restauracja.nr_kontaktowy">
-          <i class="pi pi-phone"></i>
-          {{ restauracja.nr_kontaktowy }}
-        </p>
-        
-        <p class="email" *ngIf="restauracja.email">
-          <i class="pi pi-envelope"></i>
-          {{ restauracja.email }}
-        </p>
+<!-- src/app/home/home.component.html -->
+<div class="home-simple">
+  <div class="hero">
+    <h1 class="title">TicketTicket</h1>
+    <p class="subtitle">Kup bilet do kina w 30 sekund</p>
 
-        <!-- Zdjęcie jeśli istnieje -->
-        <div class="image" *ngIf="restauracja.zdjecie">
-          <img [src]="restauracja.zdjecie" [alt]="restauracja.nazwa" class="restaurant-image">
-        </div>
-      </div>
-      
-      <div class="restaurant-actions">
-        
-        <button pButton 
-                icon="pi pi-book" 
-                label="Rezerwuj" 
-                class="p-button-success"
-                (click)="makeReservation(restauracja)">
-        </button>
-      </div>
-    </div>
+    <button pButton
+            icon="pi pi-ticket"
+            label="Wybierz seans i kup bilet"
+            class="p-button-raised p-button-lg p-button-warning hero-button"
+            (click)="openCinemaReservation()">
+    </button>
   </div>
 
-  <!-- Loading spinner -->
-  <div *ngIf="loading" class="loading">
-    <p-progressSpinner></p-progressSpinner>
-    <p>Ładowanie restauracji...</p>
-  </div>
+  <!-- Twój dialog z miejscami -->
+  <app-cinema-reservation-dialog
+    [(visible)]="showCinemaDialog"
+    [movieTitle]="currentMovieTitle"
+    [sessionTime]="currentSessionTime"
+    [occupiedSeats]="occupiedSeatsExample"
+    (confirm)="onSeatsConfirmed($event)"
+    (visibleChange)="showCinemaDialog = $event">
+  </app-cinema-reservation-dialog>
 
-  <!-- Empty state -->
-  <div *ngIf="!loading && restauracje.length === 0" class="empty-state">
-    <i class="pi pi-inbox" style="font-size: 3rem"></i>
-    <h3>Brak restauracji</h3>
-    <p>Nie znaleziono żadnych restauracji w systemie.</p>
-  </div>
+  <p-toast position="top-right"></p-toast>
 </div>
-
-<p-toast></p-toast>
