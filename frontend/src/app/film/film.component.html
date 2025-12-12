@@ -1,0 +1,47 @@
+<!-- src/app/film/film.component.html -->
+<div class="container">
+  <h1 class="mat-display-1">Repertuar kina</h1>
+
+  <mat-spinner *ngIf="loading" diameter="50"></mat-spinner>
+
+  <table mat-table [dataSource]="filmy" class="mat-elevation-z8" *ngIf="!loading">
+
+    <!-- Kolumna: Data -->
+    <ng-container matColumnDef="data">
+      <th mat-header-cell *matHeaderCellDef> Data </th>
+      <td mat-cell *matCellDef="let film">
+        {{ film.data | date:'EEEE, d MMMM yyyy':'':'pl' | titlecase }}
+      </td>
+    </ng-container>
+
+    <!-- Kolumna: Godzina – TO BYŁO ZEPSUTE! -->
+    <ng-container matColumnDef="godzina_rozpoczecia">
+      <th mat-header-cell *matHeaderCellDef> Godzina </th>
+      <td mat-cell *matCellDef="let film" class="godzina">
+        {{ film.godzina_rozpoczecia | date:'HH:mm' }}
+      </td>
+    </ng-container>
+
+    <!-- Kolumna: Tytuł filmu -->
+    <ng-container matColumnDef="tytul_filmu">
+      <th mat-header-cell *matHeaderCellDef> Film </th>
+      <td mat-cell *matCellDef="let film" class="tytul">
+        <strong>{{ film.tytul_filmu }}</strong>
+      </td>
+    </ng-container>
+
+    <!-- Kolumna: Akcja (przycisk) -->
+    <ng-container matColumnDef="akcja">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let film">
+        <button mat-raised-button color="primary" (click)="kupBilet(film)">
+          Kup bilet
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Nagłówki i wiersze -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

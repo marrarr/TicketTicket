@@ -1,0 +1,192 @@
+/* src/app/rezerwacja/cinema-reservation-dialog.component.scss */
+
+::ng-deep {
+  .cinema-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+    gap: 20px;
+    box-sizing: border-box;
+    overflow: hidden; /* Zapobiega podwójnym paskom przewijania */
+  }
+
+  .cinema-screen {
+    background: linear-gradient(to bottom, #000, #111);
+    color: white;
+    text-align: center;
+    padding: 24px;
+    font-size: 2.5rem;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    letter-spacing: 8px;
+    flex-shrink: 0;
+    margin: 0 20px;
+  }
+
+  .main-content {
+    display: flex;
+    flex: 1; /* Wypełnia resztę wysokości */
+    gap: 20px;
+    align-items: flex-start;
+    overflow: hidden; /* Ważne dla flexa */
+    padding: 0 20px 20px 20px;
+  }
+
+  .cinema-hall {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    background: #0a0a1a;
+    border-radius: 20px;
+    /* To umożliwia przewijanie sali, jeśli fotele się nie mieszczą */
+    overflow: auto; 
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+  }
+
+  .seats-wrapper {
+    position: relative;
+    /* Padding zbędny, marginesy są wliczone w startX/startY */
+    padding: 0; 
+    box-sizing: border-box;
+    margin: 0 auto; /* Wyśrodkowanie jeśli sala jest szersza niż fotele */
+  }
+
+  .seat {
+    position: absolute;
+    width: 56px;  /* Zgodne z TS */
+    height: 56px; /* Zgodne z TS */
+    background: #2c2c44;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    user-select: none;
+
+    &:hover:not(.reserved):not(.selected) {
+      background: #5b7fff;
+      color: white;
+      transform: scale(1.15);
+      z-index: 100;
+      box-shadow: 0 10px 20px rgba(91, 127, 255, 0.4);
+    }
+
+    &.selected {
+      background: #00e676;
+      color: #004d26;
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(0, 230, 118, 0.6);
+      z-index: 50;
+    }
+
+    &.reserved {
+      background: #d32f2f;
+      color: rgba(255,255,255,0.5);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+
+  /* Etykiety rzędów A, B, C... */
+  .row-labels {
+    position: absolute;
+    /* startX (80px) - szerokość etykiety (~30px) - margines */
+    left: 30px; 
+    /* startY (50px) + połowa wysokości fotela (28px) - połowa fontu */
+    top: 66px;   
+    display: flex;
+    flex-direction: column;
+    /* Gap = seatHeight (56) + vGap (20) */
+    gap: 76px;   
+    pointer-events: none;
+    z-index: 5;
+  }
+  
+  .row-label {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+    width: 30px;
+    line-height: 1;
+    /* Zapewnia, że etykieta nie ma wysokości 0 */
+    height: 24px; 
+  }
+
+  .summary-sidebar {
+    width: 350px;
+    background: #fff;
+    padding: 24px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    
+    h3 {
+      margin-top: 0;
+      color: #333;
+    }
+  }
+
+  .legend {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+
+  .seat-example {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    &.free { background: #2c2c44; }
+    &.selected { background: #00e676; }
+    &.reserved { background: #d32f2f; opacity: 0.6; }
+  }
+
+  .selected-seats-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+  }
+
+  .selected-seat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
+  }
+
+  .summary-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    
+    button {
+      flex: 1;
+    }
+  }
+}

@@ -1,72 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+// src/app/home/home.component.ts
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { HttpClientModule } from '@angular/common/http';
-import { RestauracjaService } from './restauracja.service'; 
-import { Restauracja } from '../models/restauracja.model'; 
+
+// KLUCZOWE MODUŁY PRIME NG
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { TooltipModule } from 'primeng/tooltip';   // <--- TO BYŁO BRAKOWAĆ!
+
+import { CinemaReservationDialogComponent } from '../rezerwacja/cinema-reservation-dialog.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
-    CommonModule, 
-    ButtonModule, 
-    ProgressSpinnerModule, 
+    CommonModule,
+    DialogModule,
     ToastModule,
-    HttpClientModule
+    ButtonModule,
+    TooltipModule,                    // <--- DODAJ TO!
+    CinemaReservationDialogComponent
   ],
-  providers: [MessageService, RestauracjaService],
+  providers: [MessageService],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
-  restauracje: Restauracja[] = [];
-  loading: boolean = false;
+export class HomeComponent {
+  showCinemaDialog = false;
+  currentMovieTitle = 'Avatar 3: Ogień i Popiół';
+  currentSessionTime = '19:30';
+  occupiedSeatsExample = ['A5', 'B3', 'F8', 'F9', 'G6', 'H10'];
 
-  constructor(
-    private restauracjaService: RestauracjaService,
-    private messageService: MessageService
-  ) {}
+  constructor(private messageService: MessageService) {}
 
-  ngOnInit(): void {
-    this.loadRestauracje();
+  openCinemaReservation() {
+    this.showCinemaDialog = true;
   }
 
-  loadRestauracje(): void {
-    this.loading = true;
-    this.restauracjaService.getRestauracje().subscribe({
-      next: (restauracje: Restauracja[]) => {
-        this.restauracje = restauracje;
-        this.loading = false;
-      },
-      error: (error: any) => {
-        console.error('Błąd podczas ładowania restauracji:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Błąd',
-          detail: 'Nie udało się załadować listy restauracji'
-        });
-        this.loading = false;
-      }
-    });
-  }
-
-  showDetails(restauracja: Restauracja): void {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Szczegóły restauracji',
-      detail: `Wyświetlanie szczegółów: ${restauracja.nazwa}`
-    });
-  }
-
-  makeReservation(restauracja: Restauracja): void {
+  onSeatsConfirmed(selectedSeats: any[]) {
+    const list = selectedSeats.map((s: any) => s.label).join(', ');
     this.messageService.add({
       severity: 'success',
-      summary: 'Rezerwacja',
-      detail: `Rozpoczynanie rezerwacji w: ${restauracja.nazwa}`
+      summary: 'Bilety zarezerwowane!',
+      detail: `Miejsca: ${list} – ${selectedSeats.length} szt.`,
+      life: 8000
     });
   }
 }
