@@ -1,15 +1,19 @@
 // src/app/home/home.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 
-// KLUCZOWE MODUŁY PRIME NG
+// PrimeNG modules
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { TooltipModule } from 'primeng/tooltip';   // <--- TO BYŁO BRAKOWAĆ!
+import { TooltipModule } from 'primeng/tooltip';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
 
 import { CinemaReservationDialogComponent } from '../rezerwacja/cinema-reservation-dialog.component';
+import { FilmService } from '../film/film.service';
+import { Film } from '../models/film.model';
 
 @Component({
   selector: 'app-home',
@@ -19,22 +23,57 @@ import { CinemaReservationDialogComponent } from '../rezerwacja/cinema-reservati
     DialogModule,
     ToastModule,
     ButtonModule,
-    TooltipModule,                    // <--- DODAJ TO!
+    TooltipModule,
+    CardModule,
+    TableModule,
     CinemaReservationDialogComponent
   ],
   providers: [MessageService],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   showCinemaDialog = false;
-  currentMovieTitle = 'Avatar 3: Ogień i Popiół';
-  currentSessionTime = '19:30';
+  currentMovieTitle = '';
+  currentSessionTime = '';
+  currentFilm: Film | null = null;
   occupiedSeatsExample = ['A5', 'B3', 'F8', 'F9', 'G6', 'H10'];
+  
+  filmy: Film[] = [];
+  loading = true;
 
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private filmService: FilmService
+  ) {}
 
-  openCinemaReservation() {
+  ngOnInit() {
+    this.loadFilmy();
+  }
+
+  loadFilmy() {
+    this.loading = true;
+    this.filmService.getFilmy().subscribe({
+      next: (data) => {
+        this.filmy = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Błąd przy pobieraniu filmów:', err);
+        this.loading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Błąd',
+          detail: 'Nie udało się pobrać listy filmów'
+        });
+      }
+    });
+  }
+
+  openCinemaReservation(film: Film) {
+    this.currentMovieTitle = film.tytul_filmu;
+    this.currentSessionTime = film.godzina_rozpoczecia;
+    this.currentFilm = film;
     this.showCinemaDialog = true;
   }
 
@@ -43,8 +82,9 @@ export class HomeComponent {
     this.messageService.add({
       severity: 'success',
       summary: 'Bilety zarezerwowane!',
-      detail: `Miejsca: ${list} – ${selectedSeats.length} szt.`,
+      detail: `Film: ${this.currentMovieTitle} - Miejsca: ${list} (${selectedSeats.length} szt.)`,
       life: 8000
     });
+    this.showCinemaDialog = false;
   }
 }

@@ -1,131 +1,81 @@
+// src/app/home/home.component.scss
+
 .home-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 2rem;
+}
 
-  h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 30px;
+.hero {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+  .title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin: 0 0 1rem 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   }
-}
 
-.restaurants-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.restaurant-card {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
-  transition: transform 0.2s, box-shadow 0.2s;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  }
-}
-
-.restaurant-header {
-  margin-bottom: 15px;
-
-  h3 {
-    margin: 0;
-    color: #2c3e50;
+  .subtitle {
     font-size: 1.3rem;
-    text-align: center;
+    margin: 0;
+    opacity: 0.95;
   }
 }
 
-.restaurant-details {
-  margin-bottom: 20px;
+.filmy-section {
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-weight: 600;
+  }
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
 
   p {
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    i {
-      color: #666;
-      width: 16px;
-    }
-  }
-
-  .address {
-    color: #666;
-    font-weight: 500;
-  }
-
-  .phone {
-    color: #3498db;
-  }
-
-  .email {
-    color: #e67e22;
+    margin-top: 1rem;
+    font-size: 1.1rem;
   }
 }
 
-.restaurant-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-top: 10px;
-}
-
-.restaurant-actions {
+.film-title {
   display: flex;
-  gap: 10px;
-  justify-content: space-between;
-
-  button {
-    flex: 1;
-  }
-}
-
-.loading {
-  text-align: center;
-  padding: 40px;
-
-  p {
-    margin-top: 15px;
-    color: #666;
-  }
-}
-
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: #7f8c8d;
-
-  i {
-    color: #bdc3c7;
-    margin-bottom: 15px;
-  }
-
-  h3 {
-    margin: 15px 0;
-    color: #95a5a6;
-  }
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 // Responsywność
 @media (max-width: 768px) {
   .home-container {
-    padding: 10px;
+    padding: 1rem;
   }
 
-  .restaurants-list {
-    grid-template-columns: 1fr;
+  .hero {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+
+    .title {
+      font-size: 2.5rem;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+    }
   }
 
-  .restaurant-actions {
-    flex-direction: column;
+  .filmy-section h2 {
+    font-size: 1.5rem;
   }
 }
