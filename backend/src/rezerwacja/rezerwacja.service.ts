@@ -1,59 +1,84 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rezerwacja } from './rezerwacja.entity';
-import { CreateRezerwacjaDto, UpdateRezerwacjaDto } from '../DTOs/rezerwacja.dto';
+import type { CreateRezerwacjaDto, UpdateRezerwacjaDto } from '../dtos/rezerwacja.dto';
+import { LogService } from 'src/mongo/log.service';
 
 @Injectable()
 export class RezerwacjaService {
   constructor(
     @InjectRepository(Rezerwacja)
-    private readonly rezerwacjaRepository: Repository<Rezerwacja>,
+    private repo: Repository<Rezerwacja>,
+    private logService: LogService,
   ) {}
 
-  async create(createRezerwacjaDto: CreateRezerwacjaDto): Promise<Rezerwacja> {
-    const rezerwacja = this.rezerwacjaRepository.create(createRezerwacjaDto);
-    return await this.rezerwacjaRepository.save(rezerwacja);
+  private getIds(dto: any) {
+    return {
+      salaId: dto.salaId ?? dto.sala_id,
+      siedzenieId: dto.siedzenieId ?? dto.siedzenie_id,
+      seansId: dto.seansId ?? dto.seans_id,
+      uzytkownikId: dto.uzytkownikId ?? dto.uzytkownik_id,
+    };
   }
 
-  async findAll(): Promise<Rezerwacja[]> {
-    return await this.rezerwacjaRepository.find({
-      relations: ['uzytkownik', 'stolik', 'restauracja'],
-    });
-  }
+  async create(dto: CreateRezerwacjaDto) {
+    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(dto as any);
 
-  async findOne(id: number): Promise<Rezerwacja> {
-    const rezerwacja = await this.rezerwacjaRepository.findOne({
-      where: { rezerwacja_id: id },
-      relations: ['uzytkownik', 'stolik', 'restauracja'],
-    });
-    if (!rezerwacja) {
-      throw new NotFoundException(`Rezerwacja z ID ${id} nie znaleziona`);
-    }
-    return rezerwacja;
-  }
+    const payload: Partial<Rezerwacja> = {
+      klient: (dto as any).klient,
+      status: (dto as any).status,
+      dataUtworzenia: new Date(),
+    };
 
-  async upsert(id: number, updateRezerwacjaDto: UpdateRezerwacjaDto): Promise<Rezerwacja> {
-    const rezerwacja = await this.rezerwacjaRepository.findOne({
-      where: { rezerwacja_id: id },
-    });
+    if (salaId) payload.sala = { id: salaId } as any;
+    if (siedzenieId) payload.siedzenie = { id: siedzenieId } as any;
+    if (seansId) payload.seans = { id: seansId } as any;
+    if (uzytkownikId) payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
 
-    if (rezerwacja) {
-      Object.assign(rezerwacja, updateRezerwacjaDto);
-      return await this.rezerwacjaRepository.save(rezerwacja);
-    } else {
-      const newRezerwacja = this.rezerwacjaRepository.create({
-        rezerwacja_id: id,
-        ...updateRezerwacjaDto,
+    const saved = await this.repo.save(payload as Rezerwacja);
+
+    try {
+      await this.logService.create({
+        typ_logu: 'rezerwacja',
+        typ_zdarzenia: 'utworzenie',
+        opis: `Rezerwacja id=${saved.id}`,
+        data: new Date(),
+        seans_id: seansId,
+        nazwa_rezerwujacego: saved.klient,
       });
-      return await this.rezerwacjaRepository.save(newRezerwacja);
+    } catch (e) {
+      console.error('Failed to write mongo log', e);
     }
+
+    return saved;
   }
 
-  async remove(id: number): Promise<void> {
-    const result = await this.rezerwacjaRepository.delete({ rezerwacja_id: id });
-    if (result.affected === 0) {
-      throw new NotFoundException(`Rezerwacja z ID ${id} nie znaleziona`);
-    }
+  findAll() {
+    return this.repo.find({ relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'] });
+  }
+
+  findOne(id: number) {
+    return this.repo.findOne({ where: { id }, relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'] });
+  }
+
+  async update(id: number, dto: UpdateRezerwacjaDto) {
+    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(dto as any);
+
+    const payload: any = { id };
+    if ((dto as any).klient !== undefined) payload.klient = (dto as any).klient;
+    if ((dto as any).status !== undefined) payload.status = (dto as any).status;
+
+    if (salaId) payload.sala = { id: salaId } as any;
+    if (siedzenieId) payload.siedzenie = { id: siedzenieId } as any;
+    if (seansId) payload.seans = { id: seansId } as any;
+    if (uzytkownikId) payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
+
+    await this.repo.save(payload);
+    return this.findOne(id);
+  }
+
+  remove(id: number) {
+    return this.repo.delete(id);
   }
 }

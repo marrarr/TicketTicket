@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { RoleService } from './rola.service';
-import type { CreateRolaDto, UpdateRolaDto } from '../DTOs/rola.dto';
+import type { CreateRolaDto, UpdateRolaDto } from '../dtos/rola.dto';
 import { Rola } from '../rola/rola.entity';
 
 @Controller('role')

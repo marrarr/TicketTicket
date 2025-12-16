@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Rola } from '../rola/rola.entity';
 import { Rezerwacja } from '../rezerwacja/rezerwacja.entity';
-import { Restauracja } from '../restauracja/restauracja.entity';
 
 @Entity('uzytkownik')
 export class Uzytkownik {
@@ -38,12 +37,4 @@ export class Uzytkownik {
 
   @OneToMany(() => Rezerwacja, rezerwacja => rezerwacja.uzytkownik)
   rezerwacje: Rezerwacja[];
-
-  @ManyToMany(() => Restauracja, restauracja => restauracja.wlasciciele)
-  @JoinTable({
-    name: 'uzytkownik_restauracja',
-    joinColumn: { name: 'uzytkownik_id', referencedColumnName: 'uzytkownik_id' },
-    inverseJoinColumn: { name: 'restauracja_id', referencedColumnName: 'restauracja_id' },
-  })
-  restauracje: Restauracja[];
 }

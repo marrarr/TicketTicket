@@ -7,14 +7,17 @@ import { RezerwacjaModule } from './rezerwacja/rezerwacja.module';
 import { RolaModule } from './rola/rola.module';
 import { UzytkownikModule } from './uzytkownik/uzytkownik.module';
 import { UzytkownikService } from './uzytkownik/uzytkownik.service';
-import { StolikModule } from './stolik/stolik.module';
-import { RestauracjaModule } from './restauracja/restauracja.module';
 import { AppDataSource } from './data-source';
 import { AuthModule } from './auth/auth.module';
 import { Uzytkownik } from './uzytkownik/uzytkownik.entity';
-import { RestauracjaObrazModule } from './restauracja/obrazy/restauracjaObraz.module';
 import { MulterModule } from '@nestjs/platform-express';
-
+import { SiedzenieModule } from './siedzenie/siedzenie.module';
+import { Sala } from './sala/sala.entity';
+import { SalaModule } from './sala/sala.module';
+import { SeansModule } from './seans/seans.module';
+import { ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { LogModule } from './mongo/log.module';
 
 
 @Module({
@@ -24,16 +27,24 @@ import { MulterModule } from '@nestjs/platform-express';
       ignoreEnvFile: false,
       envFilePath: '.env',
     }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('MONGODB_URI'),
+      }),
+    }),
+    LogModule,
     TypeOrmModule.forRoot({
       ...AppDataSource.options,
       autoLoadEntities: true,
     }),
     RezerwacjaModule,
+    SiedzenieModule,
+    SalaModule,
+    SeansModule,
     UzytkownikModule,
     RolaModule,
-    StolikModule,
-    RestauracjaModule,
-    RestauracjaObrazModule,
     AuthModule,
     MulterModule.register({}),
   ],

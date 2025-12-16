@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { UzytkownikService } from './uzytkownik.service';
-import type { UpdateUzytkownikDto, CreateUzytkownikDto } from '../DTOs/uzytkownik.dto';
+import type { UpdateUzytkownikDto, CreateUzytkownikDto } from '../dtos/uzytkownik.dto';
 import { Uzytkownik } from '../uzytkownik/uzytkownik.entity';
 
 @Controller('uzytkownik')

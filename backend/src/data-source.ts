@@ -12,7 +12,7 @@ export const AppDataSource = new DataSource({
   port: Number(process.env.DATABASE_PORT) || 3306,
   username: process.env.DATABASE_USER || 'root',
   password: process.env.DATABASE_PASSWORD || '',
-  database: process.env.DATABASE_SCHEMA || 'table4u',
+  database: process.env.DATABASE_SCHEMA || 'ticketticket',
   synchronize: process.env.DATABASE_SYNCHRONIZE === 'true',
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   migrations: [path.resolve(__dirname, '../migrations/*.ts')],
