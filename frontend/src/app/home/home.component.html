@@ -1,18 +1,70 @@
 <!-- src/app/home/home.component.html -->
-<div class="home-simple">
+<div class="home-container">
+  <!-- Hero Section -->
   <div class="hero">
     <h1 class="title">TicketTicket</h1>
     <p class="subtitle">Kup bilet do kina w 30 sekund</p>
-
-    <button pButton
-            icon="pi pi-ticket"
-            label="Wybierz seans i kup bilet"
-            class="p-button-raised p-button-lg p-button-warning hero-button"
-            (click)="openCinemaReservation()">
-    </button>
+    <!-- Przycisk usunięty - teraz kupujemy bilety bezpośrednio z tabeli -->
   </div>
 
-  <!-- Twój dialog z miejscami -->
+  <!-- Sekcja z filmami -->
+  <div class="filmy-section">
+    <h2>Repertuar</h2>
+    
+    <div *ngIf="loading" class="loading-spinner">
+      <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+      <p>Ładowanie filmów...</p>
+    </div>
+
+    <p-table 
+      *ngIf="!loading" 
+      [value]="filmy" 
+      [tableStyle]="{ 'min-width': '50rem' }"
+      styleClass="p-datatable-striped">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Data</th>
+          <th>Godzina</th>
+          <th>Film</th>
+          <th style="width: 150px">Akcja</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-film>
+        <tr>
+          <td>{{ film.data }}</td>
+          <td><strong>{{ film.godzina_rozpoczecia }}</strong></td>
+          <td>
+            <div class="film-title">
+              <i class="pi pi-video" style="margin-right: 8px"></i>
+              {{ film.tytul_filmu }}
+            </div>
+          </td>
+          <td>
+            <button 
+              pButton 
+              icon="pi pi-ticket"
+              label="Kup bilet"
+              class="p-button-warning p-button-sm"
+              (click)="openCinemaReservation(film)">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 2rem;">
+            <i class="pi pi-info-circle" style="font-size: 2rem; color: #999;"></i>
+            <p>Brak seansów w repertuarze</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Dialog z miejscami -->
   <app-cinema-reservation-dialog
     [(visible)]="showCinemaDialog"
     [movieTitle]="currentMovieTitle"
