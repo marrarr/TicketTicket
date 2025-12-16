@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Siedzenie } from './siedzenie.entity';
-import { Seans } from './seans.entity';
+import { Siedzenie } from '../siedzenie/siedzenie.entity';
+import { Seans } from '../seans/seans.entity';
 
 @Entity('sala')
 export class Sala {

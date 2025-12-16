@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
-import { Sala } from './sala.entity';
-import { Rezerwacja } from './rezerwacja.entity';
+import { Sala } from '../sala/sala.entity';
+import { Rezerwacja } from '../rezerwacja/rezerwacja.entity';
 
 @Entity('seans')
 export class Seans {

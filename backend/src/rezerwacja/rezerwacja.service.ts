@@ -1,37 +1,84 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
-import { Sala } from './sala.entity';
-import { Siedzenie } from './siedzenie.entity';
-import { Seans } from './seans.entity';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Rezerwacja } from './rezerwacja.entity';
+import type { CreateRezerwacjaDto, UpdateRezerwacjaDto } from '../dtos/rezerwacja.dto';
+import { LogService } from 'src/mongo/log.service';
 
-@Entity('rezerwacja')
-export class Rezerwacja {
-  @PrimaryGeneratedColumn()
-  id: number;
+@Injectable()
+export class RezerwacjaService {
+  constructor(
+    @InjectRepository(Rezerwacja)
+    private repo: Repository<Rezerwacja>,
+    private logService: LogService,
+  ) {}
 
-  @ManyToOne(() => Sala)
-  @JoinColumn({ name: 'sala_id' })
-  sala: Sala;
+  private getIds(dto: any) {
+    return {
+      salaId: dto.salaId ?? dto.sala_id,
+      siedzenieId: dto.siedzenieId ?? dto.siedzenie_id,
+      seansId: dto.seansId ?? dto.seans_id,
+      uzytkownikId: dto.uzytkownikId ?? dto.uzytkownik_id,
+    };
+  }
 
-  @ManyToOne(() => Siedzenie)
-  @JoinColumn({ name: 'siedzenie_id' })
-  siedzenie: Siedzenie;
+  async create(dto: CreateRezerwacjaDto) {
+    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(dto as any);
 
-  @ManyToOne(() => Seans, (s) => s.rezerwacje)
-  @JoinColumn({ name: 'seans_id' })
-  seans: Seans;
+    const payload: Partial<Rezerwacja> = {
+      klient: (dto as any).klient,
+      status: (dto as any).status,
+      dataUtworzenia: new Date(),
+    };
 
-  @Column({ type: 'varchar' })
-  klient: string;
+    if (salaId) payload.sala = { id: salaId } as any;
+    if (siedzenieId) payload.siedzenie = { id: siedzenieId } as any;
+    if (seansId) payload.seans = { id: seansId } as any;
+    if (uzytkownikId) payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
 
-  @Column({ type: 'varchar' })
-  status: string;
+    const saved = await this.repo.save(payload as Rezerwacja);
 
-  @Column({ name: 'data_utworzenia', type: 'timestamp' })
-  dataUtworzenia: Date;
+    try {
+      await this.logService.create({
+        typ_logu: 'rezerwacja',
+        typ_zdarzenia: 'utworzenie',
+        opis: `Rezerwacja id=${saved.id}`,
+        data: new Date(),
+        seans_id: seansId,
+        nazwa_rezerwujacego: saved.klient,
+      });
+    } catch (e) {
+      console.error('Failed to write mongo log', e);
+    }
+
+    return saved;
+  }
+
+  findAll() {
+    return this.repo.find({ relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'] });
+  }
+
+  findOne(id: number) {
+    return this.repo.findOne({ where: { id }, relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'] });
+  }
+
+  async update(id: number, dto: UpdateRezerwacjaDto) {
+    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(dto as any);
+
+    const payload: any = { id };
+    if ((dto as any).klient !== undefined) payload.klient = (dto as any).klient;
+    if ((dto as any).status !== undefined) payload.status = (dto as any).status;
+
+    if (salaId) payload.sala = { id: salaId } as any;
+    if (siedzenieId) payload.siedzenie = { id: siedzenieId } as any;
+    if (seansId) payload.seans = { id: seansId } as any;
+    if (uzytkownikId) payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
+
+    await this.repo.save(payload);
+    return this.findOne(id);
+  }
+
+  remove(id: number) {
+    return this.repo.delete(id);
+  }
 }

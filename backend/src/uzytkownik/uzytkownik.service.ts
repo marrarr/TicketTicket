@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Uzytkownik } from '../uzytkownik/uzytkownik.entity';
-import { CreateUzytkownikDto, UpdateUzytkownikDto } from '../DTOs/uzytkownik.dto';
+import { CreateUzytkownikDto, UpdateUzytkownikDto } from '../dtos/uzytkownik.dto';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()

@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Rezerwacja } from './rezerwacja.entity';
-import { RezerwacjaService } from './rezerwacja.service';
 import { RezerwacjaController } from './rezerwacja.controller';
+import { RezerwacjaService } from './rezerwacja.service';
+import { Rezerwacja } from './rezerwacja.entity';
+import { Log } from 'src/mongo/log.schema';
+import { LogModule } from 'src/mongo/log.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Rezerwacja])],
+  imports: [TypeOrmModule.forFeature([Rezerwacja]), LogModule],
   controllers: [RezerwacjaController],
   providers: [RezerwacjaService],
   exports: [RezerwacjaService],

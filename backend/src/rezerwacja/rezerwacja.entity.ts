@@ -1,57 +1,45 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
+  Column,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Uzytkownik } from '../uzytkownik/uzytkownik.entity';
-import { Stolik } from '../stolik/stolik.entity';
-import { Restauracja } from '../restauracja/restauracja.entity';
+import { Sala } from '../sala/sala.entity';
+import { Siedzenie } from '../siedzenie/siedzenie.entity';
+import { Seans } from '../seans/seans.entity';
+import { Uzytkownik } from 'src/uzytkownik/uzytkownik.entity';
 
 @Entity('rezerwacja')
 export class Rezerwacja {
   @PrimaryGeneratedColumn()
-  rezerwacja_id: number;
+  id: number;
 
-  @Column()
-  klient_id: number;
+  @ManyToOne(() => Sala)
+  @JoinColumn({ name: 'sala_id' })
+  sala: Sala;
 
-  @Column()
-  pracownik_id: number;
+  @ManyToOne(() => Siedzenie)
+  @JoinColumn({ name: 'siedzenie_id' })
+  siedzenie: Siedzenie;
 
-  @Column()
-  stolik_id: number;
+  @ManyToOne(() => Seans, (s) => s.rezerwacje)
+  @JoinColumn({ name: 'seans_id' })
+  seans: Seans;
 
-  @Column()
-  restauracja_id: number;
+  @Column({ type: 'varchar' })
+  klient: string;
 
-  @Column({ type: 'datetime' })
-  data_utworzenia: Date;
-
-  @Column({ type: 'date' })
-  data_rezerwacji: Date;
-
-  @Column({ type: 'time' })
-  godzina_od: string;
-
-  @Column({ type: 'time' })
-  godzina_do: string;
-
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar' })
   status: string;
 
-  // Relacje z innymi tabelami
+  @Column({ name: 'data_utworzenia', type: 'timestamp' })
+  dataUtworzenia: Date;
 
-  @ManyToOne(() => Uzytkownik)
+  @Column({ name: 'uzytkownik_id' })
+  uzytkownik_id: number;
+
+  @ManyToOne(() => Uzytkownik, uzytkownik => uzytkownik.rezerwacje)
   @JoinColumn({ name: 'uzytkownik_id' })
   uzytkownik: Uzytkownik;
-
-  @ManyToOne(() => Stolik)
-  @JoinColumn({ name: 'stolik_id' })
-  stolik: Stolik;
-
-  @ManyToOne(() => Restauracja)
-  @JoinColumn({ name: 'restauracja_id' })
-  restauracja: Restauracja;
 }
