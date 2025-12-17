@@ -1,81 +1,141 @@
-// src/app/home/home.component.scss
+// Zmienne kolorów
+$bg-color: #f8f9fa;
+$text-dark: #1f2937;
+$text-light: #6b7280;
 
-.home-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+// Klasy kolorów (używane dynamicznie w HTML)
+.bg-blue   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.bg-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+.bg-teal   { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+.bg-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+
+.main-container {
+    padding: 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: $bg-color;
+    min-height: 100vh;
 }
 
-.hero {
-  text-align: center;
-  padding: 3rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 12px;
-  margin-bottom: 3rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+.header-text {
+    margin-bottom: 3rem;
+    h1 {
+        font-size: 2.5rem;
+        color: $text-dark;
+        margin-bottom: 0.5rem;
+        font-weight: 800;
+    }
+    p {
+        color: $text-light;
+        font-size: 1.1rem;
+    }
+}
 
-  .title {
-    font-size: 3.5rem;
-    font-weight: 800;
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+// --- Własny styl karty (Custom Card) ---
+.custom-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important; // shadow-3 z PrimeNG override
+    }
+}
+
+.card-header {
+    height: 80px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 1.5rem;
+    
+    // Koło z ikoną nachodzące na header i content
+    .icon-circle {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: translateY(50%); // Połowa w dół
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        
+        i {
+            font-size: 1.2rem;
+            color: #333;
+        }
+    }
+}
+
+.card-content {
+    padding: 2rem 1.5rem 1.5rem 1.5rem; // Więcej paddingu na górze przez icon-circle
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: $text-dark;
     margin: 0 0 1rem 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  }
-
-  .subtitle {
-    font-size: 1.3rem;
-    margin: 0;
-    opacity: 0.95;
-  }
+    line-height: 1.3;
 }
 
-.filmy-section {
-  h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    color: #333;
-    font-weight: 600;
-  }
-}
-
-.loading-spinner {
-  text-align: center;
-  padding: 4rem 2rem;
-  color: #666;
-
-  p {
-    margin-top: 1rem;
-    font-size: 1.1rem;
-  }
-}
-
-.film-title {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-// Responsywność
-@media (max-width: 768px) {
-  .home-container {
-    padding: 1rem;
-  }
-
-  .hero {
-    padding: 2rem 1rem;
-    margin-bottom: 2rem;
-
-    .title {
-      font-size: 2.5rem;
+.info-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    
+    .info-item {
+        font-size: 0.85rem;
+        color: $text-light;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        
+        i { color: #9ca3af; }
     }
+}
 
-    .subtitle {
-      font-size: 1rem;
+.divider {
+    height: 1px;
+    background-color: #f3f4f6;
+    margin: auto 0 1rem 0; // Pycha resztę w dół
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .time-box {
+        display: flex;
+        flex-direction: column;
+        
+        .label { font-size: 0.75rem; color: $text-light; text-transform: uppercase; letter-spacing: 0.5px; }
+        .time { font-size: 1.25rem; font-weight: 800; color: $text-dark; }
     }
-  }
+}
 
-  .filmy-section h2 {
+.loading-state, .empty-state {
+    text-align: center;
+    padding: 3rem;
     font-size: 1.5rem;
-  }
+    color: #ccc;
+    
+    i { font-size: 3rem; margin-bottom: 1rem; display: block; }
 }

@@ -1,6 +1,5 @@
 // src/app/rezerwacja/cinema-reservation-dialog.component.ts
-
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -11,11 +10,14 @@ export interface CinemaSeat {
   label: string;
   row: string;
   number: number;
-  top: number;
-  left: number;
   reserved: boolean;
   selected: boolean;
   permanentlyReserved: boolean;
+}
+
+interface RowData {
+  label: string;
+  seats: CinemaSeat[];
 }
 
 @Component({
@@ -25,77 +27,74 @@ export interface CinemaSeat {
   templateUrl: './cinema-reservation-dialog.component.html',
   styleUrls: ['./cinema-reservation-dialog.component.scss']
 })
-export class CinemaReservationDialogComponent implements OnInit {
+export class CinemaReservationDialogComponent implements OnInit, OnChanges {
   @Input() visible = false;
   @Input() movieTitle = 'Film';
   @Input() sessionTime = '00:00';
   @Input() occupiedSeats: string[] = [];
+  
+  // Domyślnie 20, jeśli nie przyjdzie nic z bazy
+  @Input() totalSeats = 20; 
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() confirm = new EventEmitter<CinemaSeat[]>();
 
-  seats: CinemaSeat[] = [];
+  // Nowa struktura danych: rzędy zamiast płaskiej listy
+  rowsData: RowData[] = [];
   selectedSeats: CinemaSeat[] = [];
-  rowLetters = 'A,B,C,D,E,F,G,H,I,J'.split(',');
-
-  // Zmienne do dynamicznego rozmiaru kontenera
-  wrapperWidth = 0;
-  wrapperHeight = 0;
 
   ngOnInit(): void {
     this.generateSeats();
+  }
 
-    // Zaznacz miejsca zajęte na stałe
-    this.seats.forEach(seat => {
-      if (this.occupiedSeats.includes(seat.id)) {
-        seat.permanentlyReserved = true;
-        seat.reserved = true;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['totalSeats'] || changes['visible'] || changes['occupiedSeats']) {
+      if (this.visible) {
+        // Zabezpieczenie przed zerem/nullem
+        if (!this.totalSeats || this.totalSeats <= 0) {
+           this.totalSeats = 20; 
+        }
+        this.generateSeats();
       }
-    });
+    }
   }
 
   generateSeats() {
-    // 1. Ustawienia wymiarów (MUSZĄ pasować do CSS!)
-    const seatWidth = 56;   // Tyle samo co w .seat (width)
-    const seatHeight = 56;  // Tyle samo co w .seat (height)
-    const hGap = 14;        // Odstęp poziomy
-    const vGap = 20;        // Odstęp pionowy (między rzędami)
-    
-    // 2. Marginesy startowe (miejsce na etykiety rzędów z lewej)
-    const startX = 80; 
-    const startY = 50; 
+    // Konfiguracja
+    const seatsPerRow = 12; 
+    const totalRows = Math.ceil(this.totalSeats / seatsPerRow);
 
-    this.seats = [];
+    this.rowsData = [];
+    let seatsCreated = 0;
 
-    this.rowLetters.forEach((row, rowIdx) => {
-      for (let num = 1; num <= 12; num++) {
-        // Obliczamy pozycję absolutną każdego fotela
-        const topPos = startY + rowIdx * (seatHeight + vGap);
-        const leftPos = startX + (num - 1) * (seatWidth + hGap);
+    for (let r = 0; r < totalRows; r++) {
+      const rowLabel = String.fromCharCode(65 + r); // A, B, C...
+      const currentLabel = rowLabel;
+      
+      const rowSeats: CinemaSeat[] = [];
 
-        this.seats.push({
-          id: `${row}${num}`,
-          label: `${row}-${num}`,
-          row,
-          number: num,
-          top: topPos,
-          left: leftPos,
-          reserved: false,
-          selected: false,
-          permanentlyReserved: false
+      for (let c = 1; c <= seatsPerRow; c++) {
+        if (seatsCreated >= this.totalSeats) break;
+
+        // Sprawdź czy miejsce jest zajęte (z Inputa)
+        const seatId = `${currentLabel}${c}`;
+        const isOccupied = this.occupiedSeats.includes(seatId);
+
+        rowSeats.push({
+          id: seatId,
+          label: `${currentLabel}-${c}`,
+          row: currentLabel,
+          number: c,
+          reserved: isOccupied,
+          permanentlyReserved: isOccupied,
+          selected: false
         });
-      }
-    });
 
-    // 3. Obliczamy całkowitą wielkość kontenera, żeby scroll działał
-    const cols = 12;
-    const rows = this.rowLetters.length;
-    
-    // Szerokość = start + (ilość * szerokość) + (ilość * odstęp) + margines końcowy
-    this.wrapperWidth = startX + (cols * seatWidth) + ((cols - 1) * hGap) + 50;
-    
-    // Wysokość = start + (ilość * wysokość) + (ilość * odstęp) + margines dolny
-    this.wrapperHeight = startY + (rows * seatHeight) + ((rows - 1) * vGap) + 50;
+        seatsCreated++;
+      }
+      
+      this.rowsData.push({ label: currentLabel, seats: rowSeats });
+    }
   }
 
   toggleSeat(seat: CinemaSeat) {
@@ -116,23 +115,11 @@ export class CinemaReservationDialogComponent implements OnInit {
   }
 
   confirmReservation() {
-    this.selectedSeats.forEach(s => {
-      const seat = this.seats.find(x => x.id === s.id);
-      if (seat) seat.reserved = true;
-    });
-
     this.confirm.emit(this.selectedSeats);
     this.close();
   }
 
   close() {
-    // Resetuj wybór przy zamknięciu (opcjonalne)
-    this.seats.forEach(seat => {
-      if (!seat.permanentlyReserved) {
-        seat.reserved = false;
-        seat.selected = false;
-      }
-    });
     this.selectedSeats = [];
     this.visible = false;
     this.visibleChange.emit(false);

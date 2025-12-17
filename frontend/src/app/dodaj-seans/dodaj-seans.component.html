@@ -1,0 +1,81 @@
+<div class="container">
+  <h1 class="title">Dodaj seans do repertuaru</h1>
+
+  <p-card class="form-card">
+    <ng-template pTemplate="header">
+      <h2 class="card-title">Nowy seans kinowy</h2>
+    </ng-template>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="tytul" class="label">Tytuł filmu</label>
+        <input
+          pInputText
+          id="tytul"
+          [(ngModel)]="seans.tytulFilmu"
+          placeholder="np. Oppenheimer"
+          fluid
+        />
+      </div>
+
+      <div class="field">
+        <label for="sala" class="label">Sala kinowa</label>
+        <p-select
+          id="sala"
+          [options]="sale"
+          [(ngModel)]="selectedSala"
+          optionLabel="numerSali"
+          placeholder="Wybierz salę"
+          [emptyMessage]="'Brak dostępnych sal'"
+          fluid
+        >
+          <ng-template let-sala pTemplate="selectedItem">
+            <div class="flex align-items-center gap-3">
+              <span>Sala {{ sala.numerSali }} ({{ sala.iloscMiejsc }} miejsc)</span>
+            </div>
+          </ng-template>
+          <ng-template let-sala pTemplate="item">
+            <div class="flex align-items-center gap-3">
+              <span>Sala {{ sala.numerSali }}</span>
+              <span class="text-500">({{ sala.iloscMiejsc }} miejsc)</span>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+
+      <div class="field">
+        <label for="data" class="label">Data seansu</label>
+        <input
+          pInputText
+          id="data"
+          [(ngModel)]="seans.data"
+          placeholder="YYYY-MM-DD (np. 2025-12-25)"
+          fluid
+        />
+      </div>
+
+      <div class="field">
+        <label for="godzina" class="label">Godzina rozpoczęcia</label>
+        <input
+          pInputText
+          id="godzina"
+          [(ngModel)]="seans.godzinaRozpoczecia"
+          placeholder="np. 20:00"
+          fluid
+        />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button
+        pButton
+        label="Dodaj seans"
+        icon="pi pi-plus-circle"
+        class="add-btn"
+        (click)="zapisz()"
+      ></button>
+    </div>
+  </p-card>
+
+  <p-toast />
+</div>

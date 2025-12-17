@@ -1,78 +1,65 @@
-<!-- src/app/home/home.component.html -->
-<div class="home-container">
-  <!-- Hero Section -->
-  <div class="hero">
-    <h1 class="title">TicketTicket</h1>
-    <p class="subtitle">Kup bilet do kina w 30 sekund</p>
-    <!-- Przycisk usunięty - teraz kupujemy bilety bezpośrednio z tabeli -->
-  </div>
-
-  <!-- Sekcja z filmami -->
-  <div class="filmy-section">
-    <h2>Repertuar</h2>
-    
-    <div *ngIf="loading" class="loading-spinner">
-      <i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
-      <p>Ładowanie filmów...</p>
+<div class="main-container">
+    <div class="header-text">
+        <h1>Repertuar Kinowy</h1>
+        <p>Wybierz seans i zarezerwuj swoje miejsce</p>
     </div>
 
-    <p-table 
-      *ngIf="!loading" 
-      [value]="filmy" 
-      [tableStyle]="{ 'min-width': '50rem' }"
-      styleClass="p-datatable-striped">
-      
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Data</th>
-          <th>Godzina</th>
-          <th>Film</th>
-          <th style="width: 150px">Akcja</th>
-        </tr>
-      </ng-template>
-      
-      <ng-template pTemplate="body" let-film>
-        <tr>
-          <td>{{ film.data }}</td>
-          <td><strong>{{ film.godzina_rozpoczecia }}</strong></td>
-          <td>
-            <div class="film-title">
-              <i class="pi pi-video" style="margin-right: 8px"></i>
-              {{ film.tytul_filmu }}
+    <div *ngIf="loading" class="loading-state">
+        <i class="pi pi-spin pi-spinner"></i>
+    </div>
+
+    <div class="movies-grid" *ngIf="!loading">
+        <div *ngFor="let item of filmy" class="movie-card-wrapper">
+            
+            <div class="custom-card shadow-3" (click)="openCinemaReservation(item)">
+                <div class="card-header" [ngClass]="item.colorClass">
+                    <div class="icon-circle">
+                        <i class="pi pi-ticket"></i>
+                    </div>
+                </div>
+
+                <div class="card-content">
+                    <h3 class="movie-title">{{ item.tytul_filmu }}</h3>
+                    
+                    <div class="info-row">
+                        <span class="info-item">
+                            <i class="pi pi-calendar"></i> {{ item.data }}
+                        </span>
+                        <span class="info-item">
+                            <i class="pi pi-map-marker"></i> {{ item.nazwaSali }}
+                        </span>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="card-footer">
+                        <div class="time-box">
+                            <span class="label">Godzina</span>
+                            <span class="time">{{ item.godzina_rozpoczecia }}</span>
+                        </div>
+                        <button pButton icon="pi pi-arrow-right" class="p-button-rounded p-button-text"></button>
+                    </div>
+                </div>
             </div>
-          </td>
-          <td>
-            <button 
-              pButton 
-              icon="pi pi-ticket"
-              label="Kup bilet"
-              class="p-button-warning p-button-sm"
-              (click)="openCinemaReservation(film)">
-            </button>
-          </td>
-        </tr>
-      </ng-template>
-      
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="4" style="text-align: center; padding: 2rem;">
-            <i class="pi pi-info-circle" style="font-size: 2rem; color: #999;"></i>
-            <p>Brak seansów w repertuarze</p>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
 
-  <!-- Dialog z miejscami -->
-  <app-cinema-reservation-dialog
-    [(visible)]="showCinemaDialog"
-    [movieTitle]="currentMovieTitle"
-    [sessionTime]="currentSessionTime"
-    [occupiedSeats]="occupiedSeatsExample"
-    (confirm)="onSeatsConfirmed($event)"
-    (visibleChange)="showCinemaDialog = $event">
-  </app-cinema-reservation-dialog>
+        </div>
+    </div>
 
-  <p-toast position="top-right"></p-toast>
+    <div *ngIf="!loading && filmy.length === 0" class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <p>Brak seansów w bazie.</p>
+    </div>
 </div>
+
+<app-cinema-reservation-dialog
+  [(visible)]="showCinemaDialog"
+  [movieTitle]="currentMovieTitle"
+  [sessionTime]="currentSessionTime"
+  [occupiedSeats]="occupiedSeatsExample"
+  
+  [totalSeats]="currentFilm?.sala?.iloscMiejsc"
+  
+  (confirm)="onSeatsConfirmed($event)">
+</app-cinema-reservation-dialog>
+
+<p-toast position="bottom-right"></p-toast>
