@@ -19,6 +19,18 @@
       </div>
 
       <div class="field">
+        <label for="okladkaInput" class="label">Okładka filmu (opcjonalne)</label>
+        <input 
+          type="file" 
+          id="okladkaInput" 
+          (change)="onFileSelected($event)" 
+          accept="image/*"
+          class="p-inputtext w-full" 
+          style="padding: 10px;"
+        >
+      </div>
+
+      <div class="field">
         <label for="sala" class="label">Sala kinowa</label>
         <p-select
           id="sala"

@@ -42,6 +42,9 @@ export class DodajSeansComponent {
 
   sale: Sala[] = [];
   selectedSala: Sala | null = null;
+  
+  // Przechowujemy wybrany plik
+  selectedFile: File | null = null;
 
   private apiUrl = 'http://localhost:3000';
 
@@ -74,15 +77,37 @@ export class DodajSeansComponent {
     });
   }
 
+  // Obsługa wyboru pliku
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
+  }
+
   zapisz() {
+    // Walidacja
     if (!this.seans.tytulFilmu.trim() || !this.selectedSala || !this.seans.data || !this.seans.godzinaRozpoczecia) {
-      this.messageService.add({ severity: 'warn', summary: 'Uwaga', detail: 'Wypełnij wszystkie pola' });
+      this.messageService.add({ severity: 'warn', summary: 'Uwaga', detail: 'Wypełnij wszystkie pola tekstowe' });
       return;
     }
 
-    this.seans.sala_id = this.selectedSala.id;
+    // Tworzymy FormData zamiast JSON, aby przesłać plik
+    const formData = new FormData();
+    formData.append('tytulFilmu', this.seans.tytulFilmu);
+    formData.append('data', this.seans.data);
+    formData.append('godzinaRozpoczecia', this.seans.godzinaRozpoczecia);
+    
+    // WAŻNE: Backend w DTO oczekuje 'salaId', upewnij się że nazwa się zgadza
+    formData.append('salaId', this.selectedSala.id.toString());
 
-    this.http.post(`${this.apiUrl}/seans`, this.seans).subscribe({
+    // Jeśli wybrano plik, dodajemy go pod kluczem 'okladka' (tak nazwaliśmy w backendzie w FileInterceptor)
+    if (this.selectedFile) {
+      formData.append('okladka', this.selectedFile);
+    }
+
+    // Wysyłamy formData. Angular sam ustawi odpowiedni Content-Type (multipart/form-data)
+    this.http.post(`${this.apiUrl}/seans`, formData).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -93,8 +118,14 @@ export class DodajSeansComponent {
         // Reset formularza
         this.seans = { tytulFilmu: '', data: '', godzinaRozpoczecia: '', sala_id: 0 };
         this.selectedSala = null;
+        this.selectedFile = null;
+        
+        // Reset inputa pliku (prosty hack DOM, lub ViewChild)
+        const fileInput = document.getElementById('okladkaInput') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
       },
-      error: () => {
+      error: (err) => {
+        console.error(err);
         this.messageService.add({ severity: 'error', summary: 'Błąd', detail: 'Nie udało się dodać seansu' });
       }
     });

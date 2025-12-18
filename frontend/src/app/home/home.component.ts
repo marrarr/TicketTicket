@@ -12,6 +12,12 @@ import { TagModule } from 'primeng/tag';
 import { CinemaReservationDialogComponent } from '../rezerwacja/cinema-reservation-dialog.component';
 import { FilmService } from '../film/film.service';
 
+// Definicja typu dla grupy (Dzień -> Lista filmów)
+interface GroupedSeanse {
+  date: string;
+  seanse: any[];
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -33,9 +39,9 @@ export class HomeComponent implements OnInit {
   currentMovieTitle = '';
   currentSessionTime = '';
   currentFilm: any = null;
-  occupiedSeatsExample = ['A5', 'B3', 'F8', 'F9', 'G6', 'H10'];
+  occupiedSeatsExample: string[] = [];
   
-  filmy: any[] = [];
+  groupedFilmy: GroupedSeanse[] = [];
   loading = true;
 
   constructor(
@@ -48,32 +54,59 @@ export class HomeComponent implements OnInit {
   }
 
   loadFilmy() {
-  this.loading = true;
-  this.filmService.getFilmy().subscribe({
-    next: (data: any[]) => {
-      this.filmy = data.map((seans) => {
-        // 1. Najpierw kopiujemy CAŁY obiekt z backendu (w tym pełny obiekt 'sala')
-        // Dzięki temu 'seans.sala' pozostaje obiektem { id: 1, iloscMiejsc: 20, ... }
-        const mappedSeans = { ...seans };
+    this.loading = true;
+    this.filmService.getFilmy().subscribe({
+      next: (data: any[]) => {
+        // 1. Mapowanie danych
+        const mappedData = data.map((seans) => {
+          return {
+            ...seans,
+            nazwaSali: seans.sala?.nazwa || 'Sala Główna',
+            tytul_filmu: seans.tytulFilmu,
+            godzina_rozpoczecia: seans.godzinaRozpoczecia,
+            data: seans.data,
+            // WAŻNE: Upewniamy się, że przekazujemy URL okładki
+            okladkaUrl: seans.okladkaUrl,
+            colorClass: this.getColorForTitle(seans.tytulFilmu)
+          };
+        });
 
-        // 2. Dodajemy dodatkowe pola dla widoku (np. sformatowaną nazwę sali)
-        // ALE NIE NADPISUJEMY pola 'sala'! Używamy nowej nazwy np. 'nazwaSali'
-        return {
-          ...mappedSeans,
-          nazwaSali: seans.sala?.nazwa || 'Sala Główna', // Nowe pole dla widoku
-          tytul_filmu: seans.tytulFilmu,
-          godzina_rozpoczecia: seans.godzinaRozpoczecia,
-          colorClass: this.getColorForTitle(seans.tytulFilmu)
-        };
-      });
-      this.loading = false;
-    },
-    error: (err) => { /* ... */ }
-  });
-}
+        // 2. Sortowanie chronologiczne
+        mappedData.sort((a, b) => {
+          const dateA = new Date(`${a.data}T${a.godzina_rozpoczecia}`).getTime();
+          const dateB = new Date(`${b.data}T${b.godzina_rozpoczecia}`).getTime();
+          return dateA - dateB;
+        });
 
-  // Prosta funkcja przypisująca jeden z 4 kolorów na podstawie długości tytułu
-  // Dzięki temu ten sam film zawsze ma ten sam kolor
+        // 3. Grupowanie po dacie
+        const groups: { [key: string]: any[] } = {};
+        
+        mappedData.forEach(item => {
+          const dateKey = item.data;
+          if (!groups[dateKey]) {
+            groups[dateKey] = [];
+          }
+          groups[dateKey].push(item);
+        });
+
+        // 4. Konwersja na tablicę grup
+        this.groupedFilmy = Object.keys(groups).map(date => ({
+          date: date,
+          seanse: groups[date]
+        }));
+        
+        // Sortowanie dni
+        this.groupedFilmy.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        this.loading = false;
+      },
+      error: (err: any) => { 
+        console.error(err); 
+        this.loading = false; 
+      }
+    });
+  }
+
   getColorForTitle(title: string): string {
     const colors = ['bg-blue', 'bg-purple', 'bg-teal', 'bg-indigo'];
     const index = (title ? title.length : 0) % colors.length;
@@ -84,7 +117,23 @@ export class HomeComponent implements OnInit {
     this.currentMovieTitle = film.tytul_filmu;
     this.currentSessionTime = film.godzina_rozpoczecia;
     this.currentFilm = film;
-    this.showCinemaDialog = true;
+    
+    this.occupiedSeatsExample = [];
+
+    this.filmService.getMiejsca(film.id).subscribe({
+      next: (miejsca: any[]) => {
+        const zajete = miejsca.filter(m => !m.czyWolne);
+        this.occupiedSeatsExample = zajete.map(m => {
+          const rowLetter = String.fromCharCode(64 + m.rzad);
+          return `${rowLetter}${m.numer}`;
+        });
+        this.showCinemaDialog = true;
+      },
+      error: (err: any) => {
+        console.error('Nie udało się pobrać miejsc', err);
+        this.showCinemaDialog = true;
+      }
+    });
   }
 
   onSeatsConfirmed(selectedSeats: any) {

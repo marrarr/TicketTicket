@@ -1,40 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Film } from '../models/film.model';
+// Upewnij się, że ścieżka do modelu jest poprawna, jeśli nie masz modelu, zmień Film na any
+import { Film } from '../models/film.model'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class FilmService {
 
-  // WAŻNE: Backendowy kontroler to @Controller('seans'), więc taki musi być adres
   private apiUrl = 'http://localhost:3000/seans';
 
   constructor(private http: HttpClient) { }
 
-  // 1. Pobierz wszystkie filmy (seanse)
-  getFilmy(): Observable<Film[]> {
-    return this.http.get<Film[]>(this.apiUrl);
+  getFilmy(): Observable<any[]> {
+    return this.http.get<any[]>(this.apiUrl);
   }
 
-  // 2. Pobierz jeden film po ID
-  getFilm(id: number): Observable<Film> {
-    return this.http.get<Film>(`${this.apiUrl}/${id}`);
+  getFilm(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  // 3. Dodaj nowy film
-  addFilm(film: Film): Observable<Film> {
-    return this.http.post<Film>(this.apiUrl, film);
+  addFilm(film: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, film);
   }
 
-  // 4. Edytuj film (używamy PATCH, bo tak jest w backendzie)
-  updateFilm(id: number, film: Partial<Film>): Observable<Film> {
-    return this.http.patch<Film>(`${this.apiUrl}/${id}`, film);
+  updateFilm(id: number, film: any): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/${id}`, film);
   }
 
-  // 5. Usuń film
   deleteFilm(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  // --- TO JEST METODA, KTÓREJ BRAKOWAŁO ---
+  getMiejsca(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/miejsca`);
   }
 }

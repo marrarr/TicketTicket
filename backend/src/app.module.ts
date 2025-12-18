@@ -1,24 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RezerwacjaModule } from './rezerwacja/rezerwacja.module';
 import { RolaModule } from './rola/rola.module';
 import { UzytkownikModule } from './uzytkownik/uzytkownik.module';
-import { UzytkownikService } from './uzytkownik/uzytkownik.service';
 import { AppDataSource } from './data-source';
 import { AuthModule } from './auth/auth.module';
-import { Uzytkownik } from './uzytkownik/uzytkownik.entity';
 import { MulterModule } from '@nestjs/platform-express';
 import { SiedzenieModule } from './siedzenie/siedzenie.module';
-import { Sala } from './sala/sala.entity';
 import { SalaModule } from './sala/sala.module';
 import { SeansModule } from './seans/seans.module';
-import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LogModule } from './mongo/log.module';
 
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -27,6 +25,18 @@ import { LogModule } from './mongo/log.module';
       ignoreEnvFile: false,
       envFilePath: '.env',
     }),
+    
+    // --- POPRAWIONA KONFIGURACJA ---
+    ServeStaticModule.forRoot({
+      // process.cwd() wskazuje na folder, w którym uruchamiasz 'npm start' (główny katalog backendu)
+      rootPath: join(process.cwd(), 'uploads'), 
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false, // Ważne: Nie szukaj pliku index.html, jeśli nie znaleziono obrazka
+      },
+    }),
+    // -------------------------------
+
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
