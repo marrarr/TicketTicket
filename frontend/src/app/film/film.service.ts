@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 // Upewnij się, że ścieżka do modelu jest poprawna, jeśli nie masz modelu, zmień Film na any
-import { Film } from '../models/film.model'; 
+import { Film } from '../models/film.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FilmService {
 
-  private apiUrl = 'http://localhost:3000/seans';
+  private apiUrl = 'http://localhost:3000/seanse';
 
   constructor(private http: HttpClient) { }
 

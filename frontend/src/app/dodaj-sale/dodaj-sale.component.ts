@@ -36,7 +36,7 @@ export class DodajSaleComponent implements OnInit {
   sale: Sala[] = [];
   nowaSala: Sala = { numerSali: 1, iloscMiejsc: 100 };
 
-  private apiUrl = 'http://localhost:3000/sala';
+  private apiUrl = 'http://localhost:3000/sale';
 
   constructor(
     private http: HttpClient,

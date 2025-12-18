@@ -42,7 +42,7 @@ export class DodajSeansComponent {
 
   sale: Sala[] = [];
   selectedSala: Sala | null = null;
-  
+
   // Przechowujemy wybrany plik
   selectedFile: File | null = null;
 
@@ -56,7 +56,7 @@ export class DodajSeansComponent {
   }
 
   loadSale() {
-    this.http.get<Sala[]>(`${this.apiUrl}/sala`).subscribe({
+    this.http.get<Sala[]>(`${this.apiUrl}/sale`).subscribe({
       next: (data) => {
         this.sale = data;
         if (data.length === 0) {
@@ -97,7 +97,7 @@ export class DodajSeansComponent {
     formData.append('tytulFilmu', this.seans.tytulFilmu);
     formData.append('data', this.seans.data);
     formData.append('godzinaRozpoczecia', this.seans.godzinaRozpoczecia);
-    
+
     // WAŻNE: Backend w DTO oczekuje 'salaId', upewnij się że nazwa się zgadza
     formData.append('salaId', this.selectedSala.id.toString());
 
@@ -107,7 +107,7 @@ export class DodajSeansComponent {
     }
 
     // Wysyłamy formData. Angular sam ustawi odpowiedni Content-Type (multipart/form-data)
-    this.http.post(`${this.apiUrl}/seans`, formData).subscribe({
+    this.http.post(`${this.apiUrl}/seanse`, formData).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -119,7 +119,7 @@ export class DodajSeansComponent {
         this.seans = { tytulFilmu: '', data: '', godzinaRozpoczecia: '', sala_id: 0 };
         this.selectedSala = null;
         this.selectedFile = null;
-        
+
         // Reset inputa pliku (prosty hack DOM, lub ViewChild)
         const fileInput = document.getElementById('okladkaInput') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
