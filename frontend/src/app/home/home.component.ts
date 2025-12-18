@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
-// Import forkJoin do obsługi wielu zapytań naraz (przyda się do rezerwacji)
 import { forkJoin } from 'rxjs';
 
 // PrimeNG modules
@@ -11,10 +10,13 @@ import { DialogModule } from 'primeng/dialog';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 
-import { CinemaReservationDialogComponent } from '../rezerwacja/cinema-reservation-dialog.component';
+import {
+  CinemaReservationDialogComponent,
+  CinemaSeat,
+} from '../rezerwacja/cinema-reservation-dialog.component';
 import { FilmService } from '../film/film.service';
-// Dodaj RezerwacjaService jeśli już go stworzyłeś, jeśli nie - zostaw na później
-// import { RezerwacjaService } from '../rezerwacja/rezerwacja.service';
+import { RezerwacjaService } from '../rezerwacja/RezerwacjaService';
+import { AuthService } from '../auth/auth.service';
 
 interface GroupedSeanse {
   date: string;
@@ -31,11 +33,11 @@ interface GroupedSeanse {
     ButtonModule,
     CardModule,
     TagModule,
-    CinemaReservationDialogComponent
+    CinemaReservationDialogComponent,
   ],
   providers: [MessageService],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
   showCinemaDialog = false;
@@ -43,17 +45,28 @@ export class HomeComponent implements OnInit {
   currentSessionTime = '';
   currentFilm: any = null;
   occupiedSeatsExample: string[] = [];
-  
+
   groupedFilmy: GroupedSeanse[] = [];
   loading = true;
+
+  // Pola do rezerwacji
+  seansId!: number;
+  salaId!: number;
+  klient: string = '';
+  uzytkownikId: number | null = null;
+
+  // Miejsca pobrane z backendu dla aktualnego seansu
+  private miejscaFromDb: any[] = [];
 
   constructor(
     private messageService: MessageService,
     private filmService: FilmService,
-    // private rezerwacjaService: RezerwacjaService // Odkomentuj gdy dodasz serwis rezerwacji
+    private rezerwacjaService: RezerwacjaService,
+    private authService: AuthService, // <--- NOWE
   ) {}
 
   ngOnInit() {
+    this.uzytkownikId = this.authService.getUserId(); // <--- pobieramy z JWT
     this.loadFilmy();
   }
 
@@ -61,33 +74,26 @@ export class HomeComponent implements OnInit {
     this.loading = true;
     this.filmService.getFilmy().subscribe({
       next: (data: any[]) => {
-        // 1. Mapowanie danych
         const mappedData = data.map((seans) => {
           return {
             ...seans,
-            // --- ZMIANA TUTAJ ---
-            // Zamiast szukać nazwy, używamy numeru sali (np. "Sala 1")
             nazwaSali: seans.sala ? `Sala ${seans.sala.numerSali}` : 'Sala nieznana',
-            // --------------------
             tytul_filmu: seans.tytulFilmu,
             godzina_rozpoczecia: seans.godzinaRozpoczecia,
             data: seans.data,
             okladkaUrl: seans.okladkaUrl,
-            colorClass: this.getColorForTitle(seans.tytulFilmu)
+            colorClass: this.getColorForTitle(seans.tytulFilmu),
           };
         });
 
-        // 2. Sortowanie chronologiczne
         mappedData.sort((a, b) => {
           const dateA = new Date(`${a.data}T${a.godzina_rozpoczecia}`).getTime();
           const dateB = new Date(`${b.data}T${b.godzina_rozpoczecia}`).getTime();
           return dateA - dateB;
         });
 
-        // 3. Grupowanie po dacie
         const groups: { [key: string]: any[] } = {};
-        
-        mappedData.forEach(item => {
+        mappedData.forEach((item) => {
           const dateKey = item.data;
           if (!groups[dateKey]) {
             groups[dateKey] = [];
@@ -95,21 +101,21 @@ export class HomeComponent implements OnInit {
           groups[dateKey].push(item);
         });
 
-        // 4. Konwersja na tablicę grup
-        this.groupedFilmy = Object.keys(groups).map(date => ({
+        this.groupedFilmy = Object.keys(groups).map((date) => ({
           date: date,
-          seanse: groups[date]
+          seanse: groups[date],
         }));
-        
-        // Sortowanie dni
-        this.groupedFilmy.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        this.groupedFilmy.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        );
 
         this.loading = false;
       },
-      error: (err: any) => { 
-        console.error(err); 
-        this.loading = false; 
-      }
+      error: (err: any) => {
+        console.error(err);
+        this.loading = false;
+      },
     });
   }
 
@@ -123,13 +129,19 @@ export class HomeComponent implements OnInit {
     this.currentMovieTitle = film.tytul_filmu;
     this.currentSessionTime = film.godzina_rozpoczecia;
     this.currentFilm = film;
-    
+
+    this.seansId = film.id;
+    this.salaId = film.sala?.id;
+
     this.occupiedSeatsExample = [];
+    this.miejscaFromDb = [];
 
     this.filmService.getMiejsca(film.id).subscribe({
       next: (miejsca: any[]) => {
-        const zajete = miejsca.filter(m => !m.czyWolne);
-        this.occupiedSeatsExample = zajete.map(m => {
+        this.miejscaFromDb = miejsca;
+
+        const zajete = miejsca.filter((m) => !m.czyWolne);
+        this.occupiedSeatsExample = zajete.map((m) => {
           const rowLetter = String.fromCharCode(64 + m.rzad);
           return `${rowLetter}${m.numer}`;
         });
@@ -138,19 +150,78 @@ export class HomeComponent implements OnInit {
       error: (err: any) => {
         console.error('Nie udało się pobrać miejsc', err);
         this.showCinemaDialog = true;
-      }
+      },
     });
   }
 
-  onSeatsConfirmed(selectedSeats: any) {
-     const seats = Array.isArray(selectedSeats) ? selectedSeats : [];
-     const list = seats.map((s: any) => s.label).join(', ');
-     this.messageService.add({
-       severity: 'success',
-       summary: 'Rezerwacja przyjęta',
-       detail: `Miejsca: ${list}`,
-       life: 4000
-     });
-     this.showCinemaDialog = false;
+  onSeatsConfirmed(selectedSeats: CinemaSeat[]) {
+    if (!selectedSeats || selectedSeats.length === 0) {
+      return;
+    }
+
+    const klientName =
+      this.klient && this.klient.trim().length > 0 ? this.klient : 'Gość kina';
+
+    const requests = selectedSeats
+      .map((seat) => {
+        const rowNumber = seat.row
+          ? seat.row.charCodeAt(0) - 64
+          : typeof seat.id === 'string'
+            ? seat.id.charCodeAt(0) - 64
+            : 0;
+
+        const miejsce = this.miejscaFromDb.find(
+          (m) => m.rzad === rowNumber && m.numer === seat.number,
+        );
+
+        if (!miejsce) {
+          console.warn('Nie znaleziono miejsca w bazie dla', seat);
+          return null;
+        }
+
+        return this.rezerwacjaService.create({
+          salaId: this.salaId,
+          siedzenieId: miejsce.id,
+          seansId: this.seansId,
+          klient: klientName,
+          status: 'ZAREZERWOWANA',
+          // KLUCZOWE: camelCase, backend to obsługuje
+          uzytkownikId: this.uzytkownikId ?? undefined,
+        });
+      })
+      .filter((r) => r !== null);
+
+    if (requests.length === 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Błąd rezerwacji',
+        detail: 'Nie udało się dopasować miejsc do bazy.',
+        life: 4000,
+      });
+      return;
+    }
+
+    forkJoin(requests).subscribe({
+      next: () => {
+        const list = selectedSeats.map((s) => s.label).join(', ');
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Rezerwacja przyjęta',
+          detail: `Miejsca: ${list}`,
+          life: 4000,
+        });
+
+        this.showCinemaDialog = false;
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Błąd rezerwacji',
+          detail: err?.error?.message || 'Wybrane miejsca są już zajęte',
+          life: 4000,
+        });
+      },
+    });
   }
 }

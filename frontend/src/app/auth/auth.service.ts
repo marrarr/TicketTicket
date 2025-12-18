@@ -54,12 +54,10 @@ export class AuthService {
       this.ngZone.run(() => {
         this.userRoleSubject.next(role);
       });
-      return res; 
+      return res;
     })
   );
 }
-
-
 
   logout() {
     localStorage.removeItem('token');
@@ -72,5 +70,25 @@ export class AuthService {
 
   getToken() {
     return localStorage.getItem('token');
+  }
+
+  getUserId(): number | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+    try {
+      const decoded: any = jwtDecode(token);
+      const sub = decoded?.sub;
+      if (typeof sub === 'number') {
+        return sub;
+      }
+      if (typeof sub === 'string' && !isNaN(Number(sub))) {
+        return Number(sub);
+      }
+      return null;
+    } catch {
+      return null;
+    }
   }
 }
