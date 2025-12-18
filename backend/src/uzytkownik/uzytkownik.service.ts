@@ -1,9 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Uzytkownik } from '../uzytkownik/uzytkownik.entity';
 import { CreateUzytkownikDto, UpdateUzytkownikDto } from '../dtos/uzytkownik.dto';
 import * as bcrypt from 'bcryptjs';
+
+// Interface dla błędów PostgreSQL
+interface PostgresError extends Error {
+    code?: string;
+    detail?: string;
+}
 
 @Injectable()
 export class UzytkownikService {
@@ -11,23 +17,55 @@ export class UzytkownikService {
     @InjectRepository(Uzytkownik)
     private readonly uzytkownikRepository: Repository<Uzytkownik>,
   ) { }
-  private users: Uzytkownik[] = [];
-  private idCounter = 1;
 
   async create(createUzytkownikDto: CreateUzytkownikDto): Promise<Uzytkownik> {
     try {
-        createUzytkownikDto.haslo = await bcrypt.hash(createUzytkownikDto.haslo, 10);
+        console.log('Tworzenie użytkownika z DTO:', createUzytkownikDto);
+        
+        // Hashowanie hasła
+        const hashedPassword = await bcrypt.hash(createUzytkownikDto.haslo, 10);
+        console.log('Hasło zahashowane');
+        
+        // Tworzenie obiektu użytkownika
         const uzytkownik = this.uzytkownikRepository.create({
             ...createUzytkownikDto,
+
+            haslo: hashedPassword,
             rola: { id: createUzytkownikDto.rola_id }
         });
-        return await this.uzytkownikRepository.save(uzytkownik);
-    } catch (error) {
-        console.error(error);
-        throw new Error('Nie udało się utworzyć użytkownika');
+        
+        console.log('Zapisywanie użytkownika do bazy...');
+        const savedUser = await this.uzytkownikRepository.save(uzytkownik);
+        console.log('Użytkownik zapisany:', savedUser);
+        
+        return savedUser;
+    } catch (err) {
+        console.error('Błąd w create():', err);
+        
+        const error = err as PostgresError;
+        
+        // Szczegółowa obsługa błędów bazy danych
+        if (error.code === '23505') {
+            // UNIQUE constraint violation
+            throw new BadRequestException('Użytkownik o tym loginie lub emailu już istnieje');
+        }
+        
+        if (error.code === '23502') {
+            // NOT NULL constraint violation
+            throw new BadRequestException('Brakuje wymaganych pól');
+        }
+        
+        if (error.code === '23503') {
+            // FOREIGN KEY constraint violation
+            throw new BadRequestException('Nieprawidłowa rola użytkownika (rola_id nie istnieje)');
+        }
+        
+        // Ogólny błąd
+        throw new BadRequestException(
+            `Nie udało się utworzyć użytkownika: ${error.message || 'Nieznany błąd'}`
+        );
     }
-}
-
+  }
 
   async findAll(): Promise<Uzytkownik[]> {
     return await this.uzytkownikRepository.find({
@@ -52,9 +90,17 @@ export class UzytkownikService {
     });
 
     if (uzytkownik) {
+      // Jeśli aktualizujemy hasło, należy je zahashować
+      if (updateUzytkownikDto.haslo) {
+        updateUzytkownikDto.haslo = await bcrypt.hash(updateUzytkownikDto.haslo, 10);
+      }
       Object.assign(uzytkownik, updateUzytkownikDto);
       return await this.uzytkownikRepository.save(uzytkownik);
     } else {
+      // Przy tworzeniu nowego użytkownika też hashujemy hasło
+      if (updateUzytkownikDto.haslo) {
+        updateUzytkownikDto.haslo = await bcrypt.hash(updateUzytkownikDto.haslo, 10);
+      }
       const newUzytkownik = this.uzytkownikRepository.create({
         uzytkownik_id: id,
         ...updateUzytkownikDto,

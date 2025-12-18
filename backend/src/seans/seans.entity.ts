@@ -10,6 +10,10 @@ export class Seans {
   @Column({ name: 'tytul_filmu', type: 'varchar' })
   tytulFilmu: string;
 
+  // NOWA KOLUMNA: Przechowuje nazwę pliku z okładką (np. "film123.jpg")
+  @Column({ name: 'okladka_url', type: 'varchar', nullable: true })
+  okladkaUrl: string;
+
   @ManyToOne(() => Sala, (s) => s.seanse)
   @JoinColumn({ name: 'sala_id' })
   sala: Sala;
