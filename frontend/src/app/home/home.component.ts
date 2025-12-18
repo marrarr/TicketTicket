@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
+// Import forkJoin do obsługi wielu zapytań naraz (przyda się do rezerwacji)
+import { forkJoin } from 'rxjs';
 
 // PrimeNG modules
 import { ToastModule } from 'primeng/toast';
@@ -11,8 +13,9 @@ import { TagModule } from 'primeng/tag';
 
 import { CinemaReservationDialogComponent } from '../rezerwacja/cinema-reservation-dialog.component';
 import { FilmService } from '../film/film.service';
+// Dodaj RezerwacjaService jeśli już go stworzyłeś, jeśli nie - zostaw na później
+// import { RezerwacjaService } from '../rezerwacja/rezerwacja.service';
 
-// Definicja typu dla grupy (Dzień -> Lista filmów)
 interface GroupedSeanse {
   date: string;
   seanse: any[];
@@ -46,7 +49,8 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private messageService: MessageService,
-    private filmService: FilmService
+    private filmService: FilmService,
+    // private rezerwacjaService: RezerwacjaService // Odkomentuj gdy dodasz serwis rezerwacji
   ) {}
 
   ngOnInit() {
@@ -61,11 +65,13 @@ export class HomeComponent implements OnInit {
         const mappedData = data.map((seans) => {
           return {
             ...seans,
-            nazwaSali: seans.sala?.nazwa || 'Sala Główna',
+            // --- ZMIANA TUTAJ ---
+            // Zamiast szukać nazwy, używamy numeru sali (np. "Sala 1")
+            nazwaSali: seans.sala ? `Sala ${seans.sala.numerSali}` : 'Sala nieznana',
+            // --------------------
             tytul_filmu: seans.tytulFilmu,
             godzina_rozpoczecia: seans.godzinaRozpoczecia,
             data: seans.data,
-            // WAŻNE: Upewniamy się, że przekazujemy URL okładki
             okladkaUrl: seans.okladkaUrl,
             colorClass: this.getColorForTitle(seans.tytulFilmu)
           };
