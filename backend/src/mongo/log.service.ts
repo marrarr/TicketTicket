@@ -12,6 +12,30 @@ export class LogService {
   }
 
   findAll() {
-    return this.logModel.find().lean().exec();
+    return this.logModel.find({ data: -1 }).lean().exec();
+  }
+
+  findByType(typ_zdarzenia: string) {
+    return this.logModel
+      .find({ typ_zdarzenia })
+      .sort({ data: -1 })
+      .lean()
+      .exec();
+  }
+
+  findByUser(uzytkownik_id: number) {
+    return this.logModel
+      .find({ uzytkownik_id })
+      .sort({ data: -1 })
+      .lean()
+      .exec();
+  }
+
+  findBySeans(seans_id: number) {
+    return this.logModel
+      .find({ seans_id })
+      .sort({ data: -1 })
+      .lean()
+      .exec();
   }
 }

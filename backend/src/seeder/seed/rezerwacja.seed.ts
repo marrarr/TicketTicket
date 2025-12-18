@@ -61,7 +61,6 @@ export async function seedRezerwacje(): Promise<void> {
           sala: seans.sala,
           siedzenie: siedzenie,
           uzytkownik: uzytkownik,
-          uzytkownik_id: uzytkownik.uzytkownik_id,
           klient: `${uzytkownik.imie} ${uzytkownik.nazwisko}`,
           status: 'potwierdzona',
           dataUtworzenia: new Date(),
