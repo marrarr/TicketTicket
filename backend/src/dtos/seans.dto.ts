@@ -3,6 +3,7 @@ export interface CreateSeansDto {
   salaId: number;
   data: string;            // YYYY-MM-DD
   godzinaRozpoczecia: string; // HH:mm
+  okladkaUrl?: string;
 }
 
 export interface UpdateSeansDto {
@@ -10,4 +11,5 @@ export interface UpdateSeansDto {
   salaId?: number;
   data?: string;
   godzinaRozpoczecia?: string;
+  okladkaUrl?: string;
 }

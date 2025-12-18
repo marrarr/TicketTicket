@@ -35,15 +35,27 @@ export class SeansController {
       }),
     }),
   )
-  create(
+  async create(
     @Body() dto: CreateSeansDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    // Jeśli plik został przesłany, dopisujemy jego nazwę do DTO
+    // Parsujemy dane, które przychodzą jako stringi z FormData
+    const seansData: any = {
+      tytulFilmu: dto.tytulFilmu,
+      data: dto.data,
+      godzinaRozpoczecia: dto.godzinaRozpoczecia,
+      // FormData wysyła wszystko jako string, więc parsujemy salaId
+      sala: {
+        id: typeof dto.salaId === 'string' ? parseInt(dto.salaId) : dto.salaId,
+      },
+    };
+
+    // Jeśli plik został przesłany, dopisujemy jego nazwę
     if (file) {
-      (dto as any).okladkaUrl = file.filename;
+      seansData.okladkaUrl = file.filename;
     }
-    return this.seansService.create(dto);
+
+    return this.seansService.create(seansData);
   }
 
   @Get()
