@@ -84,15 +84,11 @@
   padding: 20px;
   background-color: #1e1e1e; /* Ciemne tło */
   border-radius: 12px;
-  
-  /* --- DODAJ TĘ LINIJKĘ --- */
-  color: #ffffff; /* Biały tekst, żeby był widoczny na ciemnym tle */
-  /* ------------------------ */
-
+  color: #ffffff; /* Biały tekst */
   display: flex;
   flex-direction: column;
   gap: 15px;
-  box-shadow: -5px 0 15px rgba(0,0,0,0.3); /* Opcjonalnie: cień oddzielający od sali */
+  box-shadow: -5px 0 15px rgba(0,0,0,0.3);
 }
 
 .chip {
@@ -102,4 +98,93 @@
   border-radius: 15px;
   margin: 5px;
   font-size: 0.9rem;
+}
+
+/* ============================================
+   STYLE PRZYCISKÓW AKCJI
+   ============================================ */
+.summary-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 15px;
+
+  button {
+    flex: 1;
+    padding: 12px 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  // Przycisk Anuluj
+  .p-button-outlined {
+    background: transparent;
+    border: 2px solid #ff5252;
+    color: #ff5252;
+
+    &:hover {
+      background: #ff5252;
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  // Przycisk Zatwierdź
+  .p-button-success {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #5cbf60 0%, #4CAF50 100%);
+      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+      transform: translateY(-2px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      background: #3b3b3b;
+      color: #666;
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+}
+
+/* ============================================
+   CZARNA OBRAMÓWKA DIALOGU
+   ============================================ */
+::ng-deep {
+  .p-dialog {
+    border: 3px solid #000000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .p-dialog-header {
+    border-bottom: 2px solid #000000;
+  }
+
+  .p-dialog-content {
+    border: none;
+  }
+
+  .p-dialog-footer {
+    border-top: 2px solid #000000;
+  }
 }

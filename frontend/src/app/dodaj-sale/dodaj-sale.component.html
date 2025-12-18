@@ -1,61 +1,124 @@
-<div class="container">
+<div class="sale-container">
 
-  <h1 class="title">Zarządzanie salami kinowymi</h1>
-
-  <!-- Formularz dodawania nowej sali -->
-  <p-card class="add-card">
-    <ng-template pTemplate="header">
-      <h2 class="card-title">Dodaj nową salę</h2>
-    </ng-template>
-
-    <div class="form-grid">
-      <div class="field">
-        <label for="numer">Numer sali</label>
-        <p-inputnumber
-          id="numer"
-          [(ngModel)]="nowaSala.numerSali"
-          [min]="1"
-          [showButtons]="true"
-          fluid
-        />
-      </div>
-
-      <div class="field">
-        <label for="miejsca">Ilość miejsc</label>
-        <p-inputnumber
-          id="miejsca"
-          [(ngModel)]="nowaSala.iloscMiejsc"
-          [min]="1"
-          [showButtons]="true"
-          [incrementButtonIcon]="'pi pi-plus'"
-          [decrementButtonIcon]="'pi pi-minus'"
-          fluid
-        />
+  <!-- Nagłówek strony -->
+  <div class="page-header">
+    <div class="header-content">
+      <i class="pi pi-building header-icon"></i>
+      <div>
+        <h1>Zarządzanie salami kinowymi</h1>
+        <p class="subtitle">Dodawaj i zarządzaj salami w swoim kinie</p>
       </div>
     </div>
-
-    <button pButton label="Dodaj salę" icon="pi pi-plus" class="add-btn" (click)="dodajSale()"></button>
-  </p-card>
-
-  <!-- Lista sal -->
-  <div class="sale-grid" *ngIf="sale.length > 0">
-    <p-card class="sala-card" *ngFor="let sala of sale">
-      <ng-template pTemplate="header">
-        <div class="card-header">
-          <h3>Sala nr {{ sala.numerSali }}</h3>
-          <span class="seats">{{ sala.iloscMiejsc }} miejsc</span>
-        </div>
-      </ng-template>
-
-      <div class="card-actions">
-        <button pButton icon="pi pi-trash" severity="danger" rounded text (click)="usunSale(sala)"></button>
-      </div>
-    </p-card>
   </div>
 
+  <!-- Formularz dodawania nowej sali -->
+  <div class="add-section">
+    <div class="section-header">
+      <i class="pi pi-plus-circle"></i>
+      <h2>Dodaj nową salę</h2>
+    </div>
+
+    <div class="form-card">
+      <div class="form-grid">
+        <div class="field">
+          <label for="numer">
+            <i class="pi pi-hashtag"></i>
+            Numer sali
+          </label>
+          <p-inputnumber
+            id="numer"
+            [(ngModel)]="nowaSala.numerSali"
+            [min]="1"
+            [showButtons]="true"
+            placeholder="np. 1"
+            fluid
+          />
+        </div>
+
+        <div class="field">
+          <label for="miejsca">
+            <i class="pi pi-users"></i>
+            Ilość miejsc
+          </label>
+          <p-inputnumber
+            id="miejsca"
+            [(ngModel)]="nowaSala.iloscMiejsc"
+            [min]="1"
+            [showButtons]="true"
+            [step]="10"
+            placeholder="np. 120"
+            fluid
+          />
+        </div>
+      </div>
+
+      <button pButton class="add-btn" (click)="dodajSale()">
+        <i class="pi pi-plus"></i>
+        Dodaj salę
+      </button>
+    </div>
+  </div>
+
+  <!-- Statystyki -->
+  <div class="stats-bar" *ngIf="sale.length > 0">
+    <div class="stat">
+      <span class="stat-value">{{ sale.length }}</span>
+      <span class="stat-label">Sal</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value">{{ getTotalSeats() }}</span>
+      <span class="stat-label">Wszystkich miejsc</span>
+    </div>
+  </div>
+
+  <!-- Lista sal -->
+  <div class="section-header" *ngIf="sale.length > 0">
+    <i class="pi pi-list"></i>
+    <h2>Lista sal</h2>
+  </div>
+
+  <div class="sale-grid" *ngIf="sale.length > 0">
+    <div class="sala-card" *ngFor="let sala of sale; let i = index">
+      <div class="card-badge">{{ i + 1 }}</div>
+      
+      <div class="card-icon">
+        <i class="pi pi-video"></i>
+      </div>
+      
+      <div class="card-content">
+        <h3>Sala nr {{ sala.numerSali }}</h3>
+        <div class="card-stats">
+          <div class="stat-item">
+            <i class="pi pi-users"></i>
+            <span>{{ sala.iloscMiejsc }} miejsc</span>
+          </div>
+          <div class="stat-item">
+            <i class="pi pi-th-large"></i>
+            <span>{{ getRows(sala.iloscMiejsc) }} rzędów</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button 
+          pButton 
+          icon="pi pi-trash" 
+          class="delete-btn"
+          pTooltip="Usuń salę"
+          tooltipPosition="top"
+          (click)="usunSale(sala)">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stan pusty -->
   <div class="empty-state" *ngIf="sale.length === 0">
-    <i class="pi pi-building" style="font-size: 4rem; color: var(--text-color-secondary);"></i>
-    <p>Nie dodano jeszcze żadnej sali</p>
+    <div class="empty-icon">
+      <i class="pi pi-building"></i>
+    </div>
+    <h3>Brak sal kinowych</h3>
+    <p>Nie dodano jeszcze żadnej sali. Użyj formularza powyżej, aby dodać pierwszą salę.</p>
   </div>
 
   <p-toast />
