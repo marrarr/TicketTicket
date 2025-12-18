@@ -10,7 +10,7 @@ import {
 import { SiedzenieService } from './siedzenie.service';
 import type { CreateSiedzenieDto, UpdateSiedzenieDto } from '../dtos/siedzenie.dto';
 
-@Controller('siedzenie')
+@Controller('siedzenia')
 export class SiedzenieController {
   constructor(private readonly siedzenieService: SiedzenieService) {}
 

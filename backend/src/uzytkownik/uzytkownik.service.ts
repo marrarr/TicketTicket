@@ -19,7 +19,7 @@ export class UzytkownikService {
         createUzytkownikDto.haslo = await bcrypt.hash(createUzytkownikDto.haslo, 10);
         const uzytkownik = this.uzytkownikRepository.create({
             ...createUzytkownikDto,
-            rola: { rola_id: createUzytkownikDto.rola_id }
+            rola: { id: createUzytkownikDto.rola_id }
         });
         return await this.uzytkownikRepository.save(uzytkownik);
     } catch (error) {

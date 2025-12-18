@@ -13,7 +13,7 @@ import type {
   UpdateRezerwacjaDto,
 } from '../dtos/rezerwacja.dto';
 
-@Controller('rezerwacja')
+@Controller('rezerwacje')
 export class RezerwacjaController {
   constructor(private readonly rezerwacjaService: RezerwacjaService) {}
 

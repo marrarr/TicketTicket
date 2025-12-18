@@ -34,10 +34,7 @@ export class Rezerwacja {
   status: string;
 
   @Column({ name: 'data_utworzenia', type: 'timestamp' })
-  dataUtworzenia: Date;
-
-  @Column({ name: 'uzytkownik_id' })
-  uzytkownik_id: number;
+  dataUtworzenia: Date;mi
 
   @ManyToOne(() => Uzytkownik, uzytkownik => uzytkownik.rezerwacje)
   @JoinColumn({ name: 'uzytkownik_id' })

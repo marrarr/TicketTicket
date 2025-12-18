@@ -4,7 +4,7 @@ import { Uzytkownik } from '../uzytkownik/uzytkownik.entity';
 @Entity('rola')
 export class Rola {
   @PrimaryGeneratedColumn()
-  rola_id: number;
+  id: number;
 
   @Column({ type: 'varchar', length: 50, unique: true })
   nazwa: string;
