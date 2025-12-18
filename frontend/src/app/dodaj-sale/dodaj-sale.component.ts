@@ -8,6 +8,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TooltipModule } from 'primeng/tooltip';
 import { MessageService, ConfirmationService } from 'primeng/api';
 
 interface Sala {
@@ -26,7 +27,8 @@ interface Sala {
     InputNumberModule,
     CardModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    TooltipModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './dodaj-sale.component.html',
@@ -65,7 +67,7 @@ export class DodajSaleComponent implements OnInit {
       next: (nowa) => {
         this.sale.push(nowa);
         this.messageService.add({ severity: 'success', summary: 'Sukces', detail: `Dodano salę nr ${nowa.numerSali}` });
-        this.nowaSala = { numerSali: this.sale.length + 1, iloscMiejsc: 100 }; // sugestia następnego numeru
+        this.nowaSala = { numerSali: this.sale.length + 1, iloscMiejsc: 100 };
       },
       error: () => this.messageService.add({ severity: 'error', summary: 'Błąd', detail: 'Nie udało się dodać sali' })
     });
@@ -98,5 +100,15 @@ export class DodajSaleComponent implements OnInit {
         });
       }
     });
+  }
+
+  // Oblicza sumę wszystkich miejsc
+  getTotalSeats(): number {
+    return this.sale.reduce((sum, sala) => sum + (sala.iloscMiejsc || 0), 0);
+  }
+
+  // Oblicza liczbę rzędów (zakładając 12 miejsc na rząd)
+  getRows(iloscMiejsc: number): number {
+    return Math.ceil(iloscMiejsc / 12);
   }
 }
