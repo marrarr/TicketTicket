@@ -40,12 +40,12 @@ export class RezerwacjaService {
 
     try {
       await this.logService.create({
-        typ_logu: 'rezerwacja',
-        typ_zdarzenia: 'utworzenie',
+        typ_logu: 'INFO',
+        typ_zdarzenia: 'REZERWACJA',
         opis: `Rezerwacja id=${saved.id}`,
-        data: new Date(),
         seans_id: seansId,
-        nazwa_rezerwujacego: saved.klient,
+        uzytkownik_id: uzytkownikId,
+        nazwa_uzytkownika: saved.klient,
       });
     } catch (e) {
       console.error('Failed to write mongo log', e);
@@ -78,7 +78,23 @@ export class RezerwacjaService {
     return this.findOne(id);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    try {
+      const rezerwacja = await this.findOne(id);
+      if (rezerwacja) {
+        await this.logService.create({
+          typ_logu: 'WARNING',
+          typ_zdarzenia: 'ANULOWANIE_REZERWACJI',
+          opis: `Anulowano rezerwację #${id}.}"`,
+          seans_id: rezerwacja.seans?.id,
+          uzytkownik_id: rezerwacja.uzytkownik?.uzytkownik_id,
+          nazwa_uzytkownika: rezerwacja.klient,
+        });
+      }
+    } catch (e) {
+      console.error('Failed to write mongo log', e);
+    }
+
     return this.repo.delete(id);
   }
 }
