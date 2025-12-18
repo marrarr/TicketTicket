@@ -4,6 +4,7 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { UzytkownikModule } from '../uzytkownik/uzytkownik.module';
 import { JwtStrategy } from './jwt.strategy';
+import { LogModule } from '../mongo/log.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { JwtStrategy } from './jwt.strategy';
       signOptions: { expiresIn: '1h' },
     }),
     UzytkownikModule,
+    LogModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy], 

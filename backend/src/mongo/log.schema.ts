@@ -3,7 +3,10 @@ import { Document } from 'mongoose';
 
 @Schema({
   collection: 'log',
-  timestamps: true,
+  timestamps: {
+    createdAt: true,
+    updatedAt: false,
+  },
 })
 export class Log {
   @Prop({
@@ -14,7 +17,20 @@ export class Log {
 
   @Prop({
     required: true,
-    ENUM: ['REZERWACJA', 'LOGOWANIE', 'WYLOGOWANIE', 'REJESTRACJA'],
+    enum: [
+      'LOGOWANIE',
+      'WYLOGOWANIE',
+      'REJESTRACJA',
+      'REZERWACJA',
+      'ANULOWANIE_REZERWACJI',
+      'DODANIE_SEANSU',
+      'EDYCJA_SEANSU',
+      'USUNIECIE_SEANSU',
+      'DODANIE_SALI',
+      'EDYCJA_SALI',
+      'USUNIECIE_SALI',
+      'BŁĄD_SYSTEMU',
+    ],
   })
   typ_zdarzenia: string;
 
@@ -22,13 +38,6 @@ export class Log {
     required: true,
   })
   opis: string;
-
-  @Prop({
-    type: Date,
-    default: () => new Date(),
-    index: true,
-  })
-  data: Date;
 
   @Prop({
     type: Number,
@@ -39,7 +48,7 @@ export class Log {
   @Prop({
     required: false,
   })
-  nazwa_rezerwujacego?: string;
+  nazwa_uzytkownika?: string;
 
   @Prop({
     type: Number,
@@ -51,5 +60,6 @@ export class Log {
 export type LogDocument = Log & Document;
 export const LogSchema = SchemaFactory.createForClass(Log);
 
-LogSchema.index({ typ_zdarzenia: 1, data: -1 });
-LogSchema.index({ uzytkownik_id: 1, data: -1 });
+LogSchema.index({ typ_zdarzenia: 1, createdAt: -1 });
+LogSchema.index({ uzytkownik_id: 1, createdAt: -1 });
+LogSchema.index({ seans_id: 1, createdAt: -1 });
