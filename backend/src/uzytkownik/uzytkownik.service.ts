@@ -29,8 +29,9 @@ export class UzytkownikService {
         // Tworzenie obiektu użytkownika
         const uzytkownik = this.uzytkownikRepository.create({
             ...createUzytkownikDto,
+
             haslo: hashedPassword,
-            rola: { rola_id: createUzytkownikDto.rola_id }
+            rola: { id: createUzytkownikDto.rola_id }
         });
         
         console.log('Zapisywanie użytkownika do bazy...');

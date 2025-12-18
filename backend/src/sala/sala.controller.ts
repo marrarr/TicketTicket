@@ -10,7 +10,7 @@ import {
 import { SalaService } from './sala.service';
 import type { CreateSalaDto, UpdateSalaDto } from '../dtos/sala.dto';
 
-@Controller('sala')
+@Controller('sale')
 export class SalaController {
   constructor(private readonly salaService: SalaService) {}
 

@@ -7,7 +7,7 @@ export class Sala {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'numer_sali', type: 'integer' })
+  @Column({ name: 'numer_sali', type: 'integer', unique: true })
   numerSali: number;
 
   @Column({ name: 'ilosc_miejsc', type: 'integer' })

@@ -15,7 +15,7 @@ import { extname } from 'path';
 import { SeansService } from './seans.service';
 import type { CreateSeansDto, UpdateSeansDto } from '../dtos/seans.dto';
 
-@Controller('seans')
+@Controller('seanse')
 export class SeansController {
   constructor(private readonly seansService: SeansService) {}
 
