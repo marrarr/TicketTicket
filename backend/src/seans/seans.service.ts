@@ -86,6 +86,11 @@ export class SeansService {
       throw new NotFoundException(`Nie znaleziono seansu o ID ${seansId}`);
     }
 
+    // Sprawdź czy seans ma przypisaną salę
+    if (!seans.sala) {
+      throw new NotFoundException(`Seans o ID ${seansId} nie ma przypisanej sali`);
+    }
+
     // 2. Pobierz wszystkie fizyczne siedzenia z tej sali
     const wszystkieSiedzenia = await this.siedzenieRepo.find({
       where: { sala: { id: seans.sala.id } },
@@ -98,8 +103,10 @@ export class SeansService {
       relations: ['siedzenie'],
     });
 
-    // 4. Stwórz listę ID zajętych siedzeń
-    const zajeteSiedzeniaIds = rezerwacjeNaTenSeans.map((r) => r.siedzenie.id);
+    // 4. Stwórz listę ID zajętych siedzeń (z filtrowaniem null)
+    const zajeteSiedzeniaIds = rezerwacjeNaTenSeans
+      .filter((r) => r.siedzenie !== null && r.siedzenie !== undefined)
+      .map((r) => r.siedzenie.id);
 
     // 5. Zwróć listę siedzeń z flagą czy wolne
     return wszystkieSiedzenia.map((siedzenie) => ({

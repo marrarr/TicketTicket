@@ -1,0 +1,217 @@
+<div class="logi-container">
+  <!-- Nagłówek strony -->
+  <div class="logi-header">
+    <div class="header-content">
+      <i class="pi pi-list header-icon"></i>
+      <div>
+        <h1>Historia logów systemowych</h1>
+        <p class="subtitle">Przegląd wszystkich zdarzeń w systemie</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel kontrolny -->
+  <div class="control-panel">
+    <div class="control-left">
+      <span class="filter-label">Filtruj:</span>
+      <p-select 
+        [options]="filterOptions" 
+        [(ngModel)]="selectedFilter" 
+        (onChange)="onFilterChange()"
+        placeholder="Wybierz typ zdarzenia"
+        class="filter-select"
+      />
+    </div>
+    <div class="control-right">
+      <p-button 
+        icon="pi pi-chevron-left" 
+        (click)="prev()" 
+        [disabled]="isFirstPage()" 
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+      />
+      <p-button 
+        icon="pi pi-refresh" 
+        (click)="reset()" 
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+        pTooltip="Resetuj stronę"
+      />
+      <p-button 
+        icon="pi pi-chevron-right" 
+        (click)="next()" 
+        [disabled]="isLastPage()" 
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+      />
+      <p-button 
+        icon="pi pi-sync" 
+        (click)="loadLogs()" 
+        [rounded]="true"
+        [text]="true"
+        severity="info"
+        pTooltip="Odśwież dane"
+      />
+    </div>
+  </div>
+
+  <!-- Statystyki -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <i class="pi pi-list"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ logs.length }}</span>
+        <span class="stat-label">Wszystkich logów</span>
+      </div>
+    </div>
+    <div class="stat-card info">
+      <i class="pi pi-info-circle"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getCountByType('INFO') }}</span>
+        <span class="stat-label">Info</span>
+      </div>
+    </div>
+    <div class="stat-card warning">
+      <i class="pi pi-exclamation-triangle"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getCountByType('WARNING') }}</span>
+        <span class="stat-label">Ostrzeżenia</span>
+      </div>
+    </div>
+    <div class="stat-card error">
+      <i class="pi pi-times-circle"></i>
+      <div class="stat-info">
+        <span class="stat-value">{{ getCountByType('ERROR') }}</span>
+        <span class="stat-label">Błędy</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela logów -->
+  <div class="table-container">
+    <p-table
+      [value]="logs"
+      [paginator]="true"
+      [rows]="rows"
+      [first]="first"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Wyświetlane {first} - {last} z {totalRecords} wpisów"
+      (onPage)="pageChange($event)"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [loading]="loading"
+      [globalFilterFields]="['opis', 'typ_logu', 'typ_zdarzenia']"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="data" style="width: 140px">
+            <div class="header-cell">
+              <i class="pi pi-calendar"></i>
+              Data
+              <p-sortIcon field="data" />
+            </div>
+          </th>
+          <th pSortableColumn="typ_logu" style="width: 100px">
+            <div class="header-cell">
+              <i class="pi pi-tag"></i>
+              Typ
+              <p-sortIcon field="typ_logu" />
+            </div>
+          </th>
+          <th pSortableColumn="typ_zdarzenia" style="width: 130px">
+            <div class="header-cell">
+              <i class="pi pi-bolt"></i>
+              Zdarzenie
+              <p-sortIcon field="typ_zdarzenia" />
+            </div>
+          </th>
+          <th style="min-width: 250px">
+            <div class="header-cell">
+              <i class="pi pi-align-left"></i>
+              Opis
+            </div>
+          </th>
+          <th pSortableColumn="uzytkownik_id" style="width: 100px">
+            <div class="header-cell">
+              <i class="pi pi-user"></i>
+              Użytkownik
+              <p-sortIcon field="uzytkownik_id" />
+            </div>
+          </th>
+          <th style="width: 140px">
+            <div class="header-cell">
+              <i class="pi pi-user-edit"></i>
+              Rezerwujący
+            </div>
+          </th>
+          <th pSortableColumn="seans_id" style="width: 90px">
+            <div class="header-cell">
+              <i class="pi pi-video"></i>
+              Seans
+              <p-sortIcon field="seans_id" />
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-log>
+        <tr class="log-row" [ngClass]="'log-row-' + log.typ_logu.toLowerCase()">
+          <td>
+            <span class="date-cell">{{ formatDate(log.data) }}</span>
+          </td>
+          <td>
+            <p-tag [value]="log.typ_logu" [severity]="getTypLoguSeverity(log.typ_logu)" [rounded]="true" />
+          </td>
+          <td>
+            <p-tag [value]="log.typ_zdarzenia" [severity]="getTypZdarzeniaSeverity(log.typ_zdarzenia)" />
+          </td>
+          <td>
+            <span class="opis-cell">{{ log.opis }}</span>
+          </td>
+          <td class="center-cell">
+            <span *ngIf="log.uzytkownik_id" class="user-badge">
+              <i class="pi pi-user"></i> {{ log.uzytkownik_id }}
+            </span>
+            <span *ngIf="!log.uzytkownik_id" class="empty-cell">—</span>
+          </td>
+          <td>
+            <span *ngIf="log.nazwa_rezerwujacego">{{ log.nazwa_rezerwujacego }}</span>
+            <span *ngIf="!log.nazwa_rezerwujacego" class="empty-cell">—</span>
+          </td>
+          <td class="center-cell">
+            <span *ngIf="log.seans_id" class="seans-badge">
+              #{{ log.seans_id }}
+            </span>
+            <span *ngIf="!log.seans_id" class="empty-cell">—</span>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <i class="pi pi-inbox"></i>
+              <h3>Brak logów</h3>
+              <p>Nie znaleziono żadnych logów do wyświetlenia</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #loadingbody>
+        <tr>
+          <td colspan="7">
+            <div class="loading-state">
+              <i class="pi pi-spin pi-spinner"></i>
+              <span>Ładowanie logów...</span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

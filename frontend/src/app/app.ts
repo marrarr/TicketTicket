@@ -18,17 +18,23 @@ export class App {
   public buttons = [
     { label: 'Strona Główna', link: '/', icon: 'pi pi-home' },
     { 
-    label: 'Dodaj repertuar', 
-    link: '/dodaj-seans',           // nowa ścieżka
-    icon: 'pi pi-plus-circle',      // ładna ikona, możesz zmienić
-    roles: ['admin', 'owner']       // tylko dla admina i właściciela (dostosuj do swoich ról)
-  },
-  { 
-    label: 'Dodaj salę', 
-    link: '/dodaj-sale', 
-    icon: 'pi pi-building',   // ikona budynku/sali
-    roles: ['admin', 'owner'] // te same role co wyżej
-  },
+      label: 'Dodaj repertuar', 
+      link: '/dodaj-seans',
+      icon: 'pi pi-plus-circle',
+      roles: ['admin', 'owner']
+    },
+    { 
+      label: 'Dodaj salę', 
+      link: '/dodaj-sale', 
+      icon: 'pi pi-building',
+      roles: ['admin', 'owner']
+    },
+    { 
+      label: 'Logi', 
+      link: '/logi', 
+      icon: 'pi pi-list',
+      roles: ['admin', 'owner']
+    },
     { label: 'Login', link: '/auth', icon: 'pi pi-sign-in', requiredNotLogged: true },
     { label: 'Wyloguj', action: 'logout', icon: 'pi pi-sign-out', roles: ['owner', 'admin', 'user'] }
   ];
@@ -36,12 +42,12 @@ export class App {
   constructor(private router: Router, private authService: AuthService, private cd: ChangeDetectorRef) {
     this.authService.init();
 
-      this.authService.userRole$.subscribe(role => {
-    this.ngZone.run(() => {   // <--- wymuszenie zmiany w Angular Zone
-      this.userRole = role;
-      this.cd.detectChanges();
+    this.authService.userRole$.subscribe(role => {
+      this.ngZone.run(() => {
+        this.userRole = role;
+        this.cd.detectChanges();
+      });
     });
-  });
   }
 
   openLink(btn: any) {

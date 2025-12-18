@@ -8,12 +8,15 @@ export const routes: Routes = [
     { path: 'filmy', component: FilmComponent },
     { path: 'auth', component: AuthComponent },
     {
-  path: 'dodaj-seans',
-  loadComponent: () => import('./dodaj-seans/dodaj-seans.component').then(m => m.DodajSeansComponent)// jeśli masz guard do ochrony przed nieautoryzowanymi
-},
-{
-  path: 'dodaj-sale',
-  loadComponent: () => import('./dodaj-sale/dodaj-sale.component').then(m => m.DodajSaleComponent),
-   // opcjonalnie – jeśli masz guard (jak wcześniej zrobiliśmy)
-},
+        path: 'dodaj-seans',
+        loadComponent: () => import('./dodaj-seans/dodaj-seans.component').then(m => m.DodajSeansComponent)
+    },
+    {
+        path: 'dodaj-sale',
+        loadComponent: () => import('./dodaj-sale/dodaj-sale.component').then(m => m.DodajSaleComponent),
+    },
+    {
+        path: 'logi',
+        loadComponent: () => import('./logi/logi.component').then(m => m.LogiComponent),
+    },
 ];
