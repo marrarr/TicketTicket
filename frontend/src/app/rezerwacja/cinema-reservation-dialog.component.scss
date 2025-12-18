@@ -1,192 +1,105 @@
-/* src/app/rezerwacja/cinema-reservation-dialog.component.scss */
+.cinema-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
 
-::ng-deep {
-  .cinema-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 0;
-    gap: 20px;
-    box-sizing: border-box;
-    overflow: hidden; /* Zapobiega podwójnym paskom przewijania */
-  }
+.cinema-screen {
+  width: 60%;
+  height: 30px;
+  background: #444;
+  color: #aaa;
+  text-align: center;
+  border-radius: 0 0 50px 50px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+}
 
-  .cinema-screen {
-    background: linear-gradient(to bottom, #000, #111);
-    color: white;
-    text-align: center;
-    padding: 24px;
-    font-size: 2.5rem;
-    font-weight: bold;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    letter-spacing: 8px;
-    flex-shrink: 0;
-    margin: 0 20px;
-  }
+.main-content {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  justify-content: center;
+}
 
-  .main-content {
-    display: flex;
-    flex: 1; /* Wypełnia resztę wysokości */
-    gap: 20px;
-    align-items: flex-start;
-    overflow: hidden; /* Ważne dla flexa */
-    padding: 0 20px 20px 20px;
-  }
+/* Nowy styl sali - Flexbox */
+.cinema-hall-flex {
+  display: flex;
+  flex-direction: column; /* Rzędy jeden pod drugim */
+  gap: 15px; /* Odstęp między rzędami */
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
 
-  .cinema-hall {
-    flex: 1;
-    height: 100%;
-    position: relative;
-    background: #0a0a1a;
-    border-radius: 20px;
-    /* To umożliwia przewijanie sali, jeśli fotele się nie mieszczą */
-    overflow: auto; 
-    box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
-  }
+.cinema-row {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Odstęp między literą a fotelami */
+}
 
-  .seats-wrapper {
-    position: relative;
-    /* Padding zbędny, marginesy są wliczone w startX/startY */
-    padding: 0; 
-    box-sizing: border-box;
-    margin: 0 auto; /* Wyśrodkowanie jeśli sala jest szersza niż fotele */
-  }
+.row-letter {
+  font-weight: bold;
+  font-size: 1.2rem;
+  width: 30px;
+  text-align: center;
+  opacity: 0.7;
+}
 
-  .seat {
-    position: absolute;
-    width: 56px;  /* Zgodne z TS */
-    height: 56px; /* Zgodne z TS */
-    background: #2c2c44;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #bbb;
-    font-weight: 600;
-    font-size: 1rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    user-select: none;
+.seats-row {
+  display: flex;
+  gap: 10px; /* Odstęp między fotelami */
+}
 
-    &:hover:not(.reserved):not(.selected) {
-      background: #5b7fff;
-      color: white;
-      transform: scale(1.15);
-      z-index: 100;
-      box-shadow: 0 10px 20px rgba(91, 127, 255, 0.4);
-    }
+.seat {
+  width: 40px;
+  height: 40px;
+  background-color: #3b3b3b;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.8rem;
+  color: #fff;
 
-    &.selected {
-      background: #00e676;
-      color: #004d26;
-      transform: scale(1.1);
-      box-shadow: 0 0 20px rgba(0, 230, 118, 0.6);
-      z-index: 50;
-    }
-
-    &.reserved {
-      background: #d32f2f;
-      color: rgba(255,255,255,0.5);
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-  }
-
-  /* Etykiety rzędów A, B, C... */
-  .row-labels {
-    position: absolute;
-    /* startX (80px) - szerokość etykiety (~30px) - margines */
-    left: 30px; 
-    /* startY (50px) + połowa wysokości fotela (28px) - połowa fontu */
-    top: 66px;   
-    display: flex;
-    flex-direction: column;
-    /* Gap = seatHeight (56) + vGap (20) */
-    gap: 76px;   
-    pointer-events: none;
-    z-index: 5;
+  &:hover { background-color: #555; }
+  
+  &.selected {
+    background-color: #4CAF50; /* Zielony */
+    box-shadow: 0 0 10px #4CAF50;
   }
   
-  .row-label {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #555;
-    text-align: center;
-    width: 30px;
-    line-height: 1;
-    /* Zapewnia, że etykieta nie ma wysokości 0 */
-    height: 24px; 
+  &.reserved {
+    background-color: #D32F2F; /* Czerwony */
+    cursor: not-allowed;
+    opacity: 0.5;
   }
+}
 
-  .summary-sidebar {
-    width: 350px;
-    background: #fff;
-    padding: 24px;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    max-height: 100%;
-    overflow-y: auto;
-    
-    h3 {
-      margin-top: 0;
-      color: #333;
-    }
-  }
+.summary-sidebar {
+  min-width: 250px;
+  padding: 20px;
+  background-color: #1e1e1e; /* Ciemne tło */
+  border-radius: 12px;
+  
+  /* --- DODAJ TĘ LINIJKĘ --- */
+  color: #ffffff; /* Biały tekst, żeby był widoczny na ciemnym tle */
+  /* ------------------------ */
 
-  .legend {
-    margin: 20px 0;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 12px;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: -5px 0 15px rgba(0,0,0,0.3); /* Opcjonalnie: cień oddzielający od sali */
+}
 
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 8px 0;
-    font-size: 0.95rem;
-    color: #555;
-  }
-
-  .seat-example {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    &.free { background: #2c2c44; }
-    &.selected { background: #00e676; }
-    &.reserved { background: #d32f2f; opacity: 0.6; }
-  }
-
-  .selected-seats-list {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 20px;
-    border-top: 1px solid #eee;
-    padding-top: 10px;
-  }
-
-  .selected-seat-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #f0f0f0;
-    font-weight: 600;
-  }
-
-  .summary-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: auto;
-    
-    button {
-      flex: 1;
-    }
-  }
+.chip {
+  display: inline-flex;
+  background: #4CAF50;
+  padding: 5px 10px;
+  border-radius: 15px;
+  margin: 5px;
+  font-size: 0.9rem;
 }

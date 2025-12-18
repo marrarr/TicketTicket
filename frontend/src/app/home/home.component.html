@@ -1,26 +1,90 @@
-<!-- src/app/home/home.component.html -->
-<div class="home-simple">
-  <div class="hero">
-    <h1 class="title">TicketTicket</h1>
-    <p class="subtitle">Kup bilet do kina w 30 sekund</p>
+<div class="main-container">
+    <div class="header-text">
+        <h1>Repertuar Kinowy</h1>
+        <p>Wybierz seans i zarezerwuj swoje miejsce</p>
+    </div>
 
-    <button pButton
-            icon="pi pi-ticket"
-            label="Wybierz seans i kup bilet"
-            class="p-button-raised p-button-lg p-button-warning hero-button"
-            (click)="openCinemaReservation()">
-    </button>
-  </div>
+    <div *ngIf="loading" class="loading-state">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i>
+    </div>
 
-  <!-- Twój dialog z miejscami -->
-  <app-cinema-reservation-dialog
-    [(visible)]="showCinemaDialog"
-    [movieTitle]="currentMovieTitle"
-    [sessionTime]="currentSessionTime"
-    [occupiedSeats]="occupiedSeatsExample"
-    (confirm)="onSeatsConfirmed($event)"
-    (visibleChange)="showCinemaDialog = $event">
-  </app-cinema-reservation-dialog>
+    <div *ngIf="!loading">
+        
+        <div *ngFor="let group of groupedFilmy" class="day-section mb-6">
+            
+            <div class="date-header flex align-items-center mb-3 mt-4 px-3">
+                <i class="pi pi-calendar text-primary mr-2" style="font-size: 1.5rem;"></i>
+                <h2 class="m-0 text-800" style="text-transform: capitalize;">
+                    {{ group.date | date:'EEEE, d MMMM' }}
+                </h2>
+            </div>
+            <hr class="mb-4 mx-3 surface-border">
 
-  <p-toast position="top-right"></p-toast>
+            <div class="movies-grid">
+                <div *ngFor="let item of group.seanse" class="movie-card-wrapper">
+                    
+                    <div class="custom-card shadow-3 cursor-pointer" (click)="openCinemaReservation(item)">
+                        
+                        <div class="card-header relative" style="height: 250px; overflow: hidden; position: relative;">
+                            
+                            <img *ngIf="item.okladkaUrl" 
+                                 [src]="'http://localhost:3000/uploads/' + item.okladkaUrl" 
+                                 alt="Okładka"
+                                 style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            
+                            <div *ngIf="!item.okladkaUrl" 
+                                 class="w-full h-full flex align-items-center justify-content-center"
+                                 [ngClass]="item.colorClass"
+                                 style="height: 100%; display: flex; align-items: center; justify-content: center;">
+                                <div class="icon-circle">
+                                    <i class="pi pi-ticket"></i>
+                                </div>
+                            </div>
+
+                            <div *ngIf="item.okladkaUrl" 
+                                 class="absolute bottom-0 left-0 w-full p-3" 
+                                 style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); position: absolute; bottom: 0; width: 100%;">
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="movie-title">{{ item.tytul_filmu }}</h3>
+                            
+                            <div class="info-row">
+                                <span class="info-item">
+                                    <i class="pi pi-map-marker"></i> {{ item.nazwaSali }}
+                                </span>
+                            </div>
+
+                            <div class="divider"></div>
+
+                            <div class="card-footer">
+                                <div class="time-box">
+                                    <span class="label">Godzina</span>
+                                    <span class="time">{{ item.godzina_rozpoczecia }}</span>
+                                </div>
+                                <button pButton icon="pi pi-arrow-right" class="p-button-rounded p-button-text"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div *ngIf="!loading && groupedFilmy.length === 0" class="empty-state">
+        <i class="pi pi-inbox"></i>
+        <p>Brak zaplanowanych seansów.</p>
+    </div>
 </div>
+
+<app-cinema-reservation-dialog
+  [(visible)]="showCinemaDialog"
+  [movieTitle]="currentMovieTitle"
+  [sessionTime]="currentSessionTime"
+  [occupiedSeats]="occupiedSeatsExample"
+  [totalSeats]="currentFilm?.sala?.iloscMiejsc"
+  (confirm)="onSeatsConfirmed($event)">
+</app-cinema-reservation-dialog>
+
+<p-toast position="bottom-right"></p-toast>

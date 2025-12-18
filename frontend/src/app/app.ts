@@ -17,7 +17,18 @@ export class App {
 
   public buttons = [
     { label: 'Strona Główna', link: '/', icon: 'pi pi-home' },
-    { label: 'Restauracje', link: '/restauracja', icon: 'pi pi-cloud', roles: ['owner', 'admin'] },
+    { 
+    label: 'Dodaj repertuar', 
+    link: '/dodaj-seans',           // nowa ścieżka
+    icon: 'pi pi-plus-circle',      // ładna ikona, możesz zmienić
+    roles: ['admin', 'owner']       // tylko dla admina i właściciela (dostosuj do swoich ról)
+  },
+  { 
+    label: 'Dodaj salę', 
+    link: '/dodaj-sale', 
+    icon: 'pi pi-building',   // ikona budynku/sali
+    roles: ['admin', 'owner'] // te same role co wyżej
+  },
     { label: 'Login', link: '/auth', icon: 'pi pi-sign-in', requiredNotLogged: true },
     { label: 'Wyloguj', action: 'logout', icon: 'pi pi-sign-out', roles: ['owner', 'admin', 'user'] }
   ];

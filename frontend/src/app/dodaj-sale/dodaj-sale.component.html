@@ -1,0 +1,63 @@
+<div class="container">
+
+  <h1 class="title">Zarządzanie salami kinowymi</h1>
+
+  <!-- Formularz dodawania nowej sali -->
+  <p-card class="add-card">
+    <ng-template pTemplate="header">
+      <h2 class="card-title">Dodaj nową salę</h2>
+    </ng-template>
+
+    <div class="form-grid">
+      <div class="field">
+        <label for="numer">Numer sali</label>
+        <p-inputnumber
+          id="numer"
+          [(ngModel)]="nowaSala.numerSali"
+          [min]="1"
+          [showButtons]="true"
+          fluid
+        />
+      </div>
+
+      <div class="field">
+        <label for="miejsca">Ilość miejsc</label>
+        <p-inputnumber
+          id="miejsca"
+          [(ngModel)]="nowaSala.iloscMiejsc"
+          [min]="1"
+          [showButtons]="true"
+          [incrementButtonIcon]="'pi pi-plus'"
+          [decrementButtonIcon]="'pi pi-minus'"
+          fluid
+        />
+      </div>
+    </div>
+
+    <button pButton label="Dodaj salę" icon="pi pi-plus" class="add-btn" (click)="dodajSale()"></button>
+  </p-card>
+
+  <!-- Lista sal -->
+  <div class="sale-grid" *ngIf="sale.length > 0">
+    <p-card class="sala-card" *ngFor="let sala of sale">
+      <ng-template pTemplate="header">
+        <div class="card-header">
+          <h3>Sala nr {{ sala.numerSali }}</h3>
+          <span class="seats">{{ sala.iloscMiejsc }} miejsc</span>
+        </div>
+      </ng-template>
+
+      <div class="card-actions">
+        <button pButton icon="pi pi-trash" severity="danger" rounded text (click)="usunSale(sala)"></button>
+      </div>
+    </p-card>
+  </div>
+
+  <div class="empty-state" *ngIf="sale.length === 0">
+    <i class="pi pi-building" style="font-size: 4rem; color: var(--text-color-secondary);"></i>
+    <p>Nie dodano jeszcze żadnej sali</p>
+  </div>
+
+  <p-toast />
+  <p-confirmdialog />
+</div>
