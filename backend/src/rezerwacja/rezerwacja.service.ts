@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Rezerwacja } from './rezerwacja.entity';
 import type { CreateRezerwacjaDto, UpdateRezerwacjaDto } from '../dtos/rezerwacja.dto';
 import { LogService } from 'src/mongo/log.service';
@@ -11,6 +11,7 @@ export class RezerwacjaService {
     @InjectRepository(Rezerwacja)
     private repo: Repository<Rezerwacja>,
     private logService: LogService,
+    private dataSource: DataSource,
   ) {}
 
   private getIds(dto: any) {
@@ -23,7 +24,9 @@ export class RezerwacjaService {
   }
 
   async create(dto: CreateRezerwacjaDto) {
-    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(dto as any);
+    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(
+      dto as any,
+    );
 
     const payload: Partial<Rezerwacja> = {
       klient: (dto as any).klient,
@@ -34,7 +37,8 @@ export class RezerwacjaService {
     if (salaId) payload.sala = { id: salaId } as any;
     if (siedzenieId) payload.siedzenie = { id: siedzenieId } as any;
     if (seansId) payload.seans = { id: seansId } as any;
-    if (uzytkownikId) payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
+    if (uzytkownikId)
+      payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
 
     const saved = await this.repo.save(payload as Rezerwacja);
 
@@ -55,15 +59,22 @@ export class RezerwacjaService {
   }
 
   findAll() {
-    return this.repo.find({ relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'] });
+    return this.repo.find({
+      relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'],
+    });
   }
 
   findOne(id: number) {
-    return this.repo.findOne({ where: { id }, relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'] });
+    return this.repo.findOne({
+      where: { id },
+      relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'],
+    });
   }
 
   async update(id: number, dto: UpdateRezerwacjaDto) {
-    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(dto as any);
+    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(
+      dto as any,
+    );
 
     const payload: any = { id };
     if ((dto as any).klient !== undefined) payload.klient = (dto as any).klient;
@@ -72,7 +83,8 @@ export class RezerwacjaService {
     if (salaId) payload.sala = { id: salaId } as any;
     if (siedzenieId) payload.siedzenie = { id: siedzenieId } as any;
     if (seansId) payload.seans = { id: seansId } as any;
-    if (uzytkownikId) payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
+    if (uzytkownikId)
+      payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
 
     await this.repo.save(payload);
     return this.findOne(id);
@@ -96,5 +108,40 @@ export class RezerwacjaService {
     }
 
     return this.repo.delete(id);
+  }
+
+  async createProcedura(dto: CreateRezerwacjaDto) {
+    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(
+      dto as any,
+    );
+
+    const klient = (dto as any).klient;
+    const status = (dto as any).status;
+
+    try {
+      await this.dataSource.query(
+          'CALL zloz_rezerwacje(?, ?, ?, ?, ?, ?)',
+          [salaId, siedzenieId, seansId, klient, status, uzytkownikId],
+      );
+      try {
+        await this.logService.create({
+          typ_logu: 'INFO',
+          typ_zdarzenia: 'REZERWACJA',
+          opis: 'Rezerwacja utworzona',
+          seans_id: seansId,
+          uzytkownik_id: uzytkownikId,
+          nazwa_uzytkownika: klient,
+        });
+      } catch (e) {
+        console.error('Failed to write mongo log', e);
+      }
+    } catch (err: any) {
+      if (err?.sqlState === '45000') {
+        throw new Error('Miejsce jest już zajęte');
+      }
+
+      console.error('Błąd podczas wywołania procedury zloz_rezerwacje', err);
+      throw err;
+    }
   }
 }

@@ -6,10 +6,10 @@ import type { CreateUzytkownikDto } from 'src/dtos/uzytkownik.dto';
 export class AuthController {
   constructor(private auth: AuthService) {}
 
-@Post('register')
-register(@Body() createUzytkownikDto: CreateUzytkownikDto) {
-    return this.auth.register(createUzytkownikDto);
-}
+  @Post('register')
+  register(@Body() createUzytkownikDto: CreateUzytkownikDto) {
+      return this.auth.register(createUzytkownikDto);
+  }
 
   @Post('login')
   login(@Body() body: { username: string; password: string }) {

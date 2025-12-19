@@ -20,12 +20,12 @@
 
       <div class="field">
         <label for="okladkaInput" class="label">Okładka filmu (opcjonalne)</label>
-        <input 
-          type="file" 
-          id="okladkaInput" 
-          (change)="onFileSelected($event)" 
+        <input
+          type="file"
+          id="okladkaInput"
+          (change)="onFileSelected($event)"
           accept="image/*"
-          class="p-inputtext w-full" 
+          class="p-inputtext w-full"
           style="padding: 10px;"
         >
       </div>
@@ -39,6 +39,7 @@
           optionLabel="numerSali"
           placeholder="Wybierz salę"
           [emptyMessage]="'Brak dostępnych sal'"
+          [appendTo]="'body'"
           fluid
         >
           <ng-template let-sala pTemplate="selectedItem">
@@ -46,6 +47,7 @@
               <span>Sala {{ sala.numerSali }} ({{ sala.iloscMiejsc }} miejsc)</span>
             </div>
           </ng-template>
+
           <ng-template let-sala pTemplate="item">
             <div class="flex align-items-center gap-3">
               <span>Sala {{ sala.numerSali }}</span>
@@ -53,6 +55,7 @@
             </div>
           </ng-template>
         </p-select>
+
       </div>
 
       <div class="field">

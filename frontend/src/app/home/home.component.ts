@@ -18,6 +18,7 @@ import { FilmService } from '../film/film.service';
 import { RezerwacjaService } from '../rezerwacja/RezerwacjaService';
 import { AuthService } from '../auth/auth.service';
 
+
 interface GroupedSeanse {
   date: string;
   seanse: any[];
@@ -47,7 +48,11 @@ export class HomeComponent implements OnInit {
   occupiedSeatsExample: string[] = [];
 
   groupedFilmy: GroupedSeanse[] = [];
+  filteredGroupedFilmy: GroupedSeanse[] = []
   loading = true;
+
+  displayedWeekStart!: Date;
+  displayedWeekEnd!: Date;
 
   // Pola do rezerwacji
   seansId!: number;
@@ -62,12 +67,56 @@ export class HomeComponent implements OnInit {
     private messageService: MessageService,
     private filmService: FilmService,
     private rezerwacjaService: RezerwacjaService,
-    private authService: AuthService, // <--- NOWE
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
     this.uzytkownikId = this.authService.getUserId(); // <--- pobieramy z JWT
     this.loadFilmy();
+  }
+
+  private getMonday(date: Date): Date {
+    const d = new Date(date);
+    const day = (d.getDay() + 6) % 7; // 0 = poniedziałek
+    d.setDate(d.getDate() - day);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  private setWeekRange(start: Date) {
+    const monday = this.getMonday(start);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+
+    this.displayedWeekStart = monday;
+    this.displayedWeekEnd = sunday;
+  }
+
+  private applyWeekFilter() {
+    if (!this.displayedWeekStart || !this.displayedWeekEnd) {
+      return;
+    }
+
+    this.filteredGroupedFilmy = this.groupedFilmy.filter((group) => {
+      const d = new Date(group.date);
+      d.setHours(12, 0, 0, 0); // zabezpieczenie przed strefami czasowymi
+      return d >= this.displayedWeekStart && d <= this.displayedWeekEnd;
+    });
+  }
+
+  prevWeek() {
+    const prevMonday = new Date(this.displayedWeekStart);
+    prevMonday.setDate(prevMonday.getDate() - 7);
+    this.setWeekRange(prevMonday);
+    this.applyWeekFilter();
+  }
+
+  nextWeek() {
+    const nextMonday = new Date(this.displayedWeekStart);
+    nextMonday.setDate(nextMonday.getDate() + 7);
+    this.setWeekRange(nextMonday);
+    this.applyWeekFilter();
   }
 
   loadFilmy() {
@@ -109,6 +158,10 @@ export class HomeComponent implements OnInit {
         this.groupedFilmy.sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
+
+        // Ustaw start na aktualny tydzień i przefiltruj
+        this.setWeekRange(new Date());
+        this.applyWeekFilter();
 
         this.loading = false;
       },
@@ -160,7 +213,7 @@ export class HomeComponent implements OnInit {
     }
 
     const klientName =
-      this.klient && this.klient.trim().length > 0 ? this.klient : 'Gość kina';
+      this.klient && this.klient.trim().length > 0 ? this.klient : 'milosz';
 
     const requests = selectedSeats
       .map((seat) => {
