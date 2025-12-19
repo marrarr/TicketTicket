@@ -12,13 +12,20 @@ export class LogService {
   }
 
   findAll() {
-    return this.logModel.find({ data: -1 }).lean().exec();
+    const result =  this.logModel
+      .find()
+      .sort({ createdAt: -1 })
+      .lean()
+      .exec();
+
+    console.log(result);
+    return result;
   }
 
   findByType(typ_zdarzenia: string) {
     return this.logModel
       .find({ typ_zdarzenia })
-      .sort({ data: -1 })
+      .sort({ createdAt: -1 })
       .lean()
       .exec();
   }
@@ -26,7 +33,7 @@ export class LogService {
   findByUser(uzytkownik_id: number) {
     return this.logModel
       .find({ uzytkownik_id })
-      .sort({ data: -1 })
+      .sort({ createdAt: -1 })
       .lean()
       .exec();
   }
@@ -34,7 +41,7 @@ export class LogService {
   findBySeans(seans_id: number) {
     return this.logModel
       .find({ seans_id })
-      .sort({ data: -1 })
+      .sort({ createdAt: -1 })
       .lean()
       .exec();
   }

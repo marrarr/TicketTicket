@@ -7,14 +7,32 @@ import { TagModule } from 'primeng/tag';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 
-interface Log {
+export interface Log {
   _id: string;
+
   typ_logu: 'INFO' | 'WARNING' | 'ERROR';
-  typ_zdarzenia: 'REZERWACJA' | 'LOGOWANIE' | 'WYLOGOWANIE' | 'REJESTRACJA';
+
+  typ_zdarzenia:
+    | 'LOGOWANIE'
+    | 'WYLOGOWANIE'
+    | 'REJESTRACJA'
+    | 'REZERWACJA'
+    | 'ANULOWANIE_REZERWACJI'
+    | 'DODANIE_SEANSU'
+    | 'EDYCJA_SEANSU'
+    | 'USUNIECIE_SEANSU'
+    | 'DODANIE_SALI'
+    | 'EDYCJA_SALI'
+    | 'USUNIECIE_SALI'
+    | 'BŁĄD_SYSTEMU';
+
   opis: string;
-  data: Date;
+
+  // z timestamps: { createdAt: true, updatedAt: false }
+  createdAt: Date;
+
   seans_id?: number;
-  nazwa_rezerwujacego?: string;
+  nazwa_uzytkownika?: string;
   uzytkownik_id?: number;
 }
 

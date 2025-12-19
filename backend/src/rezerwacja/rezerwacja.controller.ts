@@ -19,7 +19,8 @@ export class RezerwacjaController {
 
   @Post()
   create(@Body() dto: CreateRezerwacjaDto) {
-    return this.rezerwacjaService.create(dto);
+    return this.rezerwacjaService.createProcedura(dto);
+    // return this.rezerwacjaService.create(dto);
   }
 
   @Get()

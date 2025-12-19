@@ -29,7 +29,6 @@ export class Log {
       'DODANIE_SALI',
       'EDYCJA_SALI',
       'USUNIECIE_SALI',
-      'BŁĄD_SYSTEMU',
     ],
   })
   typ_zdarzenia: string;
