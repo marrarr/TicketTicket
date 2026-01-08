@@ -1,0 +1,45 @@
+<div class="container">
+  <h2>{{ id ? 'Edytuj seans' : 'Dodaj seans' }}</h2>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Tytuł filmu</mat-label>
+      <input matInput formControlName="tytulFilmu">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Data</mat-label>
+      <input matInput type="date" formControlName="data">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Godzina rozpoczęcia</mat-label>
+      <input matInput type="time" formControlName="godzinaRozpoczecia">
+    </mat-form-field>
+
+    <!-- DROPDOWN Z SALAMI -->
+    <mat-form-field appearance="outline">
+      <mat-label>Sala</mat-label>
+      <mat-select formControlName="salaId">
+        <mat-option *ngFor="let sala of sale" [value]="sala.id">
+          Sala {{ sala.numerSali }} ({{ sala.iloscMiejsc }} miejsc)
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div style="margin: 10px 0;">
+      <label>Okładka filmu:</label><br>
+      <input type="file" (change)="onFileSelected($event)">
+    </div>
+
+    <button mat-raised-button color="primary" type="submit">
+      Zapisz
+    </button>
+
+    <button mat-button routerLink="/seanse" type="button">
+      Anuluj
+    </button>
+
+  </form>
+</div>

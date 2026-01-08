@@ -1,0 +1,25 @@
+<div class="container">
+  <h2>{{ id ? 'Edytuj salę' : 'Dodaj salę' }}</h2>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Numer sali</mat-label>
+      <input matInput type="number" formControlName="numerSali">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Ilość miejsc</mat-label>
+      <input matInput type="number" formControlName="iloscMiejsc">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">
+      Zapisz
+    </button>
+
+    <button mat-button routerLink="/sale" type="button">
+      Anuluj
+    </button>
+
+  </form>
+</div>
