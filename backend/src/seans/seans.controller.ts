@@ -79,6 +79,8 @@ export class SeansController {
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() dto: UpdateSeansDto) {
+     console.log(dto);
+     console.log(" uwu!");
     return this.seansService.update(id, dto);
   }
 

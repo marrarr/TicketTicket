@@ -2,7 +2,7 @@ import { Component, NgZone, ChangeDetectorRef  } from '@angular/core';
 import { RouterOutlet, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { AuthService } from './auth/auth.service'; 
+import { AuthService } from './auth/auth.service';
 
 
 @Component({
@@ -17,21 +17,21 @@ export class App {
 
   public buttons = [
     { label: 'Strona Główna', link: '/', icon: 'pi pi-home' },
-    { 
-      label: 'Dodaj repertuar', 
-      link: '/dodaj-seans',
+    {
+      label: 'Dodaj repertuar',
+      link: '/seans',
       icon: 'pi pi-plus-circle',
       roles: ['admin', 'owner']
     },
-    { 
-      label: 'Dodaj salę', 
-      link: '/dodaj-sale', 
+    {
+      label: 'Dodaj salę',
+      link: '/dodaj-sale',
       icon: 'pi pi-building',
       roles: ['admin', 'owner']
     },
-    { 
-      label: 'Logi', 
-      link: '/logi', 
+    {
+      label: 'Logi',
+      link: '/logi',
       icon: 'pi pi-list',
       roles: ['admin', 'owner']
     },
