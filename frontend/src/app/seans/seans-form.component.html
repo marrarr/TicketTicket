@@ -18,9 +18,14 @@
       <input matInput type="time" formControlName="godzinaRozpoczecia">
     </mat-form-field>
 
+    <!-- DROPDOWN Z SALAMI -->
     <mat-form-field appearance="outline">
-      <mat-label>ID sali</mat-label>
-      <input matInput type="number" formControlName="salaId">
+      <mat-label>Sala</mat-label>
+      <mat-select formControlName="salaId">
+        <mat-option *ngFor="let sala of sale" [value]="sala.id">
+          Sala {{ sala.numerSali }} ({{ sala.iloscMiejsc }} miejsc)
+        </mat-option>
+      </mat-select>
     </mat-form-field>
 
     <div style="margin: 10px 0;">

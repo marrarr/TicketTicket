@@ -10,11 +10,10 @@ export class Seans {
   @Column({ name: 'tytul_filmu', type: 'varchar' })
   tytulFilmu: string;
 
-  // NOWA KOLUMNA: Przechowuje nazwę pliku z okładką (np. "film123.jpg")
   @Column({ name: 'okladka_url', type: 'varchar', nullable: true })
   okladkaUrl: string;
 
-  @ManyToOne(() => Sala, (s) => s.seanse)
+  @ManyToOne(() => Sala, (s) => s.seanse, { onDelete: 'CASCADE' })  // ← dodaj to
   @JoinColumn({ name: 'sala_id' })
   sala: Sala;
 
@@ -22,7 +21,7 @@ export class Seans {
   data: string;
 
   @Column({ name: 'godzina_rozpoczecia', type: 'varchar' })
-  godzinaRozpoczecia: string; // HH:mm
+  godzinaRozpoczecia: string;
 
   @OneToMany(() => Rezerwacja, (r) => r.seans)
   rezerwacje: Rezerwacja[];

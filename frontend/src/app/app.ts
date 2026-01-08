@@ -16,28 +16,28 @@ export class App {
   userRole: string | null = null;
 
   public buttons = [
-    { label: 'Strona Główna', link: '/', icon: 'pi pi-home' },
-    {
-      label: 'Dodaj repertuar',
-      link: '/seans',
-      icon: 'pi pi-plus-circle',
-      roles: ['admin', 'owner']
-    },
-    {
-      label: 'Dodaj salę',
-      link: '/dodaj-sale',
-      icon: 'pi pi-building',
-      roles: ['admin', 'owner']
-    },
-    {
-      label: 'Logi',
-      link: '/logi',
-      icon: 'pi pi-list',
-      roles: ['admin', 'owner']
-    },
-    { label: 'Login', link: '/auth', icon: 'pi pi-sign-in', requiredNotLogged: true },
-    { label: 'Wyloguj', action: 'logout', icon: 'pi pi-sign-out', roles: ['owner', 'admin', 'user'] }
-  ];
+  { label: 'Strona Główna', link: '/', icon: 'pi pi-home' },
+  {
+    label: 'Dodaj repertuar',
+    link: '/seanse/nowy',  // ← zmień z '/seans'
+    icon: 'pi pi-plus-circle',
+    roles: ['admin', 'owner']
+  },
+  {
+    label: 'Dodaj salę',
+    link: '/sale/nowa',    // ← zmień z '/dodaj-sale'
+    icon: 'pi pi-building',
+    roles: ['admin', 'owner']
+  },
+  {
+    label: 'Logi',
+    link: '/logi',
+    icon: 'pi pi-list',
+    roles: ['admin', 'owner']
+  },
+  { label: 'Login', link: '/auth', icon: 'pi pi-sign-in', requiredNotLogged: true },
+  { label: 'Wyloguj', action: 'logout', icon: 'pi pi-sign-out', roles: ['owner', 'admin', 'user'] }
+];
   ngZone = new NgZone({});
   constructor(private router: Router, private authService: AuthService, private cd: ChangeDetectorRef) {
     this.authService.init();
