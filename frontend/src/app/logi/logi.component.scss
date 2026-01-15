@@ -1,13 +1,83 @@
 .container {
-  padding: 1.25rem;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 1.25rem 1rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 
   h2 {
     margin: 0 0 1rem 0;
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-color);
+  }
+
+  .control-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin: 0.75rem 0 1.25rem 0;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    background: rgba(255,255,255,0.02);
+    border-radius: 6px;
+
+    .control-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-input {
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      min-width: 320px;
+      background: var(--surface-ground);
+      box-shadow: none;
+    }
+
+    .filter-select {
+      padding: 0.55rem 0.6rem;
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      background: var(--surface-ground);
+      min-width: 140px;
+    }
+
+    .filter-date {
+      padding: 0.45rem 0.55rem;
+      border: 1px solid var(--surface-border);
+      border-radius: 8px;
+      background: var(--surface-ground);
+      min-width: 170px;
+    }
+
+    .control-right { display: flex; gap: 0.5rem; }
+  }
+
+  /* Styl przycisku podobny do mat-raised-button primary (Dodaj seans) */
+  .add-seans-btn {
+    --btn-bg: var(--primary-600, #3f51b5);
+    --btn-bg-hover: var(--primary-700, #3949ab);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    justify-content: center;
+    color: #ef4444 !important;
+    background: var(--btn-bg) !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(63,81,181,0.18);
+  }
+
+  .add-seans-btn:hover,
+  .add-seans-btn:focus {
+    background: var(--btn-bg-hover) !important;
+    box-shadow: 0 4px 12px rgba(63,81,181,0.22);
   }
 
   .table-container {
