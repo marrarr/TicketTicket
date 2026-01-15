@@ -14,18 +14,19 @@ import { AuthService } from './auth/auth.service';
 })
 export class App {
   userRole: string | null = null;
+  userName: string | null = null;
 
   public buttons = [
   { label: 'Strona Główna', link: '/', icon: 'pi pi-home' },
   {
-    label: 'Dodaj repertuar',
-    link: '/seanse/nowy',  // ← zmień z '/seans'
+    label: 'Seanse',
+    link: '/seanse',
     icon: 'pi pi-plus-circle',
     roles: ['admin', 'owner']
   },
   {
-    label: 'Dodaj salę',
-    link: '/sale/nowa',    // ← zmień z '/dodaj-sale'
+    label: 'Sale',
+    link: '/sale',
     icon: 'pi pi-building',
     roles: ['admin', 'owner']
   },
@@ -45,6 +46,12 @@ export class App {
     this.authService.userRole$.subscribe(role => {
       this.ngZone.run(() => {
         this.userRole = role;
+        this.cd.detectChanges();
+      });
+    });
+    this.authService.userName$.subscribe(name => {
+      this.ngZone.run(() => {
+        this.userName = name;
         this.cd.detectChanges();
       });
     });

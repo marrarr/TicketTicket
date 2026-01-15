@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import {RezerwacjaService} from './rezerwacja.service';
 
 export interface CinemaSeat {
   id: string;
@@ -32,9 +33,14 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
   @Input() movieTitle = 'Film';
   @Input() sessionTime = '00:00';
   @Input() occupiedSeats: string[] = [];
-  
+
   // Domyślnie 20, jeśli nie przyjdzie nic z bazy
-  @Input() totalSeats = 20; 
+  @Input() totalSeats = 20;
+  @Input() salaId!: number;
+  @Input() seansId!: number;
+  @Input() userId!: number;
+  @Input() clientName!: string;
+
 
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() confirm = new EventEmitter<CinemaSeat[]>();
@@ -42,6 +48,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
   // Nowa struktura danych: rzędy zamiast płaskiej listy
   rowsData: RowData[] = [];
   selectedSeats: CinemaSeat[] = [];
+  constructor(private rezerwacjaService: RezerwacjaService) {}
 
   ngOnInit(): void {
     this.generateSeats();
@@ -52,7 +59,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
       if (this.visible) {
         // Zabezpieczenie przed zerem/nullem
         if (!this.totalSeats || this.totalSeats <= 0) {
-           this.totalSeats = 20; 
+           this.totalSeats = 20;
         }
         this.generateSeats();
       }
@@ -61,7 +68,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
 
   generateSeats() {
     // Konfiguracja
-    const seatsPerRow = 12; 
+    const seatsPerRow = 12;
     const totalRows = Math.ceil(this.totalSeats / seatsPerRow);
 
     this.rowsData = [];
@@ -70,7 +77,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
     for (let r = 0; r < totalRows; r++) {
       const rowLabel = String.fromCharCode(65 + r); // A, B, C...
       const currentLabel = rowLabel;
-      
+
       const rowSeats: CinemaSeat[] = [];
 
       for (let c = 1; c <= seatsPerRow; c++) {
@@ -92,7 +99,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
 
         seatsCreated++;
       }
-      
+
       this.rowsData.push({ label: currentLabel, seats: rowSeats });
     }
   }
@@ -119,9 +126,30 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
     this.close();
   }
 
+
+
   close() {
     this.selectedSeats = [];
     this.visible = false;
     this.visibleChange.emit(false);
   }
+
+  zapiszRezerwacje(seats: CinemaSeat[]) {
+    seats.forEach(seat => {
+      const dto = {
+        salaId: this.salaId,
+        siedzenieId: seat.number, // liczba miejsca zgodnie z typem Rezerwacja
+        seansId: this.seansId,
+        klient: this.clientName,
+        status: 'zarezerwowano',
+        uzytkownik_id: this.userId
+      };
+
+      this.rezerwacjaService.create(dto).subscribe({
+        next: () => console.log("Zarezerwowano:", seat.id),
+        error: err => console.error("Błąd rezerwacji:", seat.id, err)
+      });
+    });
+  }
+
 }

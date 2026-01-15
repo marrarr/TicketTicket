@@ -72,6 +72,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.uzytkownikId = this.authService.getUserId(); // <--- pobieramy z JWT
+    // Ustaw nazwę użytkownika synchronously (z tokenu) i subskrybuj zmiany
+    this.klient = this.authService.getUserName() ?? '';
+    this.authService.userName$.subscribe((name) => {
+      this.klient = name ?? this.klient;
+    });
     this.loadFilmy();
   }
 
@@ -212,8 +217,7 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    const klientName =
-      this.klient && this.klient.trim().length > 0 ? this.klient : 'milosz';
+    const klientName = this.klient && this.klient.trim().length > 0 ? this.klient : 'Nieznany';
 
     const requests = selectedSeats
       .map((seat) => {
