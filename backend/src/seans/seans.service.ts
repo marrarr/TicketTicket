@@ -88,7 +88,9 @@ export class SeansService {
 
     // Sprawdź czy seans ma przypisaną salę
     if (!seans.sala) {
-      throw new NotFoundException(`Seans o ID ${seansId} nie ma przypisanej sali`);
+      throw new NotFoundException(
+        `Seans o ID ${seansId} nie ma przypisanej sali`,
+      );
     }
 
     // 2. Pobierz wszystkie fizyczne siedzenia z tej sali
@@ -131,8 +133,22 @@ export class SeansService {
   }
 
   async update(id: number, dto: UpdateSeansDto) {
-    await this.seansRepo.update(id, dto);
-    return this.findOne(id);
+    const updateData: any = {};
+
+    if (dto.tytulFilmu !== undefined) updateData.tytulFilmu = dto.tytulFilmu;
+    if (dto.data !== undefined) updateData.data = dto.data;
+    if (dto.godzinaRozpoczecia !== undefined)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      updateData.godzinaRozpoczecia = dto.godzinaRozpoczecia;
+
+    // KONWERSJA salaId → sala: { id }
+    if (dto.salaId !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      updateData.sala = { id: dto.salaId };
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return this.seansRepo.update(id, updateData);
   }
 
   remove(id: number) {

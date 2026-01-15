@@ -1,0 +1,45 @@
+<div class="container">
+  <h2>Lista seansów</h2>
+
+  <button mat-raised-button color="primary" routerLink="/seanse/nowy">
+    Dodaj seans
+  </button>
+
+  <table mat-table [dataSource]="seanse" class="mat-elevation-z2" style="margin-top: 20px; width: 100%;">
+
+    <!-- Tytuł -->
+    <ng-container matColumnDef="tytul">
+      <th mat-header-cell *matHeaderCellDef>Tytuł filmu</th>
+      <td mat-cell *matCellDef="let s">{{ s.tytulFilmu }}</td>
+    </ng-container>
+
+    <!-- Data -->
+    <ng-container matColumnDef="data">
+      <th mat-header-cell *matHeaderCellDef>Data</th>
+      <td mat-cell *matCellDef="let s">{{ s.data }}</td>
+    </ng-container>
+
+    <!-- Godzina -->
+    <ng-container matColumnDef="godzina">
+      <th mat-header-cell *matHeaderCellDef>Godzina</th>
+      <td mat-cell *matCellDef="let s">{{ s.godzinaRozpoczecia }}</td>
+    </ng-container>
+
+    <!-- Akcje -->
+    <ng-container matColumnDef="akcje">
+      <th mat-header-cell *matHeaderCellDef>Akcje</th>
+      <td mat-cell *matCellDef="let s">
+        <button mat-button color="accent" [routerLink]="['/seanse/edytuj', s.id]">
+          Edytuj
+        </button>
+
+        <button mat-button color="warn" (click)="delete(s.id)">
+          Usuń
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['tytul','data','godzina','akcje']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['tytul','data','godzina','akcje']"></tr>
+  </table>
+</div>

@@ -11,8 +11,10 @@ export class AuthService {
   private baseUrl = 'http://localhost:3000/auth';
 
   private userRoleSubject = new BehaviorSubject<string | null>(null);
+  private userNameSubject = new BehaviorSubject<string | null>(null);
   ngZone = new NgZone({});
   userRole$ = this.userRoleSubject.asObservable();
+  userName$ = this.userNameSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.init();
@@ -24,11 +26,15 @@ export class AuthService {
       try {
         const decoded: any = jwtDecode(token);
         this.userRoleSubject.next(decoded.role);
+        const name = decoded.username ?? decoded.login ?? decoded.name ?? (decoded.sub !== undefined && decoded.sub !== null ? String(decoded.sub) : null);
+        this.userNameSubject.next(name ?? null);
       } catch {
         this.userRoleSubject.next(null);
+        this.userNameSubject.next(null);
       }
     } else {
       this.userRoleSubject.next(null);
+      this.userNameSubject.next(null);
     }
   }
 
@@ -53,6 +59,14 @@ export class AuthService {
       }
       this.ngZone.run(() => {
         this.userRoleSubject.next(role);
+        // also set username from token
+        try {
+          const decoded: any = jwtDecode(res.access_token);
+          const name = decoded.username ?? decoded.login ?? decoded.name ?? (decoded.sub !== undefined && decoded.sub !== null ? String(decoded.sub) : null);
+          this.userNameSubject.next(name ?? null);
+        } catch {
+          this.userNameSubject.next(null);
+        }
       });
       return res;
     })
@@ -62,6 +76,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     this.userRoleSubject.next(null);
+    this.userNameSubject.next(null);
   }
 
   setToken(token: string) {
@@ -87,6 +102,18 @@ export class AuthService {
         return Number(sub);
       }
       return null;
+    } catch {
+      return null;
+    }
+  }
+
+  getUserName(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const decoded: any = jwtDecode(token);
+      const name = decoded.username ?? decoded.login ?? decoded.name ?? (decoded.sub !== undefined && decoded.sub !== null ? String(decoded.sub) : null);
+      return name ?? null;
     } catch {
       return null;
     }

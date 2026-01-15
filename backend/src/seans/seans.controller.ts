@@ -20,43 +20,37 @@ export class SeansController {
   constructor(private readonly seansService: SeansService) {}
 
   @Post()
-  @UseInterceptors(
-    FileInterceptor('okladka', {
-      storage: diskStorage({
-        destination: './uploads', // Folder docelowy (musi istnieć!)
-        filename: (req, file, cb) => {
-          // Generujemy unikalną nazwę pliku (np. losowyCiągZnaków.jpg)
-          const randomName = Array(32)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('');
-          cb(null, `${randomName}${extname(file.originalname)}`);
-        },
-      }),
-    }),
-  )
-  async create(
-    @Body() dto: CreateSeansDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    // Parsujemy dane, które przychodzą jako stringi z FormData
-    const seansData: any = {
-      tytulFilmu: dto.tytulFilmu,
-      data: dto.data,
-      godzinaRozpoczecia: dto.godzinaRozpoczecia,
-      // FormData wysyła wszystko jako string, więc parsujemy salaId
-      sala: {
-        id: typeof dto.salaId === 'string' ? parseInt(dto.salaId) : dto.salaId,
+@UseInterceptors(
+  FileInterceptor('okladka', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, file, cb) => {
+        const randomName = Array(32)
+          .fill(null)
+          .map(() => Math.round(Math.random() * 16).toString(16))
+          .join('');
+        cb(null, `${randomName}${extname(file.originalname)}`);
       },
-    };
+    }),
+  }),
+)
+async create(
+  @Body() dto: CreateSeansDto,
+  @UploadedFile() file: Express.Multer.File,
+) {
+  const seansData: any = {
+    tytulFilmu: dto.tytulFilmu,
+    data: dto.data,
+    godzinaRozpoczecia: dto.godzinaRozpoczecia,
+    salaId: typeof dto.salaId === 'string' ? parseInt(dto.salaId, 10) : dto.salaId,  // ← POPRAWKA
+  };
 
-    // Jeśli plik został przesłany, dopisujemy jego nazwę
-    if (file) {
-      seansData.okladkaUrl = file.filename;
-    }
-
-    return this.seansService.create(seansData);
+  if (file) {
+    seansData.okladkaUrl = file.filename;
   }
+
+  return this.seansService.create(seansData);
+}
 
   @Get()
   findAll() {
@@ -79,6 +73,8 @@ export class SeansController {
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() dto: UpdateSeansDto) {
+     console.log(dto);
+     console.log(" uwu!");
     return this.seansService.update(id, dto);
   }
 
