@@ -19,6 +19,10 @@ export const routes: Routes = [
   { path: 'sale/nowa', component: SalaFormComponent },
   { path: 'sale/edytuj/:id', component: SalaFormComponent },
   { path: 'rezerwacje', component: RezerwacjaListComponent },
+  {
+  path: 'dodaj-seans',
+  loadComponent: () => import('./dodaj-seans/dodaj-seans.component').then(m => m.DodajSeansComponent)
+},
   // { path: 'rezerwacje/nowa', component: RezerwacjaFormComponent },
   // { path: 'rezerwacje/edytuj/:id', component: RezerwacjaFormComponent },
 

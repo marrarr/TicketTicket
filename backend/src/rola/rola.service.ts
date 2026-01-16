@@ -22,7 +22,7 @@ export class RoleService {
 
   async findOne(id: number): Promise<Rola> {
     const rola = await this.rolaRepository.findOne({
-      where: { id: id },
+      where: { rola_id: id },
     });
     if (!rola) {
       throw new NotFoundException(`Rola z ID ${id} nie znaleziona`);
@@ -32,7 +32,7 @@ export class RoleService {
 
   async upsert(id: number, updateRolaDto: UpdateRolaDto): Promise<Rola> {
     const rola = await this.rolaRepository.findOne({
-      where: { id: id },
+      where: { rola_id: id },
     });
 
     if (rola) {
@@ -40,7 +40,7 @@ export class RoleService {
       return await this.rolaRepository.save(rola);
     } else {
       const newRola = this.rolaRepository.create({
-        id: id,
+        rola_id: id,
         ...updateRolaDto,
       });
       return await this.rolaRepository.save(newRola);
@@ -48,7 +48,7 @@ export class RoleService {
   }
 
   async remove(id: number): Promise<void> {
-    const result = await this.rolaRepository.delete({ id: id });
+    const result = await this.rolaRepository.delete({ rola_id: id });
     if (result.affected === 0) {
       throw new NotFoundException(`Rola z ID ${id} nie znaleziona`);
     }

@@ -1,190 +1,386 @@
+// cinema-reservation-dialog.component.scss - Stylizacja dialogu rezerwacji miejsc
+
 .cinema-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  background: linear-gradient(180deg, #0a0a14 0%, #1a1a2e 100%);
+  border-radius: 16px;
+  overflow: hidden;
 }
 
+// Screen (Ekran)
 .cinema-screen {
-  width: 60%;
-  height: 30px;
-  background: #444;
-  color: #aaa;
+  background: linear-gradient(180deg, #fff 0%, #e0e0e0 100%);
+  padding: 0.75rem 2rem;
+  margin: 0 3rem 2rem;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
   text-align: center;
-  border-radius: 0 0 50px 50px;
-  margin-bottom: 30px;
-  box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+  box-shadow: 
+    0 5px 30px rgba(255, 255, 255, 0.3),
+    0 0 100px rgba(255, 255, 255, 0.1);
+  position: relative;
+
+  span {
+    color: #333;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent);
+    filter: blur(10px);
+  }
 }
 
+// Main content layout
 .main-content {
   display: flex;
-  gap: 30px;
-  width: 100%;
-  justify-content: center;
+  gap: 2rem;
+  padding: 1rem 2rem 2rem;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+  }
 }
 
-/* Nowy styl sali - Flexbox */
+// Cinema hall (seats area)
 .cinema-hall-flex {
+  flex: 1;
   display: flex;
-  flex-direction: column; /* Rzędy jeden pod drugim */
-  gap: 15px; /* Odstęp między rzędami */
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .cinema-row {
   display: flex;
   align-items: center;
-  gap: 20px; /* Odstęp między literą a fotelami */
+  gap: 0.75rem;
 }
 
 .row-letter {
-  font-weight: bold;
-  font-size: 1.2rem;
   width: 30px;
-  text-align: center;
-  opacity: 0.7;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(229, 9, 20, 0.2);
+  color: #e50914;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 8px;
 }
 
 .seats-row {
   display: flex;
-  gap: 10px; /* Odstęp między fotelami */
+  gap: 0.4rem;
 }
 
+// Individual seat
 .seat {
-  width: 40px;
-  height: 40px;
-  background-color: #3b3b3b;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #2d4a3e 0%, #1a3a2a 100%);
+  border-radius: 8px 8px 4px 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: 0.2s;
-  font-size: 0.8rem;
-  color: #fff;
+  position: relative;
+  border: 2px solid transparent;
 
-  &:hover { background-color: #555; }
-  
-  &.selected {
-    background-color: #4CAF50; /* Zielony */
-    box-shadow: 0 0 10px #4CAF50;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
   }
-  
+
+  .seat-number {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+  }
+
+  &:hover:not(.reserved):not(.selected) {
+    background: linear-gradient(135deg, #3d6a5e 0%, #2a5a4a 100%);
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(45, 74, 62, 0.4);
+  }
+
+  // Selected state
+  &.selected {
+    background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+    border-color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(229, 9, 20, 0.5);
+
+    .seat-number {
+      color: #fff;
+    }
+
+    &::before {
+      background: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  // Reserved state
   &.reserved {
-    background-color: #D32F2F; /* Czerwony */
+    background: linear-gradient(135deg, #4a4a5a 0%, #3a3a4a 100%);
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.6;
+
+    .seat-number {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    &::after {
+      content: '×';
+      position: absolute;
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.3);
+    }
   }
 }
 
+// Summary sidebar
 .summary-sidebar {
-  min-width: 250px;
-  padding: 20px;
-  background-color: #1e1e1e; /* Ciemne tło */
-  border-radius: 12px;
-  color: #ffffff; /* Biały tekst */
+  width: 280px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+  height: fit-content;
+
+  @media (max-width: 900px) {
+    width: 100%;
+  }
+
+  h3 {
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    &::before {
+      content: '🎟️ ';
+    }
+  }
+
+  > p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 1rem 0;
+    font-size: 0.95rem;
+
+    &::before {
+      content: 'Wybrano miejsc: ';
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+.selected-seats-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(229, 9, 20, 0.5);
+    border-radius: 2px;
+  }
 }
 
 .chip {
   display: inline-flex;
-  background: #4CAF50;
-  padding: 5px 10px;
-  border-radius: 15px;
-  margin: 5px;
-  font-size: 0.9rem;
-}
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+  color: #fff;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
 
-/* ============================================
-   STYLE PRZYCISKÓW AKCJI
-   ============================================ */
-.summary-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: auto;
-  padding-top: 15px;
-
-  button {
-    flex: 1;
-    padding: 12px 20px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  // Przycisk Anuluj
-  .p-button-outlined {
-    background: transparent;
-    border: 2px solid #ff5252;
-    color: #ff5252;
+  i {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
 
     &:hover {
-      background: #ff5252;
-      color: #ffffff;
-      box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
-      transform: translateY(-2px);
-    }
-
-    &:active {
-      transform: translateY(0);
+      opacity: 1;
     }
   }
+}
 
-  // Przycisk Zatwierdź
-  .p-button-success {
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-    border: none;
-    color: #ffffff;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+.summary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-    &:hover:not(:disabled) {
-      background: linear-gradient(135deg, #5cbf60 0%, #4CAF50 100%);
-      box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
-      transform: translateY(-2px);
+// Button styling
+:host ::ng-deep {
+  .p-button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &.p-button-success {
+      background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+      border: none;
+      box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(229, 9, 20, 0.5);
+      }
+
+      &:disabled {
+        background: #4a4a5a;
+        opacity: 0.6;
+        box-shadow: none;
+      }
     }
 
-    &:active:not(:disabled) {
-      transform: translateY(0);
+    &.p-button-outlined {
+      background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.8);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
+}
+
+// Legend (optional - can add below seats)
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+
+  .legend-box {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+
+    &.available {
+      background: linear-gradient(135deg, #2d4a3e 0%, #1a3a2a 100%);
     }
 
-    &:disabled {
-      background: #3b3b3b;
-      color: #666;
-      box-shadow: none;
-      cursor: not-allowed;
+    &.selected {
+      background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+    }
+
+    &.reserved {
+      background: linear-gradient(135deg, #4a4a5a 0%, #3a3a4a 100%);
       opacity: 0.6;
     }
   }
 }
 
-/* ============================================
-   CZARNA OBRAMÓWKA DIALOGU
-   ============================================ */
-::ng-deep {
+// Dialog styling
+:host ::ng-deep {
   .p-dialog {
-    border: 3px solid #000000;
-    border-radius: 12px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  }
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #0a0a14;
 
-  .p-dialog-header {
-    border-bottom: 2px solid #000000;
-  }
+    .p-dialog-header {
+      background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+      color: #fff;
+      padding: 1.25rem 1.5rem;
+      border-bottom: none;
 
-  .p-dialog-content {
-    border: none;
-  }
+      .p-dialog-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
 
-  .p-dialog-footer {
-    border-top: 2px solid #000000;
+      .p-dialog-header-icon {
+        color: #fff;
+        width: 2.5rem;
+        height: 2.5rem;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+
+    .p-dialog-content {
+      background: #0a0a14;
+      padding: 0;
+    }
+  }
+}
+
+// Tooltip styling
+:host ::ng-deep {
+  .p-tooltip {
+    .p-tooltip-text {
+      background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
+      color: #fff;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .p-tooltip-arrow {
+      border-top-color: #2d2d44;
+    }
   }
 }

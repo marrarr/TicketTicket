@@ -30,6 +30,12 @@ export class RezerwacjaService {
     return this.http.post<Rezerwacja>(this.apiUrl, r);
   }
 
+  // W pliku RezerwacjaService.ts (Angular)
+createMany(payload: any): Observable<any> {
+  // Wywołujemy nowy endpoint /rezerwacje/wiele
+  return this.http.post(`${this.apiUrl}/wiele`, payload);
+}
+
   update(id: number, r: Rezerwacja): Observable<Rezerwacja> {
     return this.http.patch<Rezerwacja>(`${this.apiUrl}/${id}`, r);
   }

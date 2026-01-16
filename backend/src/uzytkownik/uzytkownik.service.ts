@@ -5,7 +5,6 @@ import { Uzytkownik } from '../uzytkownik/uzytkownik.entity';
 import { CreateUzytkownikDto, UpdateUzytkownikDto } from '../dtos/uzytkownik.dto';
 import * as bcrypt from 'bcryptjs';
 
-// Interface dla błędów PostgreSQL
 interface PostgresError extends Error {
     code?: string;
     detail?: string;
@@ -22,16 +21,13 @@ export class UzytkownikService {
     try {
         console.log('Tworzenie użytkownika z DTO:', createUzytkownikDto);
         
-        // Hashowanie hasła
         const hashedPassword = await bcrypt.hash(createUzytkownikDto.haslo, 10);
         console.log('Hasło zahashowane');
         
-        // Tworzenie obiektu użytkownika
         const uzytkownik = this.uzytkownikRepository.create({
             ...createUzytkownikDto,
-
             haslo: hashedPassword,
-            rola: { id: createUzytkownikDto.rola_id }
+            rola: { rola_id: createUzytkownikDto.rola_id }  // ← zmiana z id na rola_id
         });
         
         console.log('Zapisywanie użytkownika do bazy...');
@@ -44,23 +40,18 @@ export class UzytkownikService {
         
         const error = err as PostgresError;
         
-        // Szczegółowa obsługa błędów bazy danych
         if (error.code === '23505') {
-            // UNIQUE constraint violation
             throw new BadRequestException('Użytkownik o tym loginie lub emailu już istnieje');
         }
         
         if (error.code === '23502') {
-            // NOT NULL constraint violation
             throw new BadRequestException('Brakuje wymaganych pól');
         }
         
         if (error.code === '23503') {
-            // FOREIGN KEY constraint violation
             throw new BadRequestException('Nieprawidłowa rola użytkownika (rola_id nie istnieje)');
         }
         
-        // Ogólny błąd
         throw new BadRequestException(
             `Nie udało się utworzyć użytkownika: ${error.message || 'Nieznany błąd'}`
         );
@@ -90,14 +81,12 @@ export class UzytkownikService {
     });
 
     if (uzytkownik) {
-      // Jeśli aktualizujemy hasło, należy je zahashować
       if (updateUzytkownikDto.haslo) {
         updateUzytkownikDto.haslo = await bcrypt.hash(updateUzytkownikDto.haslo, 10);
       }
       Object.assign(uzytkownik, updateUzytkownikDto);
       return await this.uzytkownikRepository.save(uzytkownik);
     } else {
-      // Przy tworzeniu nowego użytkownika też hashujemy hasło
       if (updateUzytkownikDto.haslo) {
         updateUzytkownikDto.haslo = await bcrypt.hash(updateUzytkownikDto.haslo, 10);
       }
