@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Seans } from './seans.entity';
+import { LogService } from '../mongo/log.service';
 import { Sala } from '../sala/sala.entity';
 import { Siedzenie } from '../siedzenie/siedzenie.entity';
 // WAŻNE: Import Rezerwacji
@@ -23,6 +24,7 @@ export class SeansService {
     // WAŻNE: Wstrzyknięcie repozytorium rezerwacji
     @InjectRepository(Rezerwacja)
     private rezerwacjaRepo: Repository<Rezerwacja>,
+    private logService?: LogService,
   ) {}
 
   async create(dto: CreateSeansDto) {
@@ -46,6 +48,19 @@ export class SeansService {
     // ------------------------------------------------------------------
 
     const zapisanySeans = await this.seansRepo.save(nowySeans);
+
+    try {
+      if (this.logService) {
+        await this.logService.create({
+          typ_logu: 'INFO',
+          typ_zdarzenia: 'DODANIE_SEANSU',
+          opis: `Dodano seans id=${(zapisanySeans as any).id}`,
+          seans_id: (zapisanySeans as any).id,
+        });
+      }
+    } catch (e) {
+      console.error('Failed to write mongo log', e);
+    }
 
     // Generowanie miejsc (sprawdzenie czy sala ma zdefiniowaną pojemność)
     const pojemnosc = (sala as any).iloscMiejsc || (sala as any).pojemnosc || 0;
@@ -148,10 +163,39 @@ export class SeansService {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return this.seansRepo.update(id, updateData);
+    const res = await this.seansRepo.update(id, updateData);
+
+    try {
+      if (this.logService) {
+        await this.logService.create({
+          typ_logu: 'INFO',
+          typ_zdarzenia: 'EDYCJA_SEANSU',
+          opis: `Edytowano seans id=${id}`,
+          seans_id: id,
+        });
+      }
+    } catch (e) {
+      console.error('Failed to write mongo log', e);
+    }
+
+    return res;
   }
 
   remove(id: number) {
-    return this.seansRepo.delete(id);
+    return this.seansRepo.findOne({ where: { id } }).then(async (existing) => {
+      try {
+        if (existing && this.logService) {
+          await this.logService.create({
+            typ_logu: 'WARNING',
+            typ_zdarzenia: 'USUNIECIE_SEANSU',
+            opis: `Usunięto seans id=${id}`,
+            seans_id: id,
+          });
+        }
+      } catch (e) {
+        console.error('Failed to write mongo log', e);
+      }
+      return this.seansRepo.delete(id);
+    });
   }
 }

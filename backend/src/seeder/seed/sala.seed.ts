@@ -5,7 +5,7 @@ export async function seedSale(): Promise<void> {
   const salaRepo = AppDataSource.getRepository(Sala);
   const iloscRekordow = 5;
   const numerSaliStart = 100;
-  const iloscMiejsc = 168;  // 12 * 14 (rzędy * miejsca w rzędzie)
+  const iloscMiejsc = 98;  // 7 * 14 (rzędy * miejsca w rzędzie)
 
   for (let i = 1; i <= iloscRekordow; ++i) {
     const numerSali = i * numerSaliStart;

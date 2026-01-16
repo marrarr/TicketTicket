@@ -1,35 +1,31 @@
 <div class="main-container">
-  <div class="header-text">
-    <h1>Repertuar Kinowy</h1>
-    <p>Wybierz seans i zarezerwuj swoje miejsce</p>
-  </div>
-
-
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>Repertuar Kinowy</h1>
+      <p>Wybierz seans i zarezerwuj swoje miejsce — szybko i wygodnie.</p>
+      <div class="hero-cta">
+        <button pButton type="button" class="p-button-rounded p-button-outlined" (click)="goToCurrentWeek()">Ten tydzień</button>
+      </div>
+    </div>
+  </header>
 
   <!-- Nawigacja tygodni -->
-  <div *ngIf="!loading" class="week-nav flex align-items-center justify-content-between px-3 mt-3">
-    <!-- DLA TESTU: zwykły HTML-owy przycisk z tekstem -->
-    <button
-      type="button"
-      (click)="prevWeek()"
-      style="padding: 0.5rem 1rem; cursor: pointer;">
-      ‹ Poprzedni
+  <div *ngIf="!loading" class="week-nav">
+    <button pButton type="button" class="nav-button p-button-outlined" (click)="prevWeek()" aria-label="Poprzedni tydzień">
+      <i class="pi pi-angle-left"></i>
+      <span>Poprzedni</span>
     </button>
 
-    <div class="text-center">
-      <div class="font-bold">
-        {{ displayedWeekStart | date:'dd.MM.yyyy' }} - {{ displayedWeekEnd | date:'dd.MM.yyyy' }}
+    <div class="week-range">
+      <div class="range-dates">
+        {{ displayedWeekStart | date:'dd.MM.yyyy' }} — {{ displayedWeekEnd | date:'dd.MM.yyyy' }}
       </div>
-      <small class="text-600">
-        ( {{ displayedWeekStart | date:'EEEE' }} - {{ displayedWeekEnd | date:'EEEE' }} )
-      </small>
+      <small class="range-days">{{ displayedWeekStart | date:'EEEE' }} — {{ displayedWeekEnd | date:'EEEE' }}</small>
     </div>
 
-    <button
-      type="button"
-      (click)="nextWeek()"
-      style="padding: 0.5rem 1rem; cursor: pointer;">
-      Następny ›
+    <button pButton type="button" class="nav-button p-button-outlined" (click)="nextWeek()" aria-label="Następny tydzień">
+      <span>Następny</span>
+      <i class="pi pi-angle-right"></i>
     </button>
   </div>
 
@@ -41,39 +37,25 @@
 
     <div *ngFor="let group of filteredGroupedFilmy" class="day-section mb-6">
 
-      <div class="date-header flex align-items-center mb-3 mt-4 px-3">
-        <i class="pi pi-calendar text-primary mr-2" style="font-size: 1.5rem;"></i>
-        <h2 class="m-0 text-800" style="text-transform: capitalize;">
-          {{ group.date | date:'EEEE, d MMMM' }}
-        </h2>
+      <div class="date-header">
+        <i class="pi pi-calendar"></i>
+        <h2>{{ group.date | date:'EEEE, d MMMM' }}</h2>
       </div>
-      <hr class="mb-4 mx-3 surface-border">
+      <hr class="section-separator">
 
       <div class="movies-grid">
         <div *ngFor="let item of group.seanse" class="movie-card-wrapper">
 
           <div class="custom-card shadow-3 cursor-pointer" (click)="openCinemaReservation(item)">
 
-            <div class="card-header relative" style="height: 250px; overflow: hidden; position: relative;">
+            <div class="card-header" [style.height]="'250px'">
+              <img *ngIf="item.okladkaUrl" [src]="'http://localhost:3000/uploads/' + item.okladkaUrl" alt="Okładka" class="cover-img">
 
-              <img *ngIf="item.okladkaUrl"
-                   [src]="'http://localhost:3000/uploads/' + item.okladkaUrl"
-                   alt="Okładka"
-                   style="width: 100%; height: 100%; object-fit: cover; display: block;">
-
-              <div *ngIf="!item.okladkaUrl"
-                   class="w-full h-full flex align-items-center justify-content-center"
-                   [ngClass]="item.colorClass"
-                   style="height: 100%; display: flex; align-items: center; justify-content: center;">
-                <div class="icon-circle">
-                  <i class="pi pi-ticket"></i>
-                </div>
+              <div *ngIf="!item.okladkaUrl" class="placeholder" [ngClass]="item.colorClass">
+                <div class="icon-circle"><i class="pi pi-ticket"></i></div>
               </div>
 
-              <div *ngIf="item.okladkaUrl"
-                   class="absolute bottom-0 left-0 w-full p-3"
-                   style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); position: absolute; bottom: 0; width: 100%;">
-              </div>
+              <div class="img-gradient"></div>
             </div>
             <div class="card-content">
               <h3 class="movie-title">{{ item.tytul_filmu }}</h3>
@@ -91,7 +73,7 @@
                   <span class="label">Godzina</span>
                   <span class="time">{{ item.godzina_rozpoczecia }}</span>
                 </div>
-                <button pButton icon="pi pi-arrow-right" class="p-button-rounded p-button-text"></button>
+                <button pButton icon="pi pi-arrow-right" class="p-button-rounded p-button-text" aria-label="Rezerwuj"></button>
               </div>
             </div>
           </div>

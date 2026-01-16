@@ -6,7 +6,7 @@ export async function seedSiedzenia(): Promise<void> {
   const siedzenieRepo = AppDataSource.getRepository(Siedzenie);
   const salaRepo = AppDataSource.getRepository(Sala);
 
-  const RZEDY = 12;
+  const RZEDY = 7;
   const MIEJSCA_W_RZEDZIE = 14;
 
   const sale = await salaRepo.find();

@@ -30,10 +30,15 @@
 }
 
 /* Stopka */
+/* Stopka */
 .my-dialog .p-dialog-footer {
   background-color: #f7f7f7 !important;
-  text-align: right;
+  text-align: center; /* center buttons */
   padding: 1rem !important;
+}
+
+.my-dialog .p-dialog-footer button {
+  margin: 0 0.5rem;
 }
 
 /* Nagłówek */
@@ -43,6 +48,7 @@
   font-size: 1.2rem;
   border-top-left-radius: 8px !important;
   border-top-right-radius: 8px !important;
+  text-align: center; /* center header title */
 }
 .field{
   margin-bottom: 10px;
