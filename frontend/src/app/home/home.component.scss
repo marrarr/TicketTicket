@@ -1,7 +1,8 @@
 // Zmienne kolorów
-$bg-color: #f8f9fa;
-$text-dark: #1f2937;
+$bg-color: #f6f7fb;
+$text-dark: #0f1724;
 $text-light: #6b7280;
+$accent: #2563eb;
 
 // Klasy kolorów (używane dynamicznie w HTML)
 .bg-blue   { background: linear-gradient(135deg, #3b82f6, #2563eb); }
@@ -10,132 +11,96 @@ $text-light: #6b7280;
 .bg-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
 
 .main-container {
-    padding: 3rem 2rem;
+    padding: 2rem 1.25rem 4rem 1.25rem;
     max-width: 1200px;
     margin: 0 auto;
-    background-color: $bg-color;
+    background-color: transparent;
     min-height: 100vh;
 }
 
-.header-text {
-    margin-bottom: 3rem;
-    h1 {
-        font-size: 2.5rem;
-        color: $text-dark;
-        margin-bottom: 0.5rem;
-        font-weight: 800;
-    }
-    p {
-        color: $text-light;
-        font-size: 1.1rem;
-    }
+// HERO
+.hero {
+    background: linear-gradient(180deg, rgba(37,99,235,0.08), rgba(99,102,241,0.03));
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 1.5rem;
 }
+.hero-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+}
+.hero h1 {
+    font-size: 2.25rem;
+    color: $text-dark;
+    margin: 0 0 0.5rem 0;
+    font-weight: 800;
+}
+.hero p {
+    color: $text-light;
+    margin: 0 0 1rem 0;
+}
+.hero-cta { display: flex; justify-content: center; }
+
+.week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 1rem 0 1.5rem 0;
+}
+.nav-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+}
+.week-range { text-align: center; flex: 1; }
+.range-dates { font-weight: 700; color: $text-dark; }
+.range-days { color: $text-light; display: block; }
 
 .movies-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
 }
 
-// --- Własny styl karty (Custom Card) ---
+// --- Karta filmu ---
 .custom-card {
-    background: white;
-    border-radius: 16px;
+    background: #fff;
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
     display: flex;
     flex-direction: column;
     height: 100%;
+    border: 1px solid rgba(15,23,36,0.04);
 
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important; // shadow-3 z PrimeNG override
-    }
+    &:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(2,6,23,0.08); }
 }
 
-.card-header {
-    height: 80px;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    padding: 0 1.5rem;
-    
-    // Koło z ikoną nachodzące na header i content
-    .icon-circle {
-        width: 50px;
-        height: 50px;
-        background: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transform: translateY(50%); // Połowa w dół
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        
-        i {
-            font-size: 1.2rem;
-            color: #333;
-        }
-    }
-}
+.card-header { position: relative; overflow: hidden; }
+.cover-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.placeholder { display:flex; align-items:center; justify-content:center; height:100%; }
+.img-gradient { position:absolute; left:0; right:0; bottom:0; height:55%; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); pointer-events:none; }
 
-.card-content {
-    padding: 2rem 1.5rem 1.5rem 1.5rem; // Więcej paddingu na górze przez icon-circle
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
+.icon-circle { width:56px; height:56px; background: #fff; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(2,6,23,0.06); transform: translateY(20%); }
 
-.movie-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: $text-dark;
-    margin: 0 0 1rem 0;
-    line-height: 1.3;
-}
+.card-content { padding: 1.25rem; flex: 1; display:flex; flex-direction:column; }
+.movie-title { font-size: 1.1rem; font-weight: 700; color: $text-dark; margin: 0 0 0.6rem 0; }
+.info-row { display:flex; gap:0.75rem; margin-bottom:0.8rem; }
+.info-item { font-size:0.85rem; color:$text-light; display:flex; align-items:center; gap:0.4rem; }
+.divider { height:1px; background:#f3f4f6; margin: auto 0 0.9rem 0; }
 
-.info-row {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    
-    .info-item {
-        font-size: 0.85rem;
-        color: $text-light;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        
-        i { color: #9ca3af; }
-    }
-}
+.card-footer { display:flex; justify-content:space-between; align-items:center; padding-top:0.5rem; }
+.time-box .label { font-size:0.72rem; color:$text-light; text-transform:uppercase; }
+.time-box .time { font-size:1.15rem; font-weight:800; color:$text-dark; }
 
-.divider {
-    height: 1px;
-    background-color: #f3f4f6;
-    margin: auto 0 1rem 0; // Pycha resztę w dół
-}
+.loading-state, .empty-state { text-align:center; padding:3rem; color:#9aa4b2; }
+.empty-state i { font-size:3rem; display:block; margin-bottom:0.75rem; }
 
-.card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .time-box {
-        display: flex;
-        flex-direction: column;
-        
-        .label { font-size: 0.75rem; color: $text-light; text-transform: uppercase; letter-spacing: 0.5px; }
-        .time { font-size: 1.25rem; font-weight: 800; color: $text-dark; }
-    }
-}
-
-.loading-state, .empty-state {
-    text-align: center;
-    padding: 3rem;
-    font-size: 1.5rem;
-    color: #ccc;
-    
-    i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+@media (max-width: 640px) {
+    .hero h1 { font-size:1.6rem; }
+    .movies-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 }

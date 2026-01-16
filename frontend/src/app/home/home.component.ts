@@ -80,6 +80,12 @@ export class HomeComponent implements OnInit {
     this.loadFilmy();
   }
 
+  // Używane z szablonu, aby uniknąć wywołań konstruktorów (np. new Date()) bezpośrednio w HTML
+  goToCurrentWeek() {
+    this.setWeekRange(new Date());
+    this.applyWeekFilter();
+  }
+
   private getMonday(date: Date): Date {
     const d = new Date(date);
     const day = (d.getDay() + 6) % 7; // 0 = poniedziałek
