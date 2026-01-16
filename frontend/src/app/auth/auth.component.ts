@@ -125,5 +125,5 @@ switchToRegister(event?: Event) {
     this.addingDialog = true;
 }
 
-  protected readonly title = signal('Witaj na stronie onas!');
+  protected readonly title = signal('Logowanie');
 }

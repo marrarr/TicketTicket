@@ -50,15 +50,19 @@ body {
 
 .my-dialog .p-dialog-footer {
   background-color: #f7f7f7 !important;
-  text-align: right;
+  text-align: center !important;
   padding: 1rem !important;
 }
+.my-dialog .p-dialog-footer button {
+  margin: 0 0.5rem;
+}
 .my-dialog .p-dialog-header {
-    background-color: #007ad9 !important;
-    color: #fff !important;
-    font-size: 1.2rem;
-    border-top-left-radius: 8px !important;
-    border-top-right-radius: 8px !important;
-  }
+  background-color: #007ad9 !important;
+  color: #fff !important;
+  font-size: 1.2rem;
+  border-top-left-radius: 8px !important;
+  border-top-right-radius: 8px !important;
+  text-align: center !important;
+}
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
