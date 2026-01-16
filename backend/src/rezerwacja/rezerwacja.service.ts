@@ -119,25 +119,39 @@ export class RezerwacjaService {
     const status = (dto as any).status;
 
     try {
-      await this.dataSource.query(
-          'CALL zloz_rezerwacje(?, ?, ?, ?, ?, ?)',
-          [salaId, siedzenieId, seansId, klient, status, uzytkownikId],
-      );
-      try {
+      await this.dataSource.query('CALL zloz_rezerwacje(?, ?, ?, ?, ?, ?)', [
+        salaId,
+        siedzenieId,
+        seansId,
+        klient,
+        status,
+        uzytkownikId,
+      ]);
+
+      // log sukcesu
+      await this.logService.create({
+        typ_logu: 'INFO',
+        typ_zdarzenia: 'REZERWACJA',
+        opis: 'Rezerwacja utworzona',
+        seans_id: seansId,
+        uzytkownik_id: uzytkownikId,
+        nazwa_uzytkownika: klient,
+      });
+    } catch (err: any) {
+      // jeśli błąd z procedury
+      if (err?.sqlState === '45000') {
+        // log błędu do Mongo
         await this.logService.create({
-          typ_logu: 'INFO',
+          typ_logu: 'ERROR',
           typ_zdarzenia: 'REZERWACJA',
-          opis: 'Rezerwacja utworzona',
+          opis: `Błąd rezerwacji: ${err.sqlMessage}`, // np. "Miejsce jest już zajęte"
           seans_id: seansId,
           uzytkownik_id: uzytkownikId,
           nazwa_uzytkownika: klient,
         });
-      } catch (e) {
-        console.error('Failed to write mongo log', e);
-      }
-    } catch (err: any) {
-      if (err?.sqlState === '45000') {
-        throw new Error('Miejsce jest już zajęte');
+
+        // rzuć błąd dalej
+        throw new Error(err.sqlMessage);
       }
 
       console.error('Błąd podczas wywołania procedury zloz_rezerwacje', err);

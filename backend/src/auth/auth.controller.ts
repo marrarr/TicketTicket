@@ -15,4 +15,9 @@ export class AuthController {
   login(@Body() body: { username: string; password: string }) {
     return this.auth.login(body.username, body.password);
   }
+
+  @Post('logout')
+  logout(@Body() body: { username?: string; uzytkownik_id?: number }) {
+    return this.auth.logout(body.username, body.uzytkownik_id);
+  }
 }

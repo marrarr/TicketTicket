@@ -70,6 +70,24 @@ export class AuthService {
         }
     }
 
+    async logout(username?: string, userId?: number) {
+      console.log('AuthService.logout called', { username, userId });
+      try {
+        const res = await this.logService.create({
+          typ_logu: 'INFO',
+          typ_zdarzenia: 'WYLOGOWANIE',
+          opis: `Użytkownik wylogował się: ${username}`,
+          nazwa_uzytkownika: username,
+          uzytkownik_id: userId,
+        });
+        console.log('Logout log saved', res && (res as any)._id ? (res as any)._id : res);
+      } catch (e) {
+        console.error('Failed to write mongo log', e);
+      }
+
+      return { message: 'Wylogowano' };
+    }
+
     async login(username: string, password: string) {
       const user = await this.users.findOneByUsername(username);
       if (!user) {
