@@ -23,8 +23,8 @@ export const routes: Routes = [
   path: 'dodaj-seans',
   loadComponent: () => import('./dodaj-seans/dodaj-seans.component').then(m => m.DodajSeansComponent)
 },
-  // { path: 'rezerwacje/nowa', component: RezerwacjaFormComponent },
-  // { path: 'rezerwacje/edytuj/:id', component: RezerwacjaFormComponent },
+  
+  
 
 
   {

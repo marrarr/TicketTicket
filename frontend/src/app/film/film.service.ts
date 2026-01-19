@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-// Upewnij się, że ścieżka do modelu jest poprawna, jeśli nie masz modelu, zmień Film na any
+
 import { Film } from '../models/film.model';
 
 @Injectable({
@@ -33,7 +33,7 @@ export class FilmService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-  // --- TO JEST METODA, KTÓREJ BRAKOWAŁO ---
+  
   getMiejsca(id: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/${id}/miejsca`);
   }

@@ -1,4 +1,4 @@
-// cinema-reservation-dialog.component.scss - Stylizacja dialogu rezerwacji miejsc
+
 
 .cinema-container {
   background: linear-gradient(180deg, #0a0a14 0%, #1a1a2e 100%);
@@ -6,7 +6,7 @@
   overflow: hidden;
 }
 
-// Screen (Ekran)
+
 .cinema-screen {
   background: linear-gradient(180deg, #fff 0%, #e0e0e0 100%);
   padding: 0.75rem 2rem;
@@ -39,7 +39,7 @@
   }
 }
 
-// Main content layout
+
 .main-content {
   display: flex;
   gap: 2rem;
@@ -50,7 +50,7 @@
   }
 }
 
-// Cinema hall (seats area)
+
 .cinema-hall-flex {
   flex: 1;
   display: flex;
@@ -83,7 +83,7 @@
   gap: 0.4rem;
 }
 
-// Individual seat
+
 .seat {
   width: 36px;
   height: 36px;
@@ -121,7 +121,7 @@
     box-shadow: 0 5px 15px rgba(45, 74, 62, 0.4);
   }
 
-  // Selected state
+  
   &.selected {
     background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
     border-color: #fff;
@@ -137,7 +137,7 @@
     }
   }
 
-  // Reserved state
+  
   &.reserved {
     background: linear-gradient(135deg, #4a4a5a 0%, #3a3a4a 100%);
     cursor: not-allowed;
@@ -156,7 +156,7 @@
   }
 }
 
-// Summary sidebar
+
 .summary-sidebar {
   width: 280px;
   background: rgba(255, 255, 255, 0.05);
@@ -205,7 +205,7 @@
   overflow-y: auto;
   padding-right: 0.5rem;
 
-  // Custom scrollbar
+  
   &::-webkit-scrollbar {
     width: 4px;
   }
@@ -252,7 +252,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-// Button styling
+
 :host ::ng-deep {
   .p-button {
     width: 100%;
@@ -292,7 +292,7 @@
   }
 }
 
-// Legend (optional - can add below seats)
+
 .legend {
   display: flex;
   justify-content: center;
@@ -329,7 +329,7 @@
   }
 }
 
-// Dialog styling
+
 :host ::ng-deep {
   .p-dialog {
     border-radius: 20px;
@@ -367,7 +367,7 @@
   }
 }
 
-// Tooltip styling
+
 :host ::ng-deep {
   .p-tooltip {
     .p-tooltip-text {

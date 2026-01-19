@@ -1,4 +1,4 @@
-// seans-form.component.scss - Stylizacja formularza seansu
+
 
 .container {
   min-height: 100vh;
@@ -31,7 +31,7 @@ form {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
-// Material form fields
+
 :host ::ng-deep {
   .mat-mdc-form-field {
     width: 100%;
@@ -73,7 +73,7 @@ form {
     }
   }
 
-  // Select dropdown panel
+  
   .mat-mdc-select-panel {
     background: #1e1e2e;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -94,7 +94,7 @@ form {
   }
 }
 
-// File input styling
+
 div[style*="margin: 10px"] {
   margin: 1.5rem 0 !important;
 
@@ -139,7 +139,7 @@ div[style*="margin: 10px"] {
   }
 }
 
-// Buttons
+
 :host ::ng-deep {
   .mat-mdc-raised-button.mat-primary {
     background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
@@ -168,7 +168,7 @@ div[style*="margin: 10px"] {
   }
 }
 
-// Responsive
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;

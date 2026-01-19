@@ -1,8 +1,8 @@
-// app.scss - Globalne style aplikacji TicketTicket
 
-// ==========================================
-// VARIABLES
-// ==========================================
+
+
+
+
 $primary: #e50914;
 $primary-dark: #b81d24;
 $bg-dark: #0f0f1a;
@@ -11,9 +11,9 @@ $text-primary: #fff;
 $text-secondary: rgba(255, 255, 255, 0.7);
 $border-color: rgba(255, 255, 255, 0.1);
 
-// ==========================================
-// GLOBAL RESET & BASE
-// ==========================================
+
+
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -36,9 +36,9 @@ body {
   overflow-x: hidden;
 }
 
-// ==========================================
-// MAIN LAYOUT
-// ==========================================
+
+
+
 .main {
   display: flex;
   min-height: 100vh;
@@ -47,9 +47,9 @@ body {
   padding: 0;
 }
 
-// ==========================================
-// SIDEBAR MENU
-// ==========================================
+
+
+
 .menu {
   width: 280px;
   min-height: 100vh;
@@ -65,7 +65,7 @@ body {
   z-index: 100;
   box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
 
-  // Logo area
+  
   &::before {
     content: '🎬 TicketTicket';
     display: flex;
@@ -80,7 +80,7 @@ body {
     letter-spacing: -0.5px;
   }
 
-  // Wrapper for buttons
+  
   .menu-buttons {
     padding: 1.5rem 1rem;
     display: flex;
@@ -88,7 +88,7 @@ body {
     gap: 0.5rem;
   }
 
-  // Menu buttons
+  
   button {
     width: calc(100% - 2rem);
     margin: 0.25rem 1rem;
@@ -141,7 +141,7 @@ body {
       }
     }
 
-    // Active state
+    
     &.active {
       background: linear-gradient(135deg, $primary 0%, $primary-dark 100%) !important;
       color: $text-primary !important;
@@ -157,7 +157,7 @@ body {
     }
   }
 
-  // PrimeNG button reset
+  
   :host ::ng-deep .p-button {
     border: none !important;
     outline: none !important;
@@ -169,9 +169,9 @@ body {
   }
 }
 
-// ==========================================
-// HEADER (if needed)
-// ==========================================
+
+
+
 .header {
   height: 60px;
   background: rgba($bg-card, 0.8);
@@ -185,9 +185,9 @@ body {
   z-index: 50;
 }
 
-// ==========================================
-// MAIN CONTENT AREA
-// ==========================================
+
+
+
 .content {
   flex: 1;
   margin-left: 280px;
@@ -201,11 +201,11 @@ body {
   }
 }
 
-// ==========================================
-// COMMON COMPONENTS
-// ==========================================
 
-// Container
+
+
+
+
 .container {
   max-width: 1400px;
   margin: 0 auto;
@@ -216,7 +216,7 @@ body {
   }
 }
 
-// Cards
+
 .card {
   background: $bg-card;
   border-radius: 16px;
@@ -229,9 +229,9 @@ body {
   }
 }
 
-// ==========================================
-// MATERIAL TABLE OVERRIDES
-// ==========================================
+
+
+
 .mat-mdc-table {
   background: $bg-card !important;
   border-radius: 16px;
@@ -262,7 +262,7 @@ body {
   }
 }
 
-// Material buttons
+
 .mat-mdc-raised-button {
   &.mat-primary {
     background: linear-gradient(135deg, $primary 0%, $primary-dark 100%) !important;
@@ -287,7 +287,7 @@ body {
   }
 }
 
-// Material form fields
+
 .mat-mdc-form-field {
   width: 100%;
   margin-bottom: 1rem;
@@ -318,11 +318,11 @@ body {
   }
 }
 
-// ==========================================
-// PRIMENG OVERRIDES
-// ==========================================
 
-// Buttons
+
+
+
+
 .p-button {
   border-radius: 12px;
   font-weight: 600;
@@ -341,7 +341,7 @@ body {
   }
 }
 
-// Toast
+
 .p-toast {
   .p-toast-message {
     border-radius: 12px;
@@ -369,7 +369,7 @@ body {
   }
 }
 
-// Dialog
+
 .p-dialog {
   border-radius: 20px;
   overflow: hidden;
@@ -401,7 +401,7 @@ body {
   }
 }
 
-// Select/Dropdown
+
 .p-select,
 .p-dropdown {
   border-radius: 12px;
@@ -419,7 +419,7 @@ body {
   }
 }
 
-// Input text
+
 .p-inputtext {
   border-radius: 12px;
   border: 2px solid $border-color;
@@ -442,7 +442,7 @@ body {
   }
 }
 
-// Card
+
 .p-card {
   background: $bg-card;
   border-radius: 16px;
@@ -461,16 +461,16 @@ body {
   }
 }
 
-// Tag
+
 .p-tag {
   border-radius: 20px;
   font-weight: 600;
   font-size: 0.75rem;
 }
 
-// ==========================================
-// SCROLLBAR
-// ==========================================
+
+
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -489,9 +489,9 @@ body {
   }
 }
 
-// ==========================================
-// RESPONSIVE
-// ==========================================
+
+
+
 @media (max-width: 768px) {
   .menu {
     width: 100%;
@@ -534,9 +534,9 @@ body {
   }
 }
 
-// ==========================================
-// ANIMATIONS
-// ==========================================
+
+
+
 @keyframes fadeIn {
   from {
     opacity: 0;

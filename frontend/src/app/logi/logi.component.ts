@@ -28,7 +28,7 @@ export interface Log {
 
   opis: string;
 
-  // z timestamps: { createdAt: true, updatedAt: false }
+  
   createdAt: Date;
 
   seans_id?: number;
@@ -56,10 +56,10 @@ export class LogiComponent implements OnInit {
   first: number = 0;
   rows: number = 10;
 
-  // Filtry po stronie klienta
+  
   searchQuery: string = '';
   selectedTyp: string = 'all';
-  selectedDate: string | null = null; // format YYYY-MM-DD
+  selectedDate: string | null = null; 
 
   filterOptions = [
     { label: 'Wszystkie', value: 'all' },
@@ -187,12 +187,12 @@ export class LogiComponent implements OnInit {
     const q = this.searchQuery ? this.searchQuery.trim().toLowerCase() : '';
 
     return this.logs.filter(log => {
-      // typ_logu filter
+      
       if (this.selectedTyp && this.selectedTyp !== 'all') {
         if (log.typ_logu !== this.selectedTyp) return false;
       }
 
-      // date filter (exact day)
+      
       if (this.selectedDate) {
         const logDate = new Date(log.createdAt);
         const logDateISO = logDate.toISOString().slice(0, 10);

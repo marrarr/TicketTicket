@@ -13,7 +13,7 @@ export class Seans {
   @Column({ name: 'okladka_url', type: 'varchar', nullable: true })
   okladkaUrl: string;
 
-  @ManyToOne(() => Sala, (s) => s.seanse, { onDelete: 'CASCADE' })  // ← dodaj to
+  @ManyToOne(() => Sala, (s) => s.seanse, { onDelete: 'CASCADE' })  
   @JoinColumn({ name: 'sala_id' })
   sala: Sala;
 

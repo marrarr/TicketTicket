@@ -4,7 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 
-// ZMIANA IMPORTÓW: Zamiast forkJoin używamy from, concatMap, toArray
+
 import { from } from 'rxjs';
 import { concatMap, toArray, tap } from 'rxjs/operators';
 
@@ -36,7 +36,7 @@ export class FilmComponent implements OnInit {
   constructor(private rezerwacjaService: RezerwacjaService) {}
 
   ngOnInit(): void {
-    // Przykładowe dane
+    
     this.filmy = [
       {
         id: 1, 
@@ -61,25 +61,25 @@ export class FilmComponent implements OnInit {
     this.dialogVisible = true;
   }
 
-  // ============================================================
-  // POPRAWIONA METODA: ZAPIS SEKWENCYJNY (Jeden po drugim)
-  // ============================================================
-  // W pliku film.component.ts
+  
+  
+  
+  
 
 zapiszRezerwacje(wybraneMiejsca: CinemaSeat[]) {
   if (!wybraneMiejsca || wybraneMiejsca.length === 0) return;
 
-  // Przygotuj JEDEN obiekt z tablicą ID miejsc
+  
   const payload = {
     salaId: this.wybranyFilm.salaId,
     seansId: this.wybranyFilm.id,
     klient: 'Klient Testowy',
     uzytkownikId: 1,
-    // Mapujemy obiekty miejsc na samą listę numerów ID: [12, 13, 14]
+    
     siedzeniaIds: wybraneMiejsca.map(s => s.number) 
   };
 
-  // Wysyłamy jedno zapytanie
+  
   this.rezerwacjaService.createMany(payload).subscribe({
     next: (res) => {
       console.log('Sukces! Zarezerwowano grupę:', res);

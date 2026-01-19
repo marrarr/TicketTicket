@@ -1,4 +1,4 @@
-// src/app/rezerwacja/cinema-reservation-dialog.component.ts
+
 import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
@@ -34,7 +34,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
   @Input() sessionTime = '00:00';
   @Input() occupiedSeats: string[] = [];
 
-  // Domyślnie 20, jeśli nie przyjdzie nic z bazy
+  
   @Input() totalSeats = 20;
   @Input() salaId!: number;
   @Input() seansId!: number;
@@ -45,7 +45,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() confirm = new EventEmitter<CinemaSeat[]>();
 
-  // Nowa struktura danych: rzędy zamiast płaskiej listy
+  
   rowsData: RowData[] = [];
   selectedSeats: CinemaSeat[] = [];
   constructor(private rezerwacjaService: RezerwacjaService) {}
@@ -57,7 +57,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['totalSeats'] || changes['visible'] || changes['occupiedSeats']) {
       if (this.visible) {
-        // Zabezpieczenie przed zerem/nullem
+        
         if (!this.totalSeats || this.totalSeats <= 0) {
            this.totalSeats = 20;
         }
@@ -67,7 +67,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
   }
 
   generateSeats() {
-    // Konfiguracja
+    
     const seatsPerRow = 12;
     const totalRows = Math.ceil(this.totalSeats / seatsPerRow);
 
@@ -75,7 +75,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
     let seatsCreated = 0;
 
     for (let r = 0; r < totalRows; r++) {
-      const rowLabel = String.fromCharCode(65 + r); // A, B, C...
+      const rowLabel = String.fromCharCode(65 + r); 
       const currentLabel = rowLabel;
 
       const rowSeats: CinemaSeat[] = [];
@@ -83,7 +83,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
       for (let c = 1; c <= seatsPerRow; c++) {
         if (seatsCreated >= this.totalSeats) break;
 
-        // Sprawdź czy miejsce jest zajęte (z Inputa)
+        
         const seatId = `${currentLabel}${c}`;
         const isOccupied = this.occupiedSeats.includes(seatId);
 
@@ -138,7 +138,7 @@ export class CinemaReservationDialogComponent implements OnInit, OnChanges {
     seats.forEach(seat => {
       const dto = {
         salaId: this.salaId,
-        siedzenieId: seat.number, // liczba miejsca zgodnie z typem Rezerwacja
+        siedzenieId: seat.number, 
         seansId: this.seansId,
         klient: this.clientName,
         status: 'zarezerwowano',

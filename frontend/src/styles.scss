@@ -1,12 +1,12 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+
+
+
+
+
 
 @use '@angular/material' as mat;
 
-// Definiujemy Twój kolor tła tutaj, aby użyć go globalnie dla html/body
+
 $bg-dark: #0f0f1a;
 
 html {
@@ -19,20 +19,20 @@ html {
     density: 0,
   ));
 
-  // POPRAWKA: Wymuszamy ciemne tło i wysokość na elemencie HTML.
-  // !important nadpisuje białe tło ustawiane przez mat.theme
+  
+  
   background-color: $bg-dark !important;
   height: 100%;
   width: 100%;
 }
 
 body {
-  // Ustawienie schematu na dark dla pasków przewijania
+  
   color-scheme: dark;
   
-  // Spójne tło dla body
+  
   background-color: $bg-dark !important;
-  color: #fff; // Domyślny kolor tekstu
+  color: #fff; 
 
   font: var(--mat-sys-body-medium);
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -41,17 +41,17 @@ body {
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow-x: hidden; // Zapobiega przypadkowemu przewijaniu w poziomie
+  overflow-x: hidden; 
 }
 
-// ============================================
-// CUSTOM DIALOG STYLES
-// ============================================
+
+
+
 
 .p-dialog {
   background-color: #fff !important;
   border-radius: 8px !important;
-  // Reset stylów tekstu wewnątrz dialogu, jeśli mają być jasne
+  
   color: #333; 
 }
 

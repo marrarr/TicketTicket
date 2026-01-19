@@ -7,7 +7,7 @@
 
   <table mat-table [dataSource]="seanse" class="mat-elevation-z2" style="margin-top: 20px; width: 100%;">
 
-    <!-- Poster / Ikona -->
+    
     <ng-container matColumnDef="poster">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let s">
@@ -18,25 +18,25 @@
       </td>
     </ng-container>
 
-    <!-- Tytuł -->
+    
     <ng-container matColumnDef="tytul">
       <th mat-header-cell *matHeaderCellDef>Tytuł filmu</th>
       <td mat-cell *matCellDef="let s">{{ s.tytulFilmu }}</td>
     </ng-container>
 
-    <!-- Data -->
+    
     <ng-container matColumnDef="data">
       <th mat-header-cell *matHeaderCellDef>Data</th>
       <td mat-cell *matCellDef="let s">{{ s.data }}</td>
     </ng-container>
 
-    <!-- Godzina -->
+    
     <ng-container matColumnDef="godzina">
       <th mat-header-cell *matHeaderCellDef>Godzina</th>
       <td mat-cell *matCellDef="let s">{{ s.godzinaRozpoczecia }}</td>
     </ng-container>
 
-    <!-- Akcje -->
+    
     <ng-container matColumnDef="akcje">
       <th mat-header-cell *matHeaderCellDef>Akcje</th>
       <td mat-cell *matCellDef="let s">

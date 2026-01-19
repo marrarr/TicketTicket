@@ -1,0 +1,562 @@
+// app.scss - Globalne style aplikacji TicketTicket
+
+// ==========================================
+// VARIABLES
+// ==========================================
+$primary: #e50914;
+$primary-dark: #b81d24;
+$bg-dark: #0f0f1a;
+$bg-card: #1e1e2e;
+$text-primary: #fff;
+$text-secondary: rgba(255, 255, 255, 0.7);
+$border-color: rgba(255, 255, 255, 0.1);
+
+// ==========================================
+// GLOBAL RESET & BASE
+// ==========================================
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: $bg-dark;
+  color: $text-primary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+// ==========================================
+// MAIN LAYOUT
+// ==========================================
+.main {
+  display: flex;
+  min-height: 100vh;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+// ==========================================
+// SIDEBAR MENU
+// ==========================================
+.menu {
+  width: 280px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #16162a 0%, #0d0d1a 100%);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  outline: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+
+  // Logo area
+  &::before {
+    content: '🎬 TicketTicket';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: $text-primary;
+    padding: 1.75rem 1.5rem;
+    background: linear-gradient(135deg, rgba($primary, 0.15) 0%, transparent 100%);
+    border: none;
+    letter-spacing: -0.5px;
+  }
+
+  // Wrapper for buttons
+  .menu-buttons {
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  // Menu buttons
+  button {
+    width: calc(100% - 2rem);
+    margin: 0.25rem 1rem;
+    justify-content: flex-start !important;
+    padding: 1rem 1.25rem !important;
+    border-radius: 14px !important;
+    font-weight: 500 !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: transparent !important;
+    border: none !important;
+    color: $text-secondary !important;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: $primary;
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .p-button-icon {
+      margin-right: 1rem;
+      font-size: 1.15rem;
+      transition: transform 0.3s ease;
+    }
+
+    .p-button-label {
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      background: rgba($primary, 0.1) !important;
+      color: $text-primary !important;
+
+      &::before {
+        transform: scaleY(1);
+      }
+
+      .p-button-icon {
+        transform: scale(1.1);
+        color: $primary;
+      }
+    }
+
+    // Active state
+    &.active {
+      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%) !important;
+      color: $text-primary !important;
+      box-shadow: 0 4px 20px rgba($primary, 0.4);
+
+      &::before {
+        display: none;
+      }
+
+      .p-button-icon {
+        color: $text-primary;
+      }
+    }
+  }
+
+  // PrimeNG button reset
+  :host ::ng-deep .p-button {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+}
+
+// ==========================================
+// HEADER (if needed)
+// ==========================================
+.header {
+  height: 60px;
+  background: rgba($bg-card, 0.8);
+  backdrop-filter: blur(10px);
+  border: none;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+// ==========================================
+// MAIN CONTENT AREA
+// ==========================================
+.content {
+  flex: 1;
+  margin-left: 280px;
+  min-height: 100vh;
+  background: $bg-dark;
+  border: none;
+  outline: none;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}
+
+// ==========================================
+// COMMON COMPONENTS
+// ==========================================
+
+// Container
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+// Cards
+.card {
+  background: $bg-card;
+  border-radius: 16px;
+  border: 1px solid $border-color;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// ==========================================
+// MATERIAL TABLE OVERRIDES
+// ==========================================
+.mat-mdc-table {
+  background: $bg-card !important;
+  border-radius: 16px;
+  overflow: hidden;
+
+  .mat-mdc-header-row {
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+
+    .mat-mdc-header-cell {
+      color: $text-primary;
+      font-weight: 700;
+      border-bottom: none;
+    }
+  }
+
+  .mat-mdc-row {
+    background: $bg-card;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba($primary, 0.08);
+    }
+
+    .mat-mdc-cell {
+      color: $text-secondary;
+      border-bottom: 1px solid $border-color;
+    }
+  }
+}
+
+// Material buttons
+.mat-mdc-raised-button {
+  &.mat-primary {
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%) !important;
+    border-radius: 50px !important;
+    box-shadow: 0 4px 15px rgba($primary, 0.4) !important;
+    transition: all 0.3s ease !important;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba($primary, 0.5) !important;
+    }
+  }
+}
+
+.mat-mdc-button {
+  &.mat-accent {
+    color: #3b82f6 !important;
+  }
+
+  &.mat-warn {
+    color: #ef4444 !important;
+  }
+}
+
+// Material form fields
+.mat-mdc-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+
+  .mat-mdc-text-field-wrapper {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+  }
+
+  .mat-mdc-form-field-focus-overlay {
+    background: rgba($primary, 0.1);
+  }
+
+  &.mat-focused {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: $primary !important;
+    }
+  }
+
+  .mat-mdc-floating-label {
+    color: $text-secondary;
+  }
+
+  input {
+    color: $text-primary;
+  }
+}
+
+// ==========================================
+// PRIMENG OVERRIDES
+// ==========================================
+
+// Buttons
+.p-button {
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &.p-button-success,
+  &.p-button-primary {
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba($primary, 0.4);
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba($primary, 0.5);
+    }
+  }
+}
+
+// Toast
+.p-toast {
+  .p-toast-message {
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+
+    &.p-toast-message-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: none;
+    }
+
+    &.p-toast-message-error {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      border: none;
+    }
+
+    &.p-toast-message-warn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      border: none;
+    }
+
+    &.p-toast-message-info {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border: none;
+    }
+  }
+}
+
+// Dialog
+.p-dialog {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  border: 1px solid $border-color;
+
+  .p-dialog-header {
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+    color: $text-primary;
+    padding: 1.25rem 1.5rem;
+
+    .p-dialog-header-icon {
+      color: $text-primary;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+
+  .p-dialog-content {
+    background: $bg-card;
+    color: $text-primary;
+  }
+
+  .p-dialog-footer {
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid $border-color;
+  }
+}
+
+// Select/Dropdown
+.p-select,
+.p-dropdown {
+  border-radius: 12px;
+  border: 2px solid $border-color;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &.p-focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.2);
+  }
+}
+
+// Input text
+.p-inputtext {
+  border-radius: 12px;
+  border: 2px solid $border-color;
+  background: rgba(255, 255, 255, 0.05);
+  color: $text-primary;
+  padding: 0.875rem 1rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  &:focus {
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.2);
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+// Card
+.p-card {
+  background: $bg-card;
+  border-radius: 16px;
+  border: 1px solid $border-color;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+  .p-card-header {
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+    color: $text-primary;
+    padding: 1.25rem 1.5rem;
+    font-weight: 700;
+  }
+
+  .p-card-body {
+    padding: 1.5rem;
+  }
+}
+
+// Tag
+.p-tag {
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+// ==========================================
+// SCROLLBAR
+// ==========================================
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba($primary, 0.5);
+  border-radius: 4px;
+
+  &:hover {
+    background: rgba($primary, 0.7);
+  }
+}
+
+// ==========================================
+// RESPONSIVE
+// ==========================================
+@media (max-width: 768px) {
+  .menu {
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    position: relative;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+
+    &::before {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+    }
+
+    button {
+      flex: 1;
+      min-width: 100px;
+      margin: 0.5rem !important;
+      width: auto !important;
+      justify-content: center !important;
+      padding: 0.75rem 0.5rem !important;
+      font-size: 0.8rem !important;
+
+      &::before {
+        display: none;
+      }
+
+      .p-button-icon {
+        margin-right: 0.4rem;
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .content {
+    margin-left: 0;
+  }
+}
+
+// ==========================================
+// ANIMATIONS
+// ==========================================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}

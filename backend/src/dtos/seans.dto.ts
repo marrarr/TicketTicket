@@ -1,8 +1,8 @@
 export interface CreateSeansDto {
   tytulFilmu: string;
   salaId: number;
-  data: string;            // YYYY-MM-DD
-  godzinaRozpoczecia: string; // HH:mm
+  data: string;            
+  godzinaRozpoczecia: string; 
   okladkaUrl?: string;
 }
 

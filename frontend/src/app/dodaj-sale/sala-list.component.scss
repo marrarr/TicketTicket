@@ -1,4 +1,4 @@
-// sala-list.component.scss - Stylizacja listy sal
+
 
 .container {
   min-height: 100vh;
@@ -20,7 +20,7 @@
   }
 }
 
-// Add button
+
 :host ::ng-deep {
   .mat-mdc-raised-button.mat-primary {
     background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
@@ -38,7 +38,7 @@
   }
 }
 
-// Table styling
+
 :host ::ng-deep {
   .mat-elevation-z2 {
     border-radius: 16px;
@@ -90,7 +90,7 @@
     }
   }
 
-  // Action buttons
+  
   .mat-mdc-button {
     border-radius: 8px;
     font-weight: 500;
@@ -115,7 +115,7 @@
   }
 }
 
-// Responsive
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;

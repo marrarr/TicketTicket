@@ -59,7 +59,7 @@ export class AuthService {
       }
       this.ngZone.run(() => {
         this.userRoleSubject.next(role);
-        // also set username from token
+        
         try {
           const decoded: any = jwtDecode(res.access_token);
           const name = decoded.username ?? decoded.login ?? decoded.name ?? (decoded.sub !== undefined && decoded.sub !== null ? String(decoded.sub) : null);

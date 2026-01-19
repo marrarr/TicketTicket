@@ -1,4 +1,4 @@
-// logi.component.scss - Stylizacja strony logów systemowych
+
 
 .logi-container {
   min-height: 100vh;
@@ -6,7 +6,7 @@
   padding: 2rem;
 }
 
-// Header
+
 .logi-header {
   margin-bottom: 2rem;
 
@@ -38,7 +38,7 @@
   }
 }
 
-// Control panel
+
 .control-panel {
   display: flex;
   justify-content: space-between;
@@ -68,7 +68,7 @@
   }
 }
 
-// Filter select styling
+
 :host ::ng-deep {
   .filter-select {
     min-width: 220px;
@@ -95,7 +95,7 @@
   }
 }
 
-// Stats row
+
 .stats-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -141,264 +141,265 @@
       color: rgba(255, 255, 255, 0.6);
     }
 
-  &.info {
-    i {
-      color: #3b82f6;
-      background: rgba(59, 130, 246, 0.1);
+    &.info {
+      i {
+        color: #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+      }
+    }
+
+    &.warning {
+      i {
+        color: #f59e0b;
+        background: rgba(245, 158, 11, 0.1);
+      }
+    }
+
+    &.error {
+      i {
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+      }
     }
   }
 
-  &.warning {
-    i {
-      color: #f59e0b;
-      background: rgba(245, 158, 11, 0.1);
-    }
+
+  .table-container {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  &.error {
-    i {
-      color: #ef4444;
-      background: rgba(239, 68, 68, 0.1);
-    }
-  }
-}
 
-// Table container
-.table-container {
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
+  :host ::ng-deep {
+    .p-datatable {
+      .p-datatable-header {
+        background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+        border: none;
+        padding: 1rem 1.5rem;
+      }
 
-// Table styling
-:host ::ng-deep {
-  .p-datatable {
-    .p-datatable-header {
-      background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
-      border: none;
-      padding: 1rem 1.5rem;
-    }
+      .p-datatable-thead > tr > th {
+        background: #1e1e2e;
+        color: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        font-weight: 600;
+        font-size: 0.85rem;
 
-    .p-datatable-thead > tr > th {
-      background: #1e1e2e;
-      color: rgba(255, 255, 255, 0.9);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 1rem;
-      font-weight: 600;
-      font-size: 0.85rem;
+        .header-cell {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
 
-      .header-cell {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        i {
-          color: #e50914;
+          i {
+            color: #e50914;
+          }
         }
       }
-    }
 
-    .p-datatable-tbody > tr {
-      background: #1e1e2e;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background: rgba(229, 9, 20, 0.08);
-      }
-
-      &:nth-child(even) {
-        background: rgba(255, 255, 255, 0.02);
+      .p-datatable-tbody > tr {
+        background: #1e1e2e;
+        transition: all 0.2s ease;
 
         &:hover {
           background: rgba(229, 9, 20, 0.08);
         }
-      }
 
-      > td {
-        color: rgba(255, 255, 255, 0.85);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        padding: 0.875rem 1rem;
-        font-size: 0.9rem;
-      }
-    }
+        &:nth-child(even) {
+          background: rgba(255, 255, 255, 0.02);
 
-    .p-paginator {
-      background: #1e1e2e;
-      border: none;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 1rem;
-
-      .p-paginator-element {
-        color: rgba(255, 255, 255, 0.7);
-        border-radius: 8px;
-
-        &:hover {
-          background: rgba(229, 9, 20, 0.1);
-          color: #fff;
+          &:hover {
+            background: rgba(229, 9, 20, 0.08);
+          }
         }
 
-        &.p-highlight {
-          background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
-          color: #fff;
+        > td {
+          color: rgba(255, 255, 255, 0.85);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          padding: 0.875rem 1rem;
+          font-size: 0.9rem;
         }
       }
 
-      .p-dropdown {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
+      .p-paginator {
+        background: #1e1e2e;
+        border: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 1rem;
 
-        .p-dropdown-label {
-          color: #fff;
+        .p-paginator-element {
+          color: rgba(255, 255, 255, 0.7);
+          border-radius: 8px;
+
+          &:hover {
+            background: rgba(229, 9, 20, 0.1);
+            color: #fff;
+          }
+
+          &.p-highlight {
+            background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+            color: #fff;
+          }
         }
-      }
 
-      .p-paginator-current {
-        color: rgba(255, 255, 255, 0.6);
+        .p-dropdown {
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+
+          .p-dropdown-label {
+            color: #fff;
+          }
+        }
+
+        .p-paginator-current {
+          color: rgba(255, 255, 255, 0.6);
+        }
       }
     }
   }
-}
 
-// Row type colors
-.log-row-info {
-  border-left: 4px solid #3b82f6;
-}
 
-.log-row-warning {
-  border-left: 4px solid #f59e0b;
-}
+  .log-row-info {
+    border-left: 4px solid #3b82f6;
+  }
 
-.log-row-error {
-  border-left: 4px solid #ef4444;
-}
+  .log-row-warning {
+    border-left: 4px solid #f59e0b;
+  }
 
-// Cell styling
-.id-cell {
-  font-family: monospace;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-}
+  .log-row-error {
+    border-left: 4px solid #ef4444;
+  }
 
-.date-cell {
-  font-family: monospace;
-  font-size: 0.85rem;
-}
 
-.opis-cell {
-  max-width: 300px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.center-cell {
-  text-align: center;
-}
-
-.user-badge,
-.seans-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.25rem 0.75rem;
-  background: rgba(229, 9, 20, 0.15);
-  color: #e50914;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-
-.seans-badge {
-  background: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
-}
-
-.empty-cell {
-  color: rgba(255, 255, 255, 0.3);
-}
-
-// Tag styling
-:host ::ng-deep {
-  .p-tag {
+  .id-cell {
+    font-family: monospace;
     font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.35rem 0.75rem;
-  }
-}
-
-// Empty & loading states
-.empty-state,
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  color: rgba(255, 255, 255, 0.5);
-
-  i {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    opacity: 0.5;
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
   }
 
-  h3 {
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0 0 0.5rem 0;
+  .date-cell {
+    font-family: monospace;
+    font-size: 0.85rem;
   }
 
-  p {
-    margin: 0;
-    font-size: 0.95rem;
+  .opis-cell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-}
 
-.loading-state {
-  flex-direction: row;
-  gap: 1rem;
+  .center-cell {
+    text-align: center;
+  }
 
-  i {
-    font-size: 2rem;
-    margin-bottom: 0;
+  .user-badge,
+  .seans-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(229, 9, 20, 0.15);
     color: #e50914;
-  }
-}
-
-// Responsive
-@media (max-width: 1024px) {
-  .logi-container {
-    padding: 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
   }
 
-  .control-panel {
-    flex-direction: column;
-    align-items: stretch;
+  .seans-badge {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+  }
 
-    .control-left,
-    .control-right {
-      justify-content: center;
+  .empty-cell {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+
+  :host ::ng-deep {
+    .p-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
     }
   }
 
-  .stats-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
 
-@media (max-width: 640px) {
-  .stats-row {
-    grid-template-columns: 1fr;
+  .empty-state,
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: rgba(255, 255, 255, 0.5);
+
+    i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    h3 {
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
   }
 
-  .logi-header {
-    .header-content {
+  .loading-state {
+    flex-direction: row;
+    gap: 1rem;
+
+    i {
+      font-size: 2rem;
+      margin-bottom: 0;
+      color: #e50914;
+    }
+  }
+
+
+  @media (max-width: 1024px) {
+    .logi-container {
+      padding: 1rem;
+    }
+
+    .control-panel {
       flex-direction: column;
-      text-align: center;
+      align-items: stretch;
+
+      .control-left,
+      .control-right {
+        justify-content: center;
+      }
+    }
+
+    .stats-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .stats-row {
+      grid-template-columns: 1fr;
+    }
+
+    .logi-header {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
     }
   }
 }

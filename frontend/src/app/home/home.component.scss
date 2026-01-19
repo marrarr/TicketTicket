@@ -1,4 +1,6 @@
-// home.component.scss - Stylizacja strony głównej z repertuarem
+
+$text-dark: #222;
+$text-light: #eee;
 
 .main-container {
   min-height: 100vh;
@@ -31,7 +33,7 @@
   }
 }
 
-// Week navigation
+
 .week-nav {
   display: flex;
   align-items: center;
@@ -81,7 +83,7 @@
   }
 }
 
-// Loading state
+
 .loading-state {
   display: flex;
   justify-content: center;
@@ -94,7 +96,7 @@
   }
 }
 
-// Day sections
+
 .day-section {
   margin-bottom: 3rem;
 }
@@ -160,7 +162,7 @@ hr {
   margin: 0 2rem 1.5rem;
 }
 
-// Movies grid
+
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -220,7 +222,7 @@ hr {
   }
 }
 
-// Color classes for cards without images
+
 .bg-blue {
   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
 }
@@ -304,7 +306,7 @@ hr {
   }
 }
 
-// Empty state
+
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -327,7 +329,7 @@ hr {
   }
 }
 
-// Toast messages
+
 :host ::ng-deep {
   .p-toast {
     .p-toast-message {
@@ -349,7 +351,7 @@ hr {
   }
 }
 
-// Button styling
+
 :host ::ng-deep {
   .p-button-rounded.p-button-text {
     color: #e50914;
@@ -360,7 +362,7 @@ hr {
   }
 }
 
-// Responsive
+
 @media (max-width: 768px) {
   .header-text {
     padding: 2rem 1rem 1.5rem;

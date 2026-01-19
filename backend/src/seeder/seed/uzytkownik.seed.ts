@@ -26,7 +26,7 @@ export async function seedUzytkownicy(): Promise<void> {
       login: 'admin',
       haslo: passwordHash,
       confirmed: true,
-      rola_id: adminRole.rola_id,  // ← zmiana z .id na .rola_id
+      rola_id: adminRole.rola_id,  
     },
     {
       imie: 'Kierownik',
@@ -36,7 +36,7 @@ export async function seedUzytkownicy(): Promise<void> {
       login: 'owner',
       haslo: passwordHash,
       confirmed: true,
-      rola_id: ownerRole.rola_id,  // ← zmiana
+      rola_id: ownerRole.rola_id,  
     },
     {
       imie: 'Miłosz',
@@ -46,7 +46,7 @@ export async function seedUzytkownicy(): Promise<void> {
       login: 'milosz',
       haslo: passwordHash,
       confirmed: true,
-      rola_id: clientRole.rola_id,  // ← zmiana
+      rola_id: clientRole.rola_id,  
     },
     {
       imie: 'Wiktor',
@@ -56,7 +56,7 @@ export async function seedUzytkownicy(): Promise<void> {
       login: 'wiktor',
       haslo: passwordHash,
       confirmed: true,
-      rola_id: clientRole.rola_id,  // ← zmiana
+      rola_id: clientRole.rola_id,  
     },
     {
       imie: 'Radek',
@@ -66,7 +66,7 @@ export async function seedUzytkownicy(): Promise<void> {
       login: 'radek',
       haslo: passwordHash,
       confirmed: true,
-      rola_id: clientRole.rola_id,  // ← zmiana
+      rola_id: clientRole.rola_id,  
     },
   ];
 

@@ -25,7 +25,7 @@ export class SeansService {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  /** CREATE — wysyła FormData zgodnie z kontrolerem */
+  
   create(form: any, file?: File): Observable<any> {
     const fd = new FormData();
 
@@ -41,7 +41,7 @@ export class SeansService {
     return this.http.post(this.apiUrl, fd);
   }
 
-  /** UPDATE — zwykły JSON */
+  
   update(id: number, form: any): Observable<any> {
     const payload = {
       tytulFilmu: form.tytulFilmu,

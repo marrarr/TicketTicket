@@ -1,4 +1,4 @@
-// dodaj-seans.component.scss - Stylizacja formularza dodawania seansu
+
 
 :host {
   display: block;
@@ -143,7 +143,7 @@
   }
 }
 
-// Select dropdown styling
+
 :host ::ng-deep {
   .p-select {
     width: 100%;
@@ -195,7 +195,7 @@
   }
 }
 
-// Toast styling
+
 :host ::ng-deep {
   .p-toast {
     .p-toast-message {

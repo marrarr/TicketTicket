@@ -19,18 +19,13 @@ export class RezerwacjaController {
 
   @Post()
   create(@Body() dto: CreateRezerwacjaDto) {
-    return this.rezerwacjaService.create(dto);
-    // return this.rezerwacjaService.createProcedura(dto);
+    // return this.rezerwacjaService.create(dto);
+    return this.rezerwacjaService.createProcedura(dto);
   }
 
-  // NOWY ENDPOINT
+  
   @Post('wiele')
   createMany(@Body() dto: any) {
-    // dto powinno wyglądać tak:
-    // { 
-    //   salaId: 1, seansId: 1, uzytkownikId: 1, klient: "X",
-    //   siedzeniaIds: [1, 2, 3, 4] 
-    // }
     return this.rezerwacjaService.createMany(dto);
   }
 

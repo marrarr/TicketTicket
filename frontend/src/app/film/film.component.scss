@@ -1,4 +1,4 @@
-// film.component.scss - Stylizacja strony repertuaru filmowego
+
 
 .container {
   min-height: 100vh;
@@ -19,7 +19,7 @@ h1.mat-display-1 {
   }
 }
 
-// Spinner styling
+
 :host ::ng-deep mat-spinner {
   margin: 3rem auto;
 
@@ -28,7 +28,7 @@ h1.mat-display-1 {
   }
 }
 
-// Table styling
+
 :host ::ng-deep {
   .mat-elevation-z8 {
     border-radius: 16px;
@@ -80,7 +80,7 @@ h1.mat-display-1 {
   }
 }
 
-// Cell specific styling
+
 .godzina {
   font-weight: 700;
   color: #e50914 !important;
@@ -94,7 +94,7 @@ h1.mat-display-1 {
   }
 }
 
-// Button styling
+
 :host ::ng-deep {
   .mat-mdc-raised-button.mat-primary {
     background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
@@ -111,7 +111,7 @@ h1.mat-display-1 {
   }
 }
 
-// Responsive
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;

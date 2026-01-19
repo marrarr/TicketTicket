@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common'; // Dodaj BadRequestException
+import { Injectable, BadRequestException } from '@nestjs/common'; 
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Rezerwacja } from './rezerwacja.entity';
@@ -23,17 +23,17 @@ export class RezerwacjaService {
     };
   }
 
-  // ... Twoje istniejące metody (create, findAll, findOne, update, remove, createProcedura) ...
   
-  // ==================================================================
-  // NOWA METODA: Rezerwacja grupowa w transakcji
-  // ==================================================================
+  
+  
+  
+  
   async createMany(dto: any) {
-    // Oczekujemy obiektu:
-    // {
-    //   salaId: 1, seansId: 2, klient: "Jan", uzytkownikId: 1,
-    //   siedzeniaIds: [10, 11, 12]  <-- Tablica ID miejsc
-    // }
+    
+    
+    
+    
+    
 
     const { salaId, seansId, uzytkownikId } = this.getIds(dto);
     const siedzeniaIds: number[] = dto.siedzeniaIds || [];
@@ -43,7 +43,7 @@ export class RezerwacjaService {
       throw new BadRequestException('Nie wybrano żadnych miejsc.');
     }
 
-    // Uruchamiamy QueryRunner dla transakcji
+    
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -51,9 +51,9 @@ export class RezerwacjaService {
     const savedReservations: Rezerwacja[] = [];
 
     try {
-      // 1. Pętla zapisu wewnątrz transakcji SQL
+      
       for (const nrMiejsca of siedzeniaIds) {
-        // Tworzymy encję
+        
         const rezerwacja = new Rezerwacja();
         rezerwacja.klient = klient;
         rezerwacja.status = 'REZERWACJA';
@@ -62,29 +62,29 @@ export class RezerwacjaService {
         rezerwacja.seans = { id: seansId } as any;
         rezerwacja.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
         
-        // Kluczowe: przypisanie konkretnego numeru miejsca z listy
+        
         rezerwacja.siedzenie = { id: nrMiejsca } as any;
 
-        // Zapisujemy używając managera transakcji (nie this.repo!)
+        
         const saved = await queryRunner.manager.save(rezerwacja);
         savedReservations.push(saved);
       }
 
-      // 2. Jeśli wszystko poszło OK, zatwierdzamy zmiany w SQL
+      
       await queryRunner.commitTransaction();
 
     } catch (err) {
-      // 3. Jeśli wystąpił błąd (np. duplikat), wycofujemy WSZYSTKO
+      
       await queryRunner.rollbackTransaction();
       console.error('Błąd transakcji rezerwacji:', err);
       throw new BadRequestException('Jedno z miejsc jest już zajęte lub wystąpił błąd zapisu.');
     } finally {
-      // 4. Zwalniamy połączenie
+      
       await queryRunner.release();
     }
 
-    // 5. Logowanie do Mongo (poza transakcją SQL, żeby nie spowalniać bazy)
-    // Możemy dodać jeden log zbiorczy lub pętlę
+    
+    
     try {
       await this.logService.create({
         typ_logu: 'INFO',
@@ -101,10 +101,10 @@ export class RezerwacjaService {
     return savedReservations;
   }
   
-  // ... reszta Twojego kodu ...
-  // upewnij się, że metody create, findAll itd. zostają w pliku
+  
+  
   async create(dto: CreateRezerwacjaDto) {
-      // ... Twoja stary kod create ...
+      
       const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(
         dto as any,
       );
@@ -200,6 +200,15 @@ export class RezerwacjaService {
     const status = (dto as any).status;
 
     try {
+      console.debug('Wywołanie procedury zloz_rezerwacje', {
+        salaId,
+        siedzenieId,
+        seansId,
+        klient,
+        status,
+        uzytkownikId,
+      });
+
       await this.dataSource.query('CALL zloz_rezerwacje(?, ?, ?, ?, ?, ?)', [
         salaId,
         siedzenieId,
@@ -209,7 +218,7 @@ export class RezerwacjaService {
         uzytkownikId,
       ]);
 
-      // log sukcesu
+      
       await this.logService.create({
         typ_logu: 'INFO',
         typ_zdarzenia: 'REZERWACJA',
@@ -219,19 +228,19 @@ export class RezerwacjaService {
         nazwa_uzytkownika: klient,
       });
     } catch (err: any) {
-      // jeśli błąd z procedury
+      
       if (err?.sqlState === '45000') {
-        // log błędu do Mongo
+        
         await this.logService.create({
           typ_logu: 'ERROR',
           typ_zdarzenia: 'REZERWACJA',
-          opis: `Błąd rezerwacji: ${err.sqlMessage}`, // np. "Miejsce jest już zajęte"
+          opis: `Błąd rezerwacji: ${err.sqlMessage}`, 
           seans_id: seansId,
           uzytkownik_id: uzytkownikId,
           nazwa_uzytkownika: klient,
         });
 
-        // rzuć błąd dalej
+        
         throw new Error(err.sqlMessage);
       }
 
