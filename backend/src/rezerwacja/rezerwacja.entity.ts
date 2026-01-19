@@ -15,15 +15,15 @@ export class Rezerwacja {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Sala, { onDelete: 'CASCADE' })  // ← dodaj
+  @ManyToOne(() => Sala, { onDelete: 'CASCADE' })  
   @JoinColumn({ name: 'sala_id' })
   sala: Sala;
 
-  @ManyToOne(() => Siedzenie, { onDelete: 'CASCADE' })  // ← dodaj
+  @ManyToOne(() => Siedzenie, { onDelete: 'CASCADE' })  
   @JoinColumn({ name: 'siedzenie_id' })
   siedzenie: Siedzenie;
 
-  @ManyToOne(() => Seans, (s) => s.rezerwacje, { onDelete: 'CASCADE' })  // ← dodaj
+  @ManyToOne(() => Seans, (s) => s.rezerwacje, { onDelete: 'CASCADE' })  
   @JoinColumn({ name: 'seans_id' })
   seans: Seans;
 
@@ -36,7 +36,7 @@ export class Rezerwacja {
   @Column({ name: 'data_utworzenia', type: 'timestamp' })
   dataUtworzenia: Date;
 
-  @ManyToOne(() => Uzytkownik, uzytkownik => uzytkownik.rezerwacje, { onDelete: 'SET NULL' })  // ← SET NULL dla użytkownika
+  @ManyToOne(() => Uzytkownik, uzytkownik => uzytkownik.rezerwacje, { onDelete: 'SET NULL' })  
   @JoinColumn({ name: 'uzytkownik_id' })
   uzytkownik: Uzytkownik;
 }

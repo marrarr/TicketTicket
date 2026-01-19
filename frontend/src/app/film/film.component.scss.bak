@@ -1,0 +1,133 @@
+// film.component.scss - Stylizacja strony repertuaru filmowego
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 100%);
+  padding: 2rem;
+}
+
+h1.mat-display-1 {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+
+  &::before {
+    content: '🎬 ';
+  }
+}
+
+// Spinner styling
+:host ::ng-deep mat-spinner {
+  margin: 3rem auto;
+
+  circle {
+    stroke: #e50914 !important;
+  }
+}
+
+// Table styling
+:host ::ng-deep {
+  .mat-elevation-z8 {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mat-mdc-table {
+    background: #1e1e2e;
+
+    .mat-mdc-header-row {
+      background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+
+      .mat-mdc-header-cell {
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: none;
+        padding: 1rem 1.5rem;
+      }
+    }
+
+    .mat-mdc-row {
+      background: #1e1e2e;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(229, 9, 20, 0.1);
+      }
+
+      &:nth-child(even) {
+        background: rgba(255, 255, 255, 0.02);
+
+        &:hover {
+          background: rgba(229, 9, 20, 0.1);
+        }
+      }
+
+      .mat-mdc-cell {
+        color: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 1rem 1.5rem;
+        font-size: 0.95rem;
+      }
+    }
+  }
+}
+
+// Cell specific styling
+.godzina {
+  font-weight: 700;
+  color: #e50914 !important;
+  font-size: 1.1rem !important;
+}
+
+.tytul {
+  strong {
+    color: #fff;
+    font-weight: 600;
+  }
+}
+
+// Button styling
+:host ::ng-deep {
+  .mat-mdc-raised-button.mat-primary {
+    background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  h1.mat-display-1 {
+    font-size: 1.5rem;
+  }
+
+  :host ::ng-deep {
+    .mat-mdc-table {
+      .mat-mdc-header-cell,
+      .mat-mdc-cell {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+  }
+}

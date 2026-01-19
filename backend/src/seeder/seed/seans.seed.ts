@@ -38,16 +38,16 @@ export async function seedSeanse(): Promise<void> {
     zaplatani: 'plakat-zaplatani.jpg',
   };
 
-  const godziny = ['12:00', '16:00', '20:00']; // trzy filmy dziennie
+  const godziny = ['12:00', '16:00', '20:00']; 
 
-  const seedDir = __dirname; // plakaty są w tym folderze
+  const seedDir = __dirname; 
   const uploadsDir = path.join(process.cwd(), 'uploads');
   await fs.promises.mkdir(uploadsDir, { recursive: true });
 
   const start = new Date('2026-01-05');
   const end = new Date('2026-01-25');
 
-  // iterujemy po dniach (włącznie)
+  
   for (
     let d = new Date(start);
     d <= end;
@@ -55,9 +55,9 @@ export async function seedSeanse(): Promise<void> {
   ) {
     const dataISO = d.toISOString().split('T')[0];
 
-    // Dla każdego dnia wybieramy maksymalnie `godziny.length` unikalnych filmów
-    // i tworzymy po jednym seansie dla każdej godziny (razem ~3 seanse dziennie).
-    // Sala jest dobierana rotacyjnie z listy sal, żeby nie tworzyć seansów w każdej sali.
+    
+    
+    
     const filmsPool = [...filmy];
     for (let i = filmsPool.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -70,7 +70,7 @@ export async function seedSeanse(): Promise<void> {
       const godzina = godziny[gi];
       const tytulFilmu = chosenFilms[gi];
 
-      // wybieramy salę rotacyjnie (zapewnia rozkład seansów po salach)
+      
       const sala = sale[(d.getDate() + gi) % sale.length];
 
       const exists = await seansRepo.exist({

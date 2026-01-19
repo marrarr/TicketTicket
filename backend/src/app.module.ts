@@ -26,16 +26,16 @@ import { join } from 'path';
       envFilePath: '.env',
     }),
     
-    // --- POPRAWIONA KONFIGURACJA ---
+    
     ServeStaticModule.forRoot({
-      // process.cwd() wskazuje na folder, w którym uruchamiasz 'npm start' (główny katalog backendu)
+      
       rootPath: join(process.cwd(), 'uploads'), 
       serveRoot: '/uploads',
       serveStaticOptions: {
-        index: false, // Ważne: Nie szukaj pliku index.html, jeśli nie znaleziono obrazka
+        index: false, 
       },
     }),
-    // -------------------------------
+    
 
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

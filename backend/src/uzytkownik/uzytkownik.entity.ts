@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Rola } from '../rola/rola.entity';
 import { Rezerwacja } from '../rezerwacja/rezerwacja.entity';
 
@@ -28,11 +28,11 @@ export class Uzytkownik {
   @Column({ name: 'rola_id' })
   rola_id: number;
 
-  @Column({type: 'boolean'})
+  @Column({ type: 'boolean' })
   confirmed: boolean;
 
   @ManyToOne(() => Rola, rola => rola.uzytkownik)
-  @JoinColumn({ name: 'rola_id' })
+  @JoinColumn({ name: 'rola_id', referencedColumnName: 'rola_id' })
   rola: Rola;
 
   @OneToMany(() => Rezerwacja, rezerwacja => rezerwacja.uzytkownik)

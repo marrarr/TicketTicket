@@ -1,0 +1,74 @@
+<p-toast></p-toast>
+
+<p-card header="Dodaj nowy seans" styleClass="seans-card">
+  <div class="form-container">
+    
+    <div class="field">
+      <label for="tytulFilmu">Tytuł filmu</label>
+      <input 
+        pInputText 
+        id="tytulFilmu" 
+        [(ngModel)]="seans.tytulFilmu" 
+        placeholder="Wpisz tytuł filmu"
+        class="w-full" />
+    </div>
+
+    <div class="field">
+      <label for="sala">Sala</label>
+      <p-select
+        id="sala"
+        [(ngModel)]="selectedSala"
+        [options]="sale"
+        optionLabel="numerSali"
+        placeholder="Wybierz salę"
+        class="w-full">
+        <ng-template pTemplate="selectedItem" let-selected>
+          <span *ngIf="selected">Sala {{ selected.numerSali }} ({{ selected.iloscMiejsc }} miejsc)</span>
+        </ng-template>
+        <ng-template pTemplate="item" let-sala>
+          <span>Sala {{ sala.numerSali }} ({{ sala.iloscMiejsc }} miejsc)</span>
+        </ng-template>
+      </p-select>
+    </div>
+
+    <div class="field">
+      <label for="data">Data</label>
+      <input 
+        pInputText 
+        type="date" 
+        id="data" 
+        [(ngModel)]="seans.data"
+        class="w-full" />
+    </div>
+
+    <div class="field">
+      <label for="godzina">Godzina rozpoczęcia</label>
+      <input 
+        pInputText 
+        type="time" 
+        id="godzina" 
+        [(ngModel)]="seans.godzinaRozpoczecia"
+        class="w-full" />
+    </div>
+
+    <div class="field">
+      <label for="okladkaInput">Okładka filmu</label>
+      <input 
+        type="file" 
+        id="okladkaInput" 
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        class="file-input" />
+    </div>
+
+    <div class="actions">
+      <p-button 
+        label="Zapisz seans" 
+        icon="pi pi-save" 
+        (onClick)="zapisz()"
+        styleClass="p-button-success">
+      </p-button>
+    </div>
+
+  </div>
+</p-card>

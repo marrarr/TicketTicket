@@ -5,7 +5,7 @@ import * as bcrypt from 'bcryptjs';
 import { CreateUzytkownikDto } from 'src/dtos/uzytkownik.dto';
 import { LogService } from '../mongo/log.service';
 
-// Interface dla błędów PostgreSQL
+
 interface PostgresError extends Error {
     code?: string;
     detail?: string;
@@ -26,7 +26,7 @@ export class AuthService {
             const uzytkownik = await this.users.create(createUzytkownikDto);
             console.log('Użytkownik utworzony:', uzytkownik);
 
-            // LOGOWANIE REJESTRACJI
+            
             try {
               await this.logService.create({
                 typ_logu: 'INFO',
@@ -48,22 +48,22 @@ export class AuthService {
             
             const error = err as PostgresError;
             
-            // Sprawdź czy to błąd duplikatu (UNIQUE constraint)
+            
             if (error.code === '23505') {
                 throw new BadRequestException('Użytkownik o tym loginie lub emailu już istnieje');
             }
             
-            // Sprawdź czy to błąd NOT NULL constraint
+            
             if (error.code === '23502') {
                 throw new BadRequestException('Brakuje wymaganych pól');
             }
             
-            // Sprawdź czy to błąd FOREIGN KEY constraint
+            
             if (error.code === '23503') {
                 throw new BadRequestException('Nieprawidłowa rola użytkownika');
             }
             
-            // Ogólny błąd
+            
             throw new BadRequestException(
                 error.message || 'Nie udało się utworzyć użytkownika'
             );
@@ -91,7 +91,7 @@ export class AuthService {
     async login(username: string, password: string) {
       const user = await this.users.findOneByUsername(username);
       if (!user) {
-        // LOGOWANIE NIEUDANEJ PRÓBY
+        
         try {
           await this.logService.create({
             typ_logu: 'WARNING',
@@ -107,7 +107,7 @@ export class AuthService {
 
       const valid = await bcrypt.compare(password, user.haslo);
       if (!valid) {
-        // LOGOWANIE ZŁEGO HASŁA
+        
         try {
           await this.logService.create({
             typ_logu: 'WARNING',
@@ -122,7 +122,7 @@ export class AuthService {
         throw new UnauthorizedException('Nieprawidłowe hasło');
       }
 
-      // LOGOWANIE UDANEGO LOGOWANIA
+      
       try {
         await this.logService.create({
           typ_logu: 'INFO',

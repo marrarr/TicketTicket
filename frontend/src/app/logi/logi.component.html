@@ -42,7 +42,7 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <!-- (opcjonalnie) kolumna z ID logu -->
+          
           <th pSortableColumn="_id" style="width: 180px">
             <div class="header-cell">
               <i class="pi pi-key"></i>
@@ -111,7 +111,7 @@
 
       <ng-template pTemplate="body" let-log>
         <tr class="log-row" [ngClass]="'log-row-' + log.typ_logu.toLowerCase()">
-          <!-- (opcjonalnie) kolumna z ID -->
+          
           <td>
             <span class="id-cell">{{ log._id }}</span>
           </td>

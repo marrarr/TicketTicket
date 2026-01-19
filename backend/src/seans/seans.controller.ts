@@ -42,7 +42,7 @@ async create(
     tytulFilmu: dto.tytulFilmu,
     data: dto.data,
     godzinaRozpoczecia: dto.godzinaRozpoczecia,
-    salaId: typeof dto.salaId === 'string' ? parseInt(dto.salaId, 10) : dto.salaId,  // ← POPRAWKA
+    salaId: typeof dto.salaId === 'string' ? parseInt(dto.salaId, 10) : dto.salaId,  
   };
 
   if (file) {
@@ -57,14 +57,14 @@ async create(
     return this.seansService.findAll();
   }
 
-  // --- NOWY ENDPOINT ---
-  // Służy do pobierania mapy sali z uwzględnieniem rezerwacji TYLKO dla tego seansu.
-  // Użycie: GET http://localhost:3000/seans/15/miejsca
+  
+  
+  
   @Get(':id/miejsca')
   getMiejsca(@Param('id') id: number) {
     return this.seansService.getMiejscaSeansu(id);
   }
-  // ---------------------
+  
 
   @Get(':id')
   findOne(@Param('id') id: number) {

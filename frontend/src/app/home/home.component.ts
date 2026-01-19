@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
 
-// PrimeNG modules
+
 import { ToastModule } from 'primeng/toast';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -54,13 +54,13 @@ export class HomeComponent implements OnInit {
   displayedWeekStart!: Date;
   displayedWeekEnd!: Date;
 
-  // Pola do rezerwacji
+  
   seansId!: number;
   salaId!: number;
   klient: string = '';
   uzytkownikId: number | null = null;
 
-  // Miejsca pobrane z backendu dla aktualnego seansu
+  
   private miejscaFromDb: any[] = [];
 
   constructor(
@@ -71,8 +71,8 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.uzytkownikId = this.authService.getUserId(); // <--- pobieramy z JWT
-    // Ustaw nazwę użytkownika synchronously (z tokenu) i subskrybuj zmiany
+    this.uzytkownikId = this.authService.getUserId(); 
+    
     this.klient = this.authService.getUserName() ?? '';
     this.authService.userName$.subscribe((name) => {
       this.klient = name ?? this.klient;
@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit {
     this.loadFilmy();
   }
 
-  // Używane z szablonu, aby uniknąć wywołań konstruktorów (np. new Date()) bezpośrednio w HTML
+  
   goToCurrentWeek() {
     this.setWeekRange(new Date());
     this.applyWeekFilter();
@@ -88,7 +88,7 @@ export class HomeComponent implements OnInit {
 
   private getMonday(date: Date): Date {
     const d = new Date(date);
-    const day = (d.getDay() + 6) % 7; // 0 = poniedziałek
+    const day = (d.getDay() + 6) % 7; 
     d.setDate(d.getDate() - day);
     d.setHours(0, 0, 0, 0);
     return d;
@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit {
 
     this.filteredGroupedFilmy = this.groupedFilmy.filter((group) => {
       const d = new Date(group.date);
-      d.setHours(12, 0, 0, 0); // zabezpieczenie przed strefami czasowymi
+      d.setHours(12, 0, 0, 0); 
       return d >= this.displayedWeekStart && d <= this.displayedWeekEnd;
     });
   }
@@ -170,7 +170,7 @@ export class HomeComponent implements OnInit {
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
 
-        // Ustaw start na aktualny tydzień i przefiltruj
+        
         this.setWeekRange(new Date());
         this.applyWeekFilter();
 
@@ -248,7 +248,7 @@ export class HomeComponent implements OnInit {
           seansId: this.seansId,
           klient: klientName,
           status: 'ZAREZERWOWANA',
-          // KLUCZOWE: camelCase, backend to obsługuje
+          
           uzytkownikId: this.uzytkownikId ?? undefined,
         });
       })

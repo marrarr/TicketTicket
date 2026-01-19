@@ -15,7 +15,7 @@ export async function seedRezerwacje(): Promise<void> {
   const seanse = await seansRepo.find({ relations: ['sala'] });
   const uzytkownicy = await uzytkownikRepo.find();
 
-  // ograniczamy się tylko do użytkowników: milosz, radek, wiktor
+  
   const allowedLogins = ['milosz', 'radek', 'wiktor'];
   const dostępniUzytkownicy = uzytkownicy.filter((u) =>
     allowedLogins.includes((u.login || '').toString().toLowerCase()),
@@ -26,7 +26,7 @@ export async function seedRezerwacje(): Promise<void> {
     return;
   }
 
-  // Połączenie do Mongo (dla logów). Jeśli brak URI w env, przyjmujemy lokalny default.
+  
   const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/ticketticket';
   let LogModel: any = null;
   try {
@@ -44,13 +44,13 @@ export async function seedRezerwacje(): Promise<void> {
     if (istnieje) continue;
 
     const dataSeansu = new Date(seans.data);
-    const dzienTygodnia = dataSeansu.getDay(); // 0 (Nd) do 6 (So)
+    const dzienTygodnia = dataSeansu.getDay(); 
 
-    // Poniedziałek to 1, Wtorek to 2
+    
     const czyPopularnyDzien = dzienTygodnia === 1 || dzienTygodnia === 2;
 
-    // Ustalamy ile miejsc zajmujemy
-    // Popularne dni: 70-90% sali, reszta: 5-15%
+    
+    
     const procentZajecia = czyPopularnyDzien
       ? Math.floor(Math.random() * (90 - 70 + 1) + 70)
       : Math.floor(Math.random() * (15 - 5 + 1) + 5);
@@ -63,7 +63,7 @@ export async function seedRezerwacje(): Promise<void> {
       (procentZajecia / 100) * wszystkieSiedzenia.length,
     );
 
-    // Tasujemy siedzenia, żeby rezerwacje nie były tylko w pierwszych rzędach
+    
     const wybraneSiedzenia = wszystkieSiedzenia
       .sort(() => 0.5 - Math.random())
       .slice(0, liczbaMiejscDoRezerwacji);
@@ -86,11 +86,11 @@ export async function seedRezerwacje(): Promise<void> {
       );
     }
 
-    // Zapisujemy paczkami, żeby było szybciej
+    
     if (noweRezerwacje.length > 0) {
       const saved = await rezerwacjaRepo.save(noweRezerwacje);
 
-      // zapisz logi do Mongo, jeśli jest połączenie
+      
       if (LogModel) {
         try {
           const logs = saved.map((r: Rezerwacja) => ({

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common'; 
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Rezerwacja } from './rezerwacja.entity';
@@ -23,41 +23,122 @@ export class RezerwacjaService {
     };
   }
 
-  async create(dto: CreateRezerwacjaDto) {
-    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(
-      dto as any,
-    );
+  
+  
+  
+  
+  
+  async createMany(dto: any) {
+    
+    
+    
+    
+    
 
-    const payload: Partial<Rezerwacja> = {
-      klient: (dto as any).klient,
-      status: (dto as any).status,
-      dataUtworzenia: new Date(),
-    };
+    const { salaId, seansId, uzytkownikId } = this.getIds(dto);
+    const siedzeniaIds: number[] = dto.siedzeniaIds || [];
+    const klient = dto.klient;
 
-    if (salaId) payload.sala = { id: salaId } as any;
-    if (siedzenieId) payload.siedzenie = { id: siedzenieId } as any;
-    if (seansId) payload.seans = { id: seansId } as any;
-    if (uzytkownikId)
-      payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
+    if (!siedzeniaIds.length) {
+      throw new BadRequestException('Nie wybrano żadnych miejsc.');
+    }
 
-    const saved = await this.repo.save(payload as Rezerwacja);
+    
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
+    const savedReservations: Rezerwacja[] = [];
+
+    try {
+      
+      for (const nrMiejsca of siedzeniaIds) {
+        
+        const rezerwacja = new Rezerwacja();
+        rezerwacja.klient = klient;
+        rezerwacja.status = 'REZERWACJA';
+        rezerwacja.dataUtworzenia = new Date();
+        rezerwacja.sala = { id: salaId } as any;
+        rezerwacja.seans = { id: seansId } as any;
+        rezerwacja.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
+        
+        
+        rezerwacja.siedzenie = { id: nrMiejsca } as any;
+
+        
+        const saved = await queryRunner.manager.save(rezerwacja);
+        savedReservations.push(saved);
+      }
+
+      
+      await queryRunner.commitTransaction();
+
+    } catch (err) {
+      
+      await queryRunner.rollbackTransaction();
+      console.error('Błąd transakcji rezerwacji:', err);
+      throw new BadRequestException('Jedno z miejsc jest już zajęte lub wystąpił błąd zapisu.');
+    } finally {
+      
+      await queryRunner.release();
+    }
+
+    
+    
     try {
       await this.logService.create({
         typ_logu: 'INFO',
-        typ_zdarzenia: 'REZERWACJA',
-        opis: `Rezerwacja id=${saved.id}`,
+        typ_zdarzenia: 'REZERWACJA_GRUPOWA',
+        opis: `Zarezerwowano ${savedReservations.length} miejsc: [${siedzeniaIds.join(', ')}]`,
         seans_id: seansId,
         uzytkownik_id: uzytkownikId,
-        nazwa_uzytkownika: saved.klient,
+        nazwa_uzytkownika: klient,
       });
     } catch (e) {
       console.error('Failed to write mongo log', e);
     }
 
-    return saved;
+    return savedReservations;
   }
-
+  
+  
+  
+  async create(dto: CreateRezerwacjaDto) {
+      
+      const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(
+        dto as any,
+      );
+  
+      const payload: Partial<Rezerwacja> = {
+        klient: (dto as any).klient,
+        status: (dto as any).status,
+        dataUtworzenia: new Date(),
+      };
+  
+      if (salaId) payload.sala = { id: salaId } as any;
+      if (siedzenieId) payload.siedzenie = { id: siedzenieId } as any;
+      if (seansId) payload.seans = { id: seansId } as any;
+      if (uzytkownikId)
+        payload.uzytkownik = { uzytkownik_id: uzytkownikId } as any;
+  
+      const saved = await this.repo.save(payload as Rezerwacja);
+  
+      try {
+        await this.logService.create({
+          typ_logu: 'INFO',
+          typ_zdarzenia: 'REZERWACJA',
+          opis: `Rezerwacja id=${saved.id}`,
+          seans_id: seansId,
+          uzytkownik_id: uzytkownikId,
+          nazwa_uzytkownika: saved.klient,
+        });
+      } catch (e) {
+        console.error('Failed to write mongo log', e);
+      }
+  
+      return saved;
+  }
+  
   findAll() {
     return this.repo.find({
       relations: ['sala', 'siedzenie', 'seans', 'uzytkownik'],
@@ -119,6 +200,15 @@ export class RezerwacjaService {
     const status = (dto as any).status;
 
     try {
+      console.debug('Wywołanie procedury zloz_rezerwacje', {
+        salaId,
+        siedzenieId,
+        seansId,
+        klient,
+        status,
+        uzytkownikId,
+      });
+
       await this.dataSource.query('CALL zloz_rezerwacje(?, ?, ?, ?, ?, ?)', [
         salaId,
         siedzenieId,
@@ -128,7 +218,7 @@ export class RezerwacjaService {
         uzytkownikId,
       ]);
 
-      // log sukcesu
+      
       await this.logService.create({
         typ_logu: 'INFO',
         typ_zdarzenia: 'REZERWACJA',
@@ -138,19 +228,19 @@ export class RezerwacjaService {
         nazwa_uzytkownika: klient,
       });
     } catch (err: any) {
-      // jeśli błąd z procedury
+      
       if (err?.sqlState === '45000') {
-        // log błędu do Mongo
+        
         await this.logService.create({
           typ_logu: 'ERROR',
           typ_zdarzenia: 'REZERWACJA',
-          opis: `Błąd rezerwacji: ${err.sqlMessage}`, // np. "Miejsce jest już zajęte"
+          opis: `Błąd rezerwacji: ${err.sqlMessage}`, 
           seans_id: seansId,
           uzytkownik_id: uzytkownikId,
           nazwa_uzytkownika: klient,
         });
 
-        // rzuć błąd dalej
+        
         throw new Error(err.sqlMessage);
       }
 

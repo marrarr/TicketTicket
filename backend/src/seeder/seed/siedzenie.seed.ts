@@ -12,13 +12,13 @@ export async function seedSiedzenia(): Promise<void> {
   const sale = await salaRepo.find();
 
   for (const sala of sale) {
-    // sprawdzamy czy sala już ma siedzenia
+    
     const ileIstnieje = await siedzenieRepo.count({
       where: { sala: { id: sala.id } },
     });
 
     if (ileIstnieje > 0) {
-      continue; // nie duplikujemy
+      continue; 
     }
 
     const siedzenia: Siedzenie[] = [];
