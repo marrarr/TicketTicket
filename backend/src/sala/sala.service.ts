@@ -14,19 +14,20 @@ export class SalaService {
   ) {}
 
   async create(dto: CreateSalaDto) {
+    const saved = await this.repo.save(dto);
+
     try {
       await this.logService.create({
         typ_logu: 'INFO',
-        typ_zdarzenia: 'REZERWACJA',
-        opis: 'Rezerwacja utworzona',
-        uzytkownik_id: 1,
-        nazwa_uzytkownika: 'admin',
+        typ_zdarzenia: 'DODANIE_SALI',
+        opis: `Dodano salę id=${(saved as any).id}`,
+        nazwa_uzytkownika: (dto as any).nazwa_uzytkownika,
       });
     } catch (e) {
       console.error('Failed to write mongo log', e);
     }
 
-    return this.repo.save(dto);
+    return saved;
   }
   findAll() {
     return this.repo.find();
@@ -36,9 +37,36 @@ export class SalaService {
   }
   async update(id: number, dto: UpdateSalaDto) {
     await this.repo.update(id, dto);
-    return this.findOne(id);
+    const updated = await this.findOne(id);
+
+    try {
+      await this.logService.create({
+        typ_logu: 'INFO',
+        typ_zdarzenia: 'EDYCJA_SALI',
+        opis: `Edytowano salę id=${id}`,
+        nazwa_uzytkownika: (dto as any).nazwa_uzytkownika,
+      });
+    } catch (e) {
+      console.error('Failed to write mongo log', e);
+    }
+
+    return updated;
   }
   remove(id: number) {
-    return this.repo.delete(id);
+    return this.repo.findOneBy({ id }).then(async (existing) => {
+      try {
+        if (existing) {
+          await this.logService.create({
+            typ_logu: 'WARNING',
+            typ_zdarzenia: 'USUNIECIE_SALI',
+            opis: `Usunięto salę id=${id}`,
+            nazwa_uzytkownika: undefined,
+          });
+        }
+      } catch (e) {
+        console.error('Failed to write mongo log', e);
+      }
+      return this.repo.delete(id);
+    });
   }
 }

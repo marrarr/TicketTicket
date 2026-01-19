@@ -98,6 +98,39 @@
 .day-section {
   margin-bottom: 3rem;
 }
+.hero-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+}
+.hero h1 {
+    font-size: 2.25rem;
+    color: $text-dark;
+    margin: 0 0 0.5rem 0;
+    font-weight: 800;
+}
+.hero p {
+    color: $text-light;
+    margin: 0 0 1rem 0;
+}
+.hero-cta { display: flex; justify-content: center; }
+
+.week-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 1rem 0 1.5rem 0;
+}
+.nav-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+}
+.week-range { text-align: center; flex: 1; }
+.range-dates { font-weight: 700; color: $text-dark; }
+.range-days { color: $text-light; display: block; }
 
 .date-header {
   display: flex;

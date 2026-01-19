@@ -190,4 +190,53 @@ export class RezerwacjaService {
 
     return this.repo.delete(id);
   }
+
+  async createProcedura(dto: CreateRezerwacjaDto) {
+    const { salaId, siedzenieId, seansId, uzytkownikId } = this.getIds(
+      dto as any,
+    );
+
+    const klient = (dto as any).klient;
+    const status = (dto as any).status;
+
+    try {
+      await this.dataSource.query('CALL zloz_rezerwacje(?, ?, ?, ?, ?, ?)', [
+        salaId,
+        siedzenieId,
+        seansId,
+        klient,
+        status,
+        uzytkownikId,
+      ]);
+
+      // log sukcesu
+      await this.logService.create({
+        typ_logu: 'INFO',
+        typ_zdarzenia: 'REZERWACJA',
+        opis: 'Rezerwacja utworzona',
+        seans_id: seansId,
+        uzytkownik_id: uzytkownikId,
+        nazwa_uzytkownika: klient,
+      });
+    } catch (err: any) {
+      // jeśli błąd z procedury
+      if (err?.sqlState === '45000') {
+        // log błędu do Mongo
+        await this.logService.create({
+          typ_logu: 'ERROR',
+          typ_zdarzenia: 'REZERWACJA',
+          opis: `Błąd rezerwacji: ${err.sqlMessage}`, // np. "Miejsce jest już zajęte"
+          seans_id: seansId,
+          uzytkownik_id: uzytkownikId,
+          nazwa_uzytkownika: klient,
+        });
+
+        // rzuć błąd dalej
+        throw new Error(err.sqlMessage);
+      }
+
+      console.error('Błąd podczas wywołania procedury zloz_rezerwacje', err);
+      throw err;
+    }
+  }
 }

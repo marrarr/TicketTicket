@@ -3,6 +3,8 @@ import { Rezerwacja } from '../../rezerwacja/rezerwacja.entity';
 import { Seans } from '../../seans/seans.entity';
 import { Siedzenie } from '../../siedzenie/siedzenie.entity';
 import { Uzytkownik } from '../../uzytkownik/uzytkownik.entity';
+import * as mongoose from 'mongoose';
+import { LogSchema } from '../../mongo/log.schema';
 
 export async function seedRezerwacje(): Promise<void> {
   const rezerwacjaRepo = AppDataSource.getRepository(Rezerwacja);
@@ -13,9 +15,26 @@ export async function seedRezerwacje(): Promise<void> {
   const seanse = await seansRepo.find({ relations: ['sala'] });
   const uzytkownicy = await uzytkownikRepo.find();
 
-  if (seanse.length === 0 || uzytkownicy.length === 0) {
-    console.log('Brak seansów lub użytkowników. Pomiń seedowanie rezerwacji.');
+  // ograniczamy się tylko do użytkowników: milosz, radek, wiktor
+  const allowedLogins = ['milosz', 'radek', 'wiktor'];
+  const dostępniUzytkownicy = uzytkownicy.filter((u) =>
+    allowedLogins.includes((u.login || '').toString().toLowerCase()),
+  );
+
+  if (seanse.length === 0 || dostępniUzytkownicy.length === 0) {
+    console.log('Brak seansów lub brak docelowych użytkowników (milosz, radek, wiktor). Pomiń seedowanie rezerwacji.');
     return;
+  }
+
+  // Połączenie do Mongo (dla logów). Jeśli brak URI w env, przyjmujemy lokalny default.
+  const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/ticketticket';
+  let LogModel: any = null;
+  try {
+    await mongoose.connect(mongoUri);
+    LogModel = mongoose.models.Log || mongoose.model('Log', LogSchema);
+  } catch (err) {
+    console.warn('Nie udało się połączyć z MongoDB — logi rezerwacji nie będą zapisywane', err);
+    LogModel = null;
   }
 
   for (const seans of seanse) {
@@ -51,10 +70,9 @@ export async function seedRezerwacje(): Promise<void> {
 
     const noweRezerwacje: Rezerwacja[] = [];
 
-    for (const siedzenie of wybraneSiedzenia) {
+      for (const siedzenie of wybraneSiedzenia) {
       const uzytkownik =
-        uzytkownicy[Math.floor(Math.random() * uzytkownicy.length)];
-
+        dostępniUzytkownicy[Math.floor(Math.random() * dostępniUzytkownicy.length)];
       noweRezerwacje.push(
         rezerwacjaRepo.create({
           seans: seans,
@@ -70,7 +88,27 @@ export async function seedRezerwacje(): Promise<void> {
 
     // Zapisujemy paczkami, żeby było szybciej
     if (noweRezerwacje.length > 0) {
-      await rezerwacjaRepo.save(noweRezerwacje);
+      const saved = await rezerwacjaRepo.save(noweRezerwacje);
+
+      // zapisz logi do Mongo, jeśli jest połączenie
+      if (LogModel) {
+        try {
+          const logs = saved.map((r: Rezerwacja) => ({
+            typ_logu: 'INFO',
+            typ_zdarzenia: 'REZERWACJA',
+            opis: `Rezerwacja ${r.klient} seans:${r.seans?.id} siedzenie:${r.siedzenie?.rzad}-${r.siedzenie?.numer}`,
+            seans_id: r.seans?.id,
+            nazwa_uzytkownika: (r.uzytkownik as any)?.login,
+            uzytkownik_id: (r.uzytkownik as any)?.id,
+          }));
+
+          if (logs.length > 0) {
+            await LogModel.insertMany(logs);
+          }
+        } catch (err) {
+          console.warn('Błąd przy zapisywaniu logów rezerwacji do Mongo', err);
+        }
+      }
     }
   }
 }
